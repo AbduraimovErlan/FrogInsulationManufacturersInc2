@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Заказ #{{ order.id }}{% endblock %}
+{% block content %}
+    <h1>Заказ #{{ order.id }}</h1>
+    <p>Статус: {{ order.status }}</p>
+    <!-- Другая информация о заказе -->
+{% endblock %}

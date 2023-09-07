@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ brand.name }}{% endblock %}
+{% block content %}
+    <h1>{{ brand.name }}</h1>
+    <ul>
+        {% for product in products %}
+        <li><a href="{% url 'MainWepSite:brand_detail' product.slug %}">{{ product.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %} <!-- Расширяем базовый шаблон -->
+
+{% block title %}{{ product.name }}{% endblock %} <!-- Заголовок страницы, использует имя продукта -->
+
+{% block content %} <!-- Начало блока контента страницы -->
+
+{% if product %} <!-- Проверка наличия продукта -->
+    <div class="my-5"></div> <!-- Пустое поле для отступа -->
+
+    <div class="product-detail container"> <!-- Контейнер для деталей продукта -->
+        <div class="row"> <!-- Ряд для размещения информации о продукте -->
+            <div class="col-md-6"> <!-- Левая половина: изображение продукта -->
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="500" height="500" class="product-image">
+            </div>
+            <div class="col-md-6"> <!-- Правая половина: информация о продукте -->
+                <div class="product-info">
+                    <h1>{{ product.name }}</h1> <!-- Заголовок с именем продукта -->
+                    <p>brand: {{ product.brand }}</p> <!-- Бренд-->
+                    <p>Price: {{ product.price }}</p> <!-- Цена продукта -->
+                    <p>SKU: {{ product.sku }}</p> <!-- Артикул продукта -->
+                    <p>Stock: {{ product.stock_quantity }}</p> <!-- Наличие продукта на складе -->
+
+
+
+                    <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
+                        <button type="submit">Купить</button>
+                    </form> <!-- Форма для добавления продукта в корзину -->
+                </div>
+            </div>
+            <div class="col-md-12 mt-4"> <!-- Отступ сверху перед описанием продукта -->
+                <p>{{ product.description }}</p> <!-- Описание продукта -->
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <p>Изображение отсутствует</p> <!-- Сообщение, если продукт отсутствует -->
+{% endif %}
+
+{% endblock %} <!-- Завершение блока контента страницы -->
+
+
+
