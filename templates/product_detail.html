@@ -1,6 +1,6 @@
 {% extends "base.html" %}  {# Наследование базового шаблона #}
 
-{% block title %}{{ product.name }}{% endblock %}  {# Заголовок страницы устанавливается на основе имени продукта #}
+{% block title %}{{ product.name }}{% endblock %}  {# Устанавливаем заголовок страницы на основе имени продукта #}
 
 {% block content %}  {# Начало блока содержимого страницы #}
 
@@ -27,22 +27,20 @@
                     <p>SKU: {{ product.sku }}</p>
                     <p>Stock: {{ product.stock_quantity }}</p>
 
-    <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
-    {% csrf_token %}
-    <select name="product_variant">
-        {% for variant in product.variants.all %}
-            <option value="{{ variant.id }}">
-                {{ variant }} - Price: {{ variant.price }}
-            </option>
-        {% endfor %}
-    </select>
-    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
-    <button type="submit">buy</button>
-</form>
-
-
-
-
+                    {# Форма для добавления продукта в корзину #}
+                    <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <select name="product_variant">
+                            {# Отображение вариантов продукта в выпадающем списке #}
+                            {% for variant in product.variants.all %}
+                                <option value="{{ variant.id }}">
+                                    {{ variant }} - Price: {{ variant.price }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
+                        <button type="submit">buy</button>
+                    </form>
                 </div>
             </div>
             <div class="col-md-12 mt-4">
@@ -56,7 +54,4 @@
 {% endif %}
 
 {% endblock %}  {# Конец блока содержимого страницы #}
-
-
-
 

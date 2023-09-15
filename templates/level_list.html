@@ -1,17 +1,25 @@
-{% extends "base.html" %}
+{% extends "base.html" %} <!-- Расширение базового шаблона -->
 
-{% block content %}
-    <h1>Client Levels</h1>
-    <ul>
-    {% for level in levels %}
-        <li>
+{% block content %} <!-- Определение блока контента страницы -->
+    <h1>Client Levels</h1> <!-- Заголовок страницы -->
+
+    <ul> <!-- Начало списка уровней клиентов -->
+    {% for level in levels %} <!-- Перебор всех уровней клиентов -->
+        <li> <!-- Элемент списка для каждого уровня клиента -->
             {{ level.name }} - {{ level.required_points }} Points
-            <a href="{% url 'custom_users:level_edit' level.pk %}">Edit</a>
-            <a href="{% url 'custom_users:level_delete' level.pk %}">Delete</a>
-        </li>
+            <!-- Отображение имени уровня и необходимых очков -->
 
+            <a href="{% url 'custom_users:level_edit' level.pk %}">Edit</a>
+            <!-- Ссылка для редактирования текущего уровня клиента -->
+
+            <a href="{% url 'custom_users:level_delete' level.pk %}">Delete</a>
+            <!-- Ссылка для удаления текущего уровня клиента -->
+        </li>
     {% endfor %}
-    </ul>
+    </ul> <!-- Завершение списка уровней клиентов -->
+
     <a href="{% url 'custom_users:level_add' %}">Add New Client Level</a>
-{% endblock %}
+    <!-- Ссылка для добавления нового уровня клиента -->
+{% endblock %} <!-- Завершение блока контента страницы -->
+
 

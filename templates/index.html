@@ -1,9 +1,6 @@
-
 {% extends "base.html" %} <!-- Расширяем базовый шаблон -->
 
-
 {% block title %}Главная страница{% endblock %} <!-- Заголовок страницы -->
-
 
 {% block content %} <!-- Начало блока контента страницы -->
     <div class="my-3"></div> <!-- Пустое поле для отступа -->
@@ -17,61 +14,54 @@
 
     <div class="my-4"></div> <!-- Пустое поле для отступа -->
     <form method="get" action="{% url 'MainWepSite:index' %}">
-    <input type="text" name="search" placeholder="Product search">
-    <!-- остальные элементы формы, например, фильтры категорий и брендов -->
-    <input type="submit" value="Search">
-</form>
+        <input type="text" name="search" placeholder="Product search">
+        <!-- остальные элементы формы, например, фильтры категорий и брендов -->
+        <input type="submit" value="Search">
+    </form>
 
-<form method="get" action="{% url 'MainWepSite:index' %}"> <!-- Форма для фильтрации продуктов -->
-    <input type="checkbox" name="filter_category" value="1">
-    <select name="category">
-        <option value="">Select categories</option>
-    {% for category in categories %}
-        <option value="{{ category.slug }}">{{ category.name }}</option>
-    {% endfor %}
-    </select>
-    <input type="checkbox" name="filter_brand" value="1">
-    <select name="brand">
-        <option value="">Select brand</option>
-    {% for brand in brands %}
-        <option value="{{ brand.slug }}">{{ brand.name }}</option>
-    {% endfor %}
-    </select>
-    <button type="submit">Apply filter</button>
-    <a href="{% url 'MainWepSite:view_cart' %}" class="btn btn-secondary">Посмотреть корзину</a>
-
-</form>
-
-
-
-
-
-
-
+    <form method="get" action="{% url 'MainWepSite:index' %}"> <!-- Форма для фильтрации продуктов -->
+        <input type="checkbox" name="filter_category" value="1">
+        <select name="category">
+            <option value="">Select categories</option>
+            {% for category in categories %}
+                <option value="{{ category.slug }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="checkbox" name="filter_brand" value="1">
+        <select name="brand">
+            <option value="">Select brand</option>
+            {% for brand in brands %}
+                <option value="{{ brand.slug }}">{{ brand.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Apply filter</button>
+        <a href="{% url 'MainWepSite:view_cart' %}" class="btn btn-secondary">Посмотреть корзину</a>
+    </form>
 
     <div class="my-5"></div> <!-- Пустое поле для отступа -->
 
-        <div class="container"> <!-- Контейнер для карточек продуктов -->
+    <div class="container"> <!-- Контейнер для карточек продуктов -->
         <div class="row">
             {% for product in products %}
                 <div class="col-md-4 mb-3"> <!-- Карточка продукта -->
-                     <a href="{% url 'MainWepSite:product_detail' product.slug %}" style="text-decoration: none; color: inherit;">
-            <div class="card mx-auto">
-                {% if product.image and product.image.url %}
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-width: 100%; max-height: 300px;">
-                    <div class="likes">
-                        <span>{{ product.likes }}</span>
-                        <a href="{% url 'MainWepSite:like_product' product.id %}" class="like-button">❤</a>
-                    </div>
-                {% else %}
-                    <img src="media/products/istockphoto-1147544807-612x612.jpg" class="card-img-top" alt="Placeholder" style="max-width: 100%; max-height: 300px;">
-                {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.brand.name }}</p> <!-- Название бренда -->
-                        <p class="card-text"><strong>price: </strong>{{ product.price }}<currency_unit> $ </p>
-                            <a href="{% url 'MainWepSite:just_add_to_cart' product_id=product.id %}" class="btn btn-primary">add to basket</a>
-                                <a href="{% url 'MainWepSite:add_to_cart' product_id=product.id %}" class="btn btn-primary">buy</a>                            </div>
+                    <a href="{% url 'MainWepSite:product_detail' product.slug %}" style="text-decoration: none; color: inherit;">
+                        <div class="card mx-auto">
+                            {% if product.image and product.image.url %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-width: 100%; max-height: 300px;">
+                                <div class="likes">
+                                    <span>{{ product.likes }}</span>
+                                    <a href="{% url 'MainWepSite:like_product' product.id %}" class="like-button">❤</a>
+                                </div>
+                            {% else %}
+                                <img src="media/products/istockphoto-1147544807-612x612.jpg" class="card-img-top" alt="Placeholder" style="max-width: 100%; max-height: 300px;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.brand.name }}</p> <!-- Название бренда -->
+                                <p class="card-text"><strong>price: </strong>{{ product.price }}<currency_unit> $ </p>
+                                <a href="{% url 'MainWepSite:just_add_to_cart' product_id=product.id %}" class="btn btn-primary">add to basket</a>
+                                <a href="{% url 'MainWepSite:add_to_cart' product_id=product.id %}" class="btn btn-primary">buy</a>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -82,7 +72,6 @@
         </div>
     </div>
 {% endblock %} <!-- Завершение блока контента страницы -->
-
 
 
 

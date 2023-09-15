@@ -1,11 +1,12 @@
-{% extends "base.html" %}
+{% extends "base.html" %} <!-- Расширение базового шаблона -->
 
-{% block content %}
-    <h1>Delete Client Level</h1>
-    <p>Are you sure you want to delete {{ object.name }}?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Yes, Delete</button>
-        <a href="{% url 'custom_users:level_list' %}">Cancel</a>
+{% block content %} <!-- Определение блока контента страницы -->
+    <h1>Delete Client Level</h1> <!-- Заголовок страницы, сообщающий о намерении удаления уровня клиента -->
+    <p>Are you sure you want to delete {{ object.name }}?</p> <!-- Параграф, сообщающий о намерении удалить уровень клиента с указанным именем (object.name) -->
+    <form method="post"> <!-- Форма для подтверждения удаления с использованием HTTP-метода POST -->
+        {% csrf_token %} <!-- Вставка CSRF-токена для обеспечения безопасности формы -->
+        <button type="submit">Yes, Delete</button> <!-- Кнопка "Да, удалить" для подтверждения удаления -->
+        <a href="{% url 'custom_users:level_list' %}">Cancel</a> <!-- Ссылка "Отмена", которая перенаправляет пользователя на список уровней клиентов -->
     </form>
-{% endblock %}
+{% endblock %} <!-- Завершение блока контента страницы -->
+

@@ -1,23 +1,22 @@
-{% load static %}
+{% load static %} <!-- Загружаем статические файлы, такие как CSS из папки 'static'. -->
+
 <!DOCTYPE html>
 <html>
 <head>
-
-{#    <link href="static/index.css" rel="stylesheet">#}
-
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Подключаем стили Bootstrap для оформления страницы. -->
 
     <title>{% block title %}Магазин{% endblock %}</title>
-{#<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
-{#<script src="{% static 'js/cart.js' %}"></script></head>#}
+    <!-- Устанавливаем заголовок страницы, который может быть переопределен в дочерних шаблонах. -->
 
 <body>
     <div>
         {% block content %}
+        <!-- Открываем блок для контента страницы, который будет определен в дочерних шаблонах. -->
         {% endblock %}
+        <!-- Закрываем блок контента. -->
     </div>
-
-
 </body>
 </html>
+
 
