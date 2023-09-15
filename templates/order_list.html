@@ -4,7 +4,7 @@
     <h1>Все заказы</h1>
     <ul>
         {% for order in orders %}
-        <li><a href="{% url 'order_detail' order.id %}">Заказ #{{ order.id }}</a></li>
+        <li><a href="{% url 'MainWepSite:order_detail' order.id %}">Заказ #{{ order.id }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

@@ -2,6 +2,31 @@
 {% block title %}Заказ #{{ order.id }}{% endblock %}
 {% block content %}
     <h1>Заказ #{{ order.id }}</h1>
-    <p>Статус: {{ order.status }}</p>
-    <!-- Другая информация о заказе -->
+    <p><strong>Имя клиента:</strong> {{ order.customer_name }}</p>
+    <p><strong>Email клиента:</strong> {{ order.customer_email }}</p>
+    <p><strong>Телефон клиента:</strong> {{ order.customer_phone }}</p>
+    <p><strong>Дата создания:</strong> {{ order.date_created }}</p>
+    <p><strong>Статус:</strong> {{ order.status }}</p>
+
+    <h2>Товары в заказе:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Наименование товара</th>
+                <th>Количество</th>
+                <th>Цена за единицу</th>
+                <th>Общая стоимость</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td> <!-- Предполагаю, что у Product есть поле name -->
+                    <td>{{ item.product.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.total }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

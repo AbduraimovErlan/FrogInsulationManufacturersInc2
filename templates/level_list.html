@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Client Levels</h1>
+    <ul>
+    {% for level in levels %}
+        <li>
+            {{ level.name }} - {{ level.required_points }} Points
+            <a href="{% url 'custom_users:level_edit' level.pk %}">Edit</a>
+            <a href="{% url 'custom_users:level_delete' level.pk %}">Delete</a>
+        </li>
+
+    {% endfor %}
+    </ul>
+    <a href="{% url 'custom_users:level_add' %}">Add New Client Level</a>
+{% endblock %}
+

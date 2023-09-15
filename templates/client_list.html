@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Clients List</h1>
+<table>
+    <thead>
+        <tr>
+            <th> Name </th>
+            <th> Email </th>
+            <th>Phone</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <!-- и так далее для других полей -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for client in clients %}
+        <li>
+            {{ client.username }} - {{ client.email }} - {{ client.phone_number }} - {{ client.age }} - {{ client.get_gender_display }}
+            <a href="{% url 'custom_users:client_edit' client.pk %}">Edit</a>
+            <a href="{% url 'custom_users:client_delete' client.pk %}">Delete</a>
+            <!-- и так далее для других полей -->
+        </li>
+
+
+
+
+        {% endfor %}
+    </tbody>
+</table>
+        <a href="{% url 'custom_users:client_add' %}">Add New Client</a>
+            <a href="{% url 'MainWepSite:index' %}">Home</a>
+
+{% endblock %}
+

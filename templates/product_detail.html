@@ -1,45 +1,62 @@
-{% extends "base.html" %} <!-- Расширяем базовый шаблон -->
+{% extends "base.html" %}  {# Наследование базового шаблона #}
 
-{% block title %}{{ product.name }}{% endblock %} <!-- Заголовок страницы, использует имя продукта -->
+{% block title %}{{ product.name }}{% endblock %}  {# Заголовок страницы устанавливается на основе имени продукта #}
 
-{% block content %} <!-- Начало блока контента страницы -->
+{% block content %}  {# Начало блока содержимого страницы #}
 
-{% if product %} <!-- Проверка наличия продукта -->
-    <div class="my-5"></div> <!-- Пустое поле для отступа -->
+{# Проверка на наличие продукта #}
+{% if product %}
+    <div class="product-detail container my-5">
+        <div class="row">
+            <div class="col-md-6">
+                {# Отображение главного изображения продукта #}
+                <img src="{{ main_image.url }}" alt="{{ product.name }}" width="500" height="500" class="product-image mb-4">
 
-    <div class="product-detail container"> <!-- Контейнер для деталей продукта -->
-        <div class="row"> <!-- Ряд для размещения информации о продукте -->
-            <div class="col-md-6"> <!-- Левая половина: изображение продукта -->
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="500" height="500" class="product-image">
-            </div>
-            <div class="col-md-6"> <!-- Правая половина: информация о продукте -->
-                <div class="product-info">
-                    <h1>{{ product.name }}</h1> <!-- Заголовок с именем продукта -->
-                    <p>brand: {{ product.brand }}</p> <!-- Бренд-->
-                    <p>Price: {{ product.price }}</p> <!-- Цена продукта -->
-                    <p>SKU: {{ product.sku }}</p> <!-- Артикул продукта -->
-                    <p>Stock: {{ product.stock_quantity }}</p> <!-- Наличие продукта на складе -->
-
-
-
-                    <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
-                        <button type="submit">Купить</button>
-                    </form> <!-- Форма для добавления продукта в корзину -->
+                {# Отображение дополнительных изображений продукта #}
+                <div class="additional-images d-flex">
+                    {% for image in additional_images %}
+                        <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" width="100" height="100" class="mr-2">
+                    {% endfor %}
                 </div>
             </div>
-            <div class="col-md-12 mt-4"> <!-- Отступ сверху перед описанием продукта -->
-                <p>{{ product.description }}</p> <!-- Описание продукта -->
+            <div class="col-md-6">
+                <div class="product-info">
+                    <h1>{{ product.name }}</h1>
+                    <p>brand: {{ product.brand }}</p>
+                    <p>Price: {{ product.price }}</p>
+                    <p>SKU: {{ product.sku }}</p>
+                    <p>Stock: {{ product.stock_quantity }}</p>
+
+    <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
+    {% csrf_token %}
+    <select name="product_variant">
+        {% for variant in product.variants.all %}
+            <option value="{{ variant.id }}">
+                {{ variant }} - Price: {{ variant.price }}
+            </option>
+        {% endfor %}
+    </select>
+    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
+    <button type="submit">buy</button>
+</form>
+
+
+
+
+                </div>
+            </div>
+            <div class="col-md-12 mt-4">
+                {# Отображение описания продукта #}
+                <p>{{ product.description }}</p>
             </div>
         </div>
     </div>
-
 {% else %}
-    <p>Изображение отсутствует</p> <!-- Сообщение, если продукт отсутствует -->
+    <p>Изображение отсутствует</p>  {# Сообщение, отображаемое, если продукт отсутствует #}
 {% endif %}
 
-{% endblock %} <!-- Завершение блока контента страницы -->
+{% endblock %}  {# Конец блока содержимого страницы #}
+
 
 
 

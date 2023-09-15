@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Attributes</th>
+            <th>SKU</th>
+            <th>Piece price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="100"></td>
+            <td>{{ item.product.name }}</td>
+            <td>
+                {% for attribute_value in item.variant.attributes.all %}
+                    {{ attribute_value.value }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>{{ item.variant.sku }}</td>
+            <td>{{ item.variant.price }} $</td>
+            <td>
+                <form method="POST" action="{% url 'MainWepSite:update_cart_quantity' product_id=item.variant.id %}">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 60px;">
+                    <input type="submit" value="Update">
+                </form>
+            </td>
+            <td>{{ item.total }} $</td>
+            <td><a href="{% url 'MainWepSite:remove_from_cart' product_id=item.variant.id %}">remove</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<p><strong>Total: {{ total_price }} $</strong></p>
+<a href="{% url 'MainWepSite:create_order' %}" class="btn btn-primary">Make an order</a>
+<a href="{% url 'MainWepSite:index' %}" class="btn btn-secondary">Back to products</a>
+
+{% endblock %}

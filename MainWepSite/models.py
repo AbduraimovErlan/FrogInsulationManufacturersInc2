@@ -2,6 +2,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils.text import slugify
+from django.db.models import Max
+
 
 # Модель для категории
 class Category(models.Model):
@@ -63,12 +65,18 @@ class Product(models.Model):
     meta_keywords = models.TextField(blank=True, null=True)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     slug = models.SlugField(unique=True, blank=True)
+    likes = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
+        # Если у продукта есть изображение, но нет главного изображения в ProductImage, создаем его
+        if self.image and not ProductImage.objects.filter(product=self, is_main=True).exists():
+            product_image = ProductImage(product=self, image=self.image, is_main=True)
+            product_image.save()
+
+        super().save(*args, **kwargs)
 
     def get_related_products(self, limit=5):
         return Product.objects.filter(category=self.category) \
@@ -87,6 +95,8 @@ class Product(models.Model):
             Q(category__name__icontains=query) |
             Q(brand__name__icontains=query)
         )
+
+
 
 
 # Дополнительная модель для хранения изображений продуктов
@@ -130,16 +140,64 @@ class ProductVariant(models.Model):
     attributes = models.ManyToManyField(AttributeValue)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock_quantity = models.IntegerField()
+    variant_index = models.PositiveIntegerField(default=0, null=True)  # Новое поле
 
     def __str__(self):
         attributes_str = ", ".join(str(attr) for attr in self.attributes.all())
         return f"{self.product.name} - {attributes_str}"
 
 
+    class Meta:
+        unique_together = ('product', 'variant_index')
+
+    def save(self, *args, **kwargs):
+        # Если это новый объект (не из базы данных)
+        if not self.pk:
+            # Получаем максимальное значение variant_index для этого продукта
+            max_index = ProductVariant.objects.filter(product=self.product).aggregate(Max('variant_index'))[
+                'variant_index__max']
+            # Если такового нет (это первый вариант), установим его в 1. В противном случае увеличим на 1.
+            self.variant_index = max_index + 1 if max_index else 1
+
+        super(ProductVariant, self).save(*args, **kwargs)
+
+
+class Cart(models.Model):
+    user = models.OneToOneField('auth.User', related_name='cart', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Cart of {self.user.username}"
+
+# Модель для элемента в корзине
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='cart_items', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product.name} ({self.quantity})"
+
+    def total_price(self):
+        return self.product.price * self.quantity
+
 
 class Wishlist(models.Model):
     user = models.OneToOneField('auth.User', related_name='wishlist', on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, related_name='wishlists')
+
+    def add_product(self, product):
+        self.products.add(product)
+
+    def remove_product(self, product):
+        self.products.remove(product)
+
+    def __str__(self):
+        return f"Wishlist of {self.user.username} - {self.products.count()} items"
+
+
+
 
 
 # Модель для заказа
@@ -225,25 +283,12 @@ class Comment(models.Model):
 
 
 # Модель для корзины
-class Cart(models.Model):
-    user = models.OneToOneField('auth.User', related_name='cart', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"Cart of {self.user.username}"
 
-# Модель для элемента в корзине
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, related_name='cart_items', on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
 
-    def __str__(self):
-        return f"{self.product.name} ({self.quantity})"
 
-    def total_price(self):
-        return self.product.price * self.quantity
+
+
 
 
 class ProductViewLog(models.Model):
