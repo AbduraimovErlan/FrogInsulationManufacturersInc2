@@ -1,6 +1,19 @@
 from django.contrib import admin
 from django.contrib import admin
-from .models import Product, Category, Brand, ProductSpecification, ProductImage, Attribute, AttributeValue, ProductVariant, Wishlist, Order, OrderStatusHistory, OrderItem, OrderTracking, OrderTrackingHistory, Review, Comment, Cart, CartItem, ProductViewLog, ProductPurchaseLog
+from .models import Product, Category, Brand, ProductSpecification, ProductImage, Wishlist, Order, OrderStatusHistory, \
+    OrderItem, Review, Comment, Cart, CartItem, ProductViewLog, ProductPurchaseLog, ProductSize, Color, Size
+
+
+@admin.register(Size)
+class SizeAdmin(admin.ModelAdmin):
+    list_display = ['value']
+
+@admin.register(Color)
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ['name']
+@admin.register(ProductSize)
+class ProductSizeAdmin(admin.ModelAdmin):
+    list_display = ['product', 'size', 'price', 'sku']
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'sku', 'price', 'stock_quantity', 'category', 'brand')
@@ -31,15 +44,10 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(ProductSpecification)
 admin.site.register(ProductImage)
-admin.site.register(Attribute)
-admin.site.register(AttributeValue)
-admin.site.register(ProductVariant)
 admin.site.register(Wishlist)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderStatusHistory)
 admin.site.register(OrderItem)
-admin.site.register(OrderTracking)
-admin.site.register(OrderTrackingHistory)
 admin.site.register(Review)
 admin.site.register(Comment)
 admin.site.register(Cart)

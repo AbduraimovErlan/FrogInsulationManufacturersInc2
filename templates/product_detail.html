@@ -1,45 +1,53 @@
-{% extends "base.html" %} <!-- Расширяем базовый шаблон -->
+{% extends "base.html" %}
 
-{% block title %}{{ product.name }}{% endblock %} <!-- Заголовок страницы, использует имя продукта -->
+{% block title %}{{ product.name }}{% endblock %}
 
-{% block content %} <!-- Начало блока контента страницы -->
+{% block content %}
+    {% if product %}
+        <div class="my-5"></div>
 
-{% if product %} <!-- Проверка наличия продукта -->
-    <div class="my-5"></div> <!-- Пустое поле для отступа -->
+        <div class="product-detail container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" width="500" height="500" class="product-image">
+                    <!-- Дополнительные изображения -->
+                    {% for img in additional_images %}
+                        <img src="{{ img.image.url }}" alt="{{ img.description }}" width="100" height="100">
+                    {% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <div class="product-info">
+                        <h1>{{ product.name }}</h1>
+                        <p>brand: {{ product.brand }}</p>
+                        <p>Price: {{ product.price }}</p>
+                        <p>SKU: {{ product.sku }}</p>
+                        <p>Stock: {{ product.stock_quantity }}</p>
+                        <!-- Доступные размеры -->
 
-    <div class="product-detail container"> <!-- Контейнер для деталей продукта -->
-        <div class="row"> <!-- Ряд для размещения информации о продукте -->
-            <div class="col-md-6"> <!-- Левая половина: изображение продукта -->
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="500" height="500" class="product-image">
-            </div>
-            <div class="col-md-6"> <!-- Правая половина: информация о продукте -->
-                <div class="product-info">
-                    <h1>{{ product.name }}</h1> <!-- Заголовок с именем продукта -->
-                    <p>brand: {{ product.brand }}</p> <!-- Бренд-->
-                    <p>Price: {{ product.price }}</p> <!-- Цена продукта -->
-                    <p>SKU: {{ product.sku }}</p> <!-- Артикул продукта -->
-                    <p>Stock: {{ product.stock_quantity }}</p> <!-- Наличие продукта на складе -->
+                        <!-- Доступные размеры -->
+<h3>Доступные размеры:</h3>
+<form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
+{% csrf_token %}
+    <select name="selected_size">
+        {% for size in product.sizes.all %}
+            <option value="{{ size.value }}">{{ size.value }}</option>
+        {% endfor %}
+    </select>
+    <input type="number" name="quantity" value="1">
+    <button type="submit">Add to Cart</button>
+</form>
 
 
-
-                    <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
-                        <button type="submit">Купить</button>
-                    </form> <!-- Форма для добавления продукта в корзину -->
+                    </div>
+                </div>
+                <div class="col-md-12 mt-4">
+                    <p>{{ product.description }}</p>
                 </div>
             </div>
-            <div class="col-md-12 mt-4"> <!-- Отступ сверху перед описанием продукта -->
-                <p>{{ product.description }}</p> <!-- Описание продукта -->
-            </div>
         </div>
-    </div>
-
-{% else %}
-    <p>Изображение отсутствует</p> <!-- Сообщение, если продукт отсутствует -->
-{% endif %}
-
-{% endblock %} <!-- Завершение блока контента страницы -->
-
+    {% else %}
+        <p>Изображение отсутствует</p>
+    {% endif %}
+{% endblock %}
 
 
