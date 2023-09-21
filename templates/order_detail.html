@@ -1,7 +1,45 @@
 {% extends "base.html" %}
 {% block title %}Заказ #{{ order.id }}{% endblock %}
-{% block content %}
-    <h1>Заказ #{{ order.id }}</h1>
-    <p>Статус: {{ order.status }}</p>
-    <!-- Другая информация о заказе -->
+
+{% block content %} <!-- Определение блока контента страницы -->
+    <h1>Заказ #{{ order.id }}</h1> <!-- Заголовок страницы с номером заказа -->
+
+    <p><strong>Имя клиента:</strong> {{ order.customer_name }}</p>
+    <!-- Отображение имени клиента -->
+
+    <p><strong>Email клиента:</strong> {{ order.customer_email }}</p>
+    <!-- Отображение email клиента -->
+
+    <p><strong>Телефон клиента:</strong> {{ order.customer_phone }}</p>
+    <!-- Отображение номера телефона клиента -->
+
+    <p><strong>Дата создания:</strong> {{ order.date_created }}</p>
+    <!-- Отображение даты создания заказа -->
+
+    <p><strong>Статус:</strong> {{ order.status }}</p>
+    <!-- Отображение статуса заказа -->
+
+    <h2>Товары в заказе:</h2> <!-- Заголовок секции с товарами в заказе -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Наименование товара</th>
+                <th>Количество</th>
+                <th>Цена за единицу</th>
+                <th>Общая стоимость</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %} <!-- Перебор всех товаров в заказе -->
+                <tr>
+                    <td>{{ item.product.name }}</td> <!-- Отображение имени товара -->
+                    <td>{{ item.quantity }}</td> <!-- Отображение количества товара -->
+                    <td>{{ item.product.price }}</td> <!-- Отображение цены за единицу товара -->
+                    <td>{{ item.total }}</td> <!-- Отображение общей стоимости товара в заказе -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
+

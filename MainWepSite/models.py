@@ -131,8 +131,8 @@ class ProductImage(models.Model):
 class ProductSize(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.ForeignKey(Size, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    sku = models.CharField(max_length=100, unique=True, null=True)  # Уникальный SKU для комбинации продукт-размер
+    size_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    size_sku = models.CharField(max_length=100, unique=True, null=True)  # Уникальный SKU для комбинации продукт-размер
 
     class Meta:
         unique_together = ('product', 'size')

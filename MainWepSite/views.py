@@ -60,10 +60,13 @@ def view_cart(request):
 
             if 'size' in item_data:
                 size = item_data['size']
-                price = Decimal(item_data['price'])
+                product_size = ProductSize.objects.get(product=product, size__value=size)
+                price = product_size.size_price if 'size' in item_data else Decimal(item_data['price'])
+                sku_value = product_size.size_sku
             else:
                 size = None
                 price = product.price
+                sku_value = product.sku
 
             quantity = item_data['quantity']
             total_price += price * quantity
@@ -72,7 +75,9 @@ def view_cart(request):
                 'product': product,
                 'quantity': quantity,
                 'size': size,
-                'total': price * quantity
+                'price': price,
+                'total': price * quantity,
+                'sku': sku_value  # добавляем SKU в словарь
             })
         except Product.DoesNotExist:
             messages.warning(request, f"Product with SKU {sku} was removed or does not exist.")
@@ -84,6 +89,8 @@ def view_cart(request):
         'cart_items': cart_items,
         'total_price': total_price
     })
+
+
 
 
 def _add_product_to_session_cart(request, product_id, quantity, selected_size=None):
@@ -99,8 +106,8 @@ def _add_product_to_session_cart(request, product_id, quantity, selected_size=No
     if selected_size:
         try:
             product_size = ProductSize.objects.get(product=product, size__value=selected_size)
-            sku = product_size.sku
-            price = product_size.price
+            sku = product_size.size_sku  # Изменили здесь
+            price = product_size.size_price
         except ProductSize.DoesNotExist:
             raise ValueError(f"Size {selected_size} for product {product_id} does not exist.")
     else:
@@ -110,13 +117,12 @@ def _add_product_to_session_cart(request, product_id, quantity, selected_size=No
         else:
             raise ValueError("The product must either have a size selected or an SKU if no size is selected.")
 
-
-
     # Обновление или добавление продукта в корзину
     cart_data = {
         'product_id': product_id,
         'quantity': cart.get(sku, {}).get('quantity', 0) + quantity,  # обновление количества, если продукт уже в корзине
-        'price': str(price)
+        'price': str(price),
+        'sku': sku
     }
     if selected_size:
         cart_data['size'] = selected_size
@@ -124,6 +130,8 @@ def _add_product_to_session_cart(request, product_id, quantity, selected_size=No
 
     # Сохранение обновленной корзины в сессии
     request.session['cart'] = cart
+
+
 
 
 
@@ -174,6 +182,7 @@ def remove_from_cart(request, sku):
     cart = request.session.get('cart', {})
     sku_str = str(sku)
 
+
     if sku_str in cart:
         del cart[sku_str]
         print(f"Updated cart after removal: {cart}")
@@ -188,6 +197,7 @@ def remove_from_cart(request, sku):
 
 
 def update_cart_quantity(request, sku):
+    # print(f"SKU: {sku}")
     if request.method == "POST":
         cart = request.session.get('cart', {})
 
@@ -195,8 +205,9 @@ def update_cart_quantity(request, sku):
             # Получаем новое количество товаров из POST-запроса
             new_quantity = int(request.POST.get('quantity', 1))
 
-            # Если SKU не существует в корзине, выводим сообщение об ошибке
-            if sku not in cart:
+            # Если sku не существует в корзине, выводим сообщение об ошибке
+            sku_str = str(sku)
+            if sku_str not in cart:
                 messages.error(request, "Product not found in cart.")
                 return redirect('MainWepSite:view_cart')
 
@@ -206,22 +217,34 @@ def update_cart_quantity(request, sku):
                 return redirect('MainWepSite:view_cart')
 
             # Обновляем количество товаров в корзине
-            cart[sku]['quantity'] = new_quantity
-            print(f"Updated cart: {cart}")
+            cart[sku_str]['quantity'] = new_quantity
+
 
             # Обновляем состояние корзины в сессии
             request.session['cart'] = cart
+            print(f"Cart after updating quantity: {cart}")
+            # print(new_quantity)
+
 
             # Выводим сообщение об успешном обновлении количества товаров
             messages.success(request, "Quantity updated successfully.")
+            # print(new_quantity)
+
         except ValueError:
             # Если введено неверное количество товаров (например, не целое число),
             # выводим сообщение об ошибке
             messages.error(request, "Invalid quantity.")
 
+
     return redirect('MainWepSite:view_cart')
 
 
+
+def clear_cart(request):
+    # Очистка корзины в сессии
+    request.session['cart'] = {}
+    messages.success(request, "Корзина была успешно очищена.")
+    return redirect('MainWepSite:view_cart')
 
 
 
@@ -230,10 +253,17 @@ def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
     main_image = product.main_image  # Получение главного изображения напрямую из продукта
     additional_images = product.images.all()  # Это дополнительные изображения
+    product_sizes = ProductSize.objects.filter(product=product)  # Получаем все размеры для данного продукта
 
+    context = {
+        'product': product,
+        'main_image': main_image,
+        'additional_images': additional_images,
+        'product_sizes': product_sizes  # Добавляем размеры продукта в контекст
+    }
 
-    context = {'product': product, 'main_image': main_image, 'additional_images': additional_images}
     return render(request, 'product_detail.html', context)
+
 
 
 # Страница категории

@@ -13,7 +13,7 @@ class ColorAdmin(admin.ModelAdmin):
     list_display = ['name']
 @admin.register(ProductSize)
 class ProductSizeAdmin(admin.ModelAdmin):
-    list_display = ['product', 'size', 'price', 'sku']
+    list_display = ['product', 'size', 'size_price', 'size_sku']
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'sku', 'price', 'stock_quantity', 'category', 'brand')
