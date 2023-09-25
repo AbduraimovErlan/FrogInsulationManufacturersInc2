@@ -326,7 +326,7 @@ def create_order(request):
         return redirect('MainWepSite:order_detail', order_id=new_order.id)
 
     # Если запрос не является POST-запросом, отображаем страницу создания заказа
-    return render(request, 'create_order.html')
+    return render(request, 'templates_for_orders/create_order.html')
 
 
 # Детали заказа

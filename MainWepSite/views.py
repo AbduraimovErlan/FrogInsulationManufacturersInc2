@@ -1,12 +1,8 @@
 from _decimal import Decimal
-
 from django.contrib import messages
-
-from .models import Product, Category, Brand, Order, ProductSize
+from .models import Product, Category, Brand, ProductSize
 from .models import ProductImage  # Импортируйте ваши модели
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import OrderItem
-from django.http import JsonResponse, HttpResponseBadRequest
 from django.db.models import Q
 from MainWepSite.models import Product, CartItem
 
@@ -160,22 +156,7 @@ def add_to_cart(request, product_id):
 
 
 
-# Add product to cart without redirecting
-def just_add_to_cart(request, product_id):
-    try:
-        product = get_object_or_404(Product, id=product_id)
-        quantity = int(request.POST.get('quantity', 1))
 
-        # Call the _add_product_to_session_cart function to add product to cart
-        _add_product_to_session_cart(request, product_id, quantity)
-
-        # Redirect user back to the previous page
-        return redirect(request.META['HTTP_REFERER'])
-    except ValueError:
-        return HttpResponseBadRequest("Invalid product quantity")
-    except Product.DoesNotExist:
-        messages.error(request, "Product not found.")
-        return redirect(request.META['HTTP_REFERER'])
 
 
 def remove_from_cart(request, sku):
@@ -223,12 +204,10 @@ def update_cart_quantity(request, sku):
             # Обновляем состояние корзины в сессии
             request.session['cart'] = cart
             print(f"Cart after updating quantity: {cart}")
-            # print(new_quantity)
 
 
             # Выводим сообщение об успешном обновлении количества товаров
             messages.success(request, "Quantity updated successfully.")
-            # print(new_quantity)
 
         except ValueError:
             # Если введено неверное количество товаров (например, не целое число),
@@ -260,6 +239,7 @@ def product_detail(request, slug):
         'main_image': main_image,
         'additional_images': additional_images,
         'product_sizes': product_sizes  # Добавляем размеры продукта в контекст
+
     }
 
     return render(request, 'product_detail.html', context)
@@ -278,50 +258,35 @@ def brand_detail(request, slug):
     products = Product.objects.filter(brand=brand)
     return render(request, 'brand_detail.html', {'brand': brand, 'products': products})
 
-# Создание нового заказа
-def create_order(request):
-    if request.method == "POST":
-        customer_name = request.POST.get('customer_name')
-        customer_email = request.POST.get('customer_email')
-        customer_phone = request.POST.get('customer_phone')
-
-        new_order = Order(
-            customer_name=customer_name,
-            customer_email=customer_email,
-            customer_phone=customer_phone,
-        )
-        new_order.save()
-
-        # Получаем корзину из сессии
-        cart = request.session.get('cart', {})
-
-        # Добавляем элементы из корзины в заказ
-        for product_id, quantity in cart.items():
-            product = get_object_or_404(Product, id=product_id)
-            order_item = OrderItem(
-                order=new_order,
-                product=product,
-                quantity=quantity,
-                price=product.price
-            )
-            order_item.save()
-
-        # Очищаем корзину в сессии
-        request.session['cart'] = {}
-
-        return redirect('order_detail', order_id=new_order.id)
-
-    return render(request, 'create_order.html')
 
 
 
-# Детали заказа
-def order_detail(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    return render(request, 'order_detail.html', {'order': order})
 
-# Список всех заказов
-def order_list(request):
-    orders = Order.objects.all()
-    return render(request, 'order_list.html', {'orders': orders})
+
+
+
+
+
+
+# @login_required
+# def take_order_by_operational_manager(request, order_id):
+#     order = get_object_or_404(Order, id=order_id)
+#     employee = request.user.mainofficeemployee
+#     if isinstance(employee, OperationalManager) and order.operational_manager is None:
+#         order.operational_manager = employee
+#         order.save()
+#         messages.success(request, "Заказ успешно взят!")
+#     else:
+#         messages.warning(request, "Заказ уже взят другим менеджером или вы не являетесь операционным менеджером.")
+#     return redirect('orders:operator_order_list')  # замените на ваш URL
+#
+#
+
+
+
+
+
+
+
+
 

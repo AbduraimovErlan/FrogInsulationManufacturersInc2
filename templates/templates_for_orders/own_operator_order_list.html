@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Мои заказы</h1>
+    <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
+    <a href="{% url 'orders:operator_order_list'%}" class="btn btn-primary">new order list</a>
+    <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">warehouse list</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID заказа</th>
+            <th>Имя клиента</th>
+            <th>Email клиента</th>
+            <th>Телефон клиента</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+  <div>
+    <h2>Заказ #{{ order.id }}</h2>
+    <p>Статус: {{ order.get_status_display }}</p>
+      <a href="{% url 'orders:release_order' order.id %}">back to new order list</a>
+      <br>
+    <a href="{% url 'orders:operator_order_detail' order.id %}">Посмотреть детали заказа</a>
+    <!-- Добавьте кнопку или форму для обработки заказа -->
+
+  </div>
+        <br>
+        <br>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

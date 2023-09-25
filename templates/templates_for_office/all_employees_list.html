@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>All Employees</h1>
+
+<h2>Presidents</h2>
+<ul>
+    {% for president in presidents %}
+    <li>{{ president.user }}</li>
+    {% empty %}
+      <li>No employees found.</li>
+    {% endfor %}
+</ul>
+
+<h2>Operational Managers</h2>
+<ul>
+    {% for manager in operational_managers %}
+    <li>{{ manager.user }}</li>
+    {% empty %}
+      <li>No employees found.</li>
+    {% endfor %}
+</ul>
+
+<h2>Accounts Receivable Managers</h2>
+<ul>
+    {% for manager in accounts_receivable_managers %}
+    <li>{{ manager.user }}</li>
+    {% empty %}
+      <li>No employees found.</li>
+    {% endfor %}
+</ul>
+
+<h2>Accounts Receivable</h2>
+<ul>
+    {% for account in accounts_receivables %}
+    <li>{{ account.user }}</li>
+    {% empty %}
+      <li>No employees found.</li>
+    {% endfor %}
+</ul>
+
+<h2>Accounts Payable</h2>
+<ul>
+    {% for account in accounts_payables%}
+    <li>{{ account.user }}</li>
+    {% empty %}
+      <li>No employees found.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

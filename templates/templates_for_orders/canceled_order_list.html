@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Отмененные заказы</h2>
+<ul>
+    {% for order in object_list %}
+    <li>
+        Заказ #{{ order.id }} от {{ order.customer_name }}
+        <ul>
+            {% for item in order.items.all %}
+            <li>
+                Товар: {{ item.product.name }}
+                Количество: {{ item.quantity }}
+                Цена за единицу: {{ item.price }}
+                Общая стоимость: {{ item.get_total_price }}
+                SKU: {{ item.order_sku }}
+            </li>
+            {% endfor %}
+        </ul>
+        <form method="post" action="{% url 'orders:return_order_to_processing' order_id=order.id %}">
+            {% csrf_token %}
+            <button type="submit">Восстановить заказ</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

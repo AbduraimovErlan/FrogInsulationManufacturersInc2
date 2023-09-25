@@ -8,7 +8,7 @@
     <ul>
         {% for order in orders %}
         <!-- Перебираем все заказы и создаем элементы списка для каждого заказа -->
-        <li><a href="{% url 'MainWepSite:order_detail' order.id %}">Заказ #{{ order.id }}</a></li>
+        <li><a href="{% url 'orders:customer_order_detail' order.id %}">Заказ #{{ order.id }}</a></li>
         <!-- Создаем ссылку на страницу с деталями заказа и выводим номер заказа -->
         {% endfor %}
     </ul>

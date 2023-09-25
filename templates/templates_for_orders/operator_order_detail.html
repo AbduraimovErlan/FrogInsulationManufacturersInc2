@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Заказ #{{ order.id }}{% endblock %}
+
+{% block content %}
+    <h1>Заказ #{{ order.id }}</h1>
+
+    <p><strong>Имя клиента:</strong> {{ order.customer_name }}</p>
+    <p><strong>Email клиента:</strong> {{ order.customer_email }}</p>
+    <p><strong>Телефон клиента:</strong> {{ order.customer_phone }}</p>
+
+    <p>Статус: {{ order.get_status_display }}</p>
+
+{% if order.status == "OperatorReview" %}
+<form method="post" action="{% url 'orders:pass_order_to_warehouse' order.id %}">
+    {% csrf_token %}
+    <button type="submit">Передать на склад</button>
+</form>
+{% endif %}
+
+    <form method="post" action="{% url 'orders:cancel_order' order.id %}">
+    {% csrf_token %}
+    <input type="submit" value="Отменить заказ">
+</form>
+
+
+
+
+
+    <h2>Товары в заказе:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Наименование товара</th>
+                <th>SKU</th> <!-- Заголовок столбца для SKU -->
+                <th>Количество</th>
+                <th>Цена за единицу</th>
+                <th>Общая стоимость</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.order_sku }}</td> <!-- Отображение SKU товара -->
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.product.price }}</td>
+                    <td>{{ item.total }}</td>
+{#                    <td><a href="{% url 'orders:edit_order_item' order_id %}">Edit</a></td>#}
+{#                    <td></td>#}
+{#                    <td><a href="{% url 'orders:delete_order_item' order_id %}">Delete</a></td>#}
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}

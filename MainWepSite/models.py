@@ -5,6 +5,8 @@ from django.utils.text import slugify
 import random
 import string
 
+from orders.models import Order
+
 
 # Модель для категории
 class Category(models.Model):
@@ -142,42 +144,6 @@ class Wishlist(models.Model):
     products = models.ManyToManyField(Product, related_name='wishlists')
 
 
-# Модель для заказа
-class Order(models.Model):
-    STATUS_CHOICES = (
-        ('Preparing', 'Preparing'),
-        ('Shipped', 'Shipped'),
-        ('Completed', 'Completed'),
-    )
-
-    customer_name = models.CharField(max_length=100)
-    customer_email = models.EmailField()
-    customer_phone = models.CharField(max_length=15)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Preparing')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Order #{self.id} - {self.customer_name}"
-
-# Модель для истории статусов заказа
-class OrderStatusHistory(models.Model):
-    order = models.ForeignKey('Order', related_name='status_history', on_delete=models.CASCADE)
-    status = models.CharField(max_length=50)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Order #{self.order.id} changed to {self.status} at {self.timestamp}"
-
-# Модель для элемента заказа
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return f"OrderItem #{self.id} for Order #{self.order.id}"
 
 
 # Модель для отзывов

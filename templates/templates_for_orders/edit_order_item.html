@@ -1,0 +1,32 @@
+{#{% extends "base.html" %}#}
+{#{% block content %}#}
+{#<h2>Редактировать товар в заказе</h2>#}
+{##}
+{#<form method="post">#}
+{#    {% csrf_token %}#}
+{#    <div class="form-group">#}
+{#        <label for="product">Товар:</label>#}
+{#        <input type="text" id="product" name="product" value="{{ order_item.product.name }}" readonly>#}
+{#    </div>#}
+{#    #}
+{#    <div class="form-group">#}
+{#        <label for="quantity">Количество:</label>#}
+{#        <input type="number" id="quantity" name="quantity" value="{{ order_item.quantity }}" min="1">#}
+{#    </div>#}
+{##}
+{#    <div class="form-group">#}
+{#    <label for="price">Цена:</label>#}
+{#    <input type="text" id="price" name="price" value="{{ order_item.price }}">#}
+{#</div>#}
+{##}
+{##}
+{##}
+{#    <button type="submit">Обновить</button>#}
+{#</form>#}
+{##}
+{#<h3>Удалить товар из заказа</h3>#}
+{#<form method="post" action="{% url 'orders:delete_order_item' order_item.id %}">#}
+{#    {% csrf_token %}#}
+{#    <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить этот товар из заказа?');">Удалить товар</button>#}
+{#</form>#}
+{#{% endblock %}#}

@@ -6,7 +6,7 @@
     <div class="my-3"></div> <!-- Пустое поле для отступа -->
 
     <figure>
-        <img src="media/products/LOGO3.png" width="240" height="130" class="logo">
+        <img src="media/products/logofrog.png" width="240" height="130" class="logo">
     </figure>
 
     <h1 class="h1">Frog insulation manufacturers Inc</h1> <!-- Заголовок страницы -->
@@ -35,8 +35,8 @@
             {% endfor %}
         </select>
         <button type="submit">Apply filter</button>
-        <a href="{% url 'MainWepSite:view_cart' %}" class="btn btn-secondary">Посмотреть корзину</a>
     </form>
+        <a href="{% url 'MainWepSite:view_cart' %}" class="btn btn-secondary">Посмотреть корзину</a>
 
     <div class="my-5"></div> <!-- Пустое поле для отступа -->
 
@@ -59,7 +59,7 @@
                                 <h5 class="card-title">{{ product.name }}</h5>
                                 <p class="card-text">{{ product.brand.name }}</p> <!-- Название бренда -->
                                 <p class="card-text"><strong>price: </strong>{{ product.price }}<currency_unit> $ </p>
-                                <a href="{% url 'MainWepSite:just_add_to_cart' product_id=product.id %}" class="btn btn-primary">add to basket</a>
+                                <a href="{% url 'MainWepSite:product_detail' product.slug %}" class="btn btn-primary">add to basket</a>
                             </div>
                         </div>
                     </a>

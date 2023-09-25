@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Список заказов для обработки</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID заказа</th>
+            <th>Имя клиента</th>
+            <th>Email клиента</th>
+            <th>Телефон клиента</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in object_list %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.customer_name }}</td>
+            <td>{{ order.customer_email }}</td>
+            <td>{{ order.customer_phone }}</td>
+            <td>
+                <a href="{% url 'orders:take_order' order.id %}">передать к авто </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

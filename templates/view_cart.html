@@ -56,7 +56,7 @@
 <p><strong>Итого: {{ total_price }} $</strong></p>
     <a href="{% url 'MainWepSite:clear_cart' %}" class="btn btn-danger">Очистить корзину</a>
 
-<a href="{% url 'MainWepSite:create_order' %}" class="btn btn-primary">Оформить заказ</a>
+<a href="{% url 'orders:create_order' %}" class="btn btn-primary">Оформить заказ</a>
 <a href="{% url 'MainWepSite:index' %}" class="btn btn-secondary">Вернуться к продуктам</a>
 
 {% endblock %}
