@@ -2,15 +2,30 @@
 <html>
 <head>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-{#z#}
 
 
     <title>{% block title %}Магазин{% endblock %}</title>
 </head>
 <body>
     <div>
-        {% block content %}
+        <header>
+            <br>
+                <a href="{% url 'orders:operator_order_list'%}" class="btn btn-light">new order list</a>
+                <a href="{% url 'orders:own_operator_order_list'%}" class="btn btn-light">Own list</a>
+        </header>
 
+        <main>
+            ...
+        </main>
+
+        <footer>
+            ...
+        </footer>
+
+
+
+
+        {% block content %}
 
         {% endblock %}
     </div>

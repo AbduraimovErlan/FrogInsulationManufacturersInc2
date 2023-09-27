@@ -23,7 +23,7 @@
             <td>{{ order.customer_email }}</td>
             <td>{{ order.customer_phone }}</td>
             <td>
-                <a href="{% url 'orders:take_order' order.id %}">Взять заказ</a>
+                <a href="{% url 'orders:take_order' order.id %}" class="btn-success">Take order</a>
             </td>
         </tr>
         {% endfor %}

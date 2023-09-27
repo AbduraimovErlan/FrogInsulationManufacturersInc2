@@ -7,23 +7,32 @@
     <p><strong>Имя клиента:</strong> {{ order.customer_name }}</p>
     <p><strong>Email клиента:</strong> {{ order.customer_email }}</p>
     <p><strong>Телефон клиента:</strong> {{ order.customer_phone }}</p>
-<h3>История статусов заказа:</h3>
-<ul>
-    {% for status_record in status_history %}
-        <li>{{ status_record.timestamp }}: {{ status_record.status }}</li>
-    {% endfor %}
-</ul>
 
+    <!-- Добавляем новую информацию о заказе -->
+    <p><strong>Адрес:</strong></p>
+    <ul>
+        <li><strong>Улица:</strong> {{ order.address_line1 }}</li>
+        <li><strong>Дом/Квартира:</strong> {{ order.address_line2 }}</li>
+        <li><strong>Город:</strong> {{ order.city }}</li>
+        <li><strong>Область/Штат:</strong> {{ order.state }}</li>
+        <li><strong>Страна:</strong> {{ order.country }}</li>
+        <li><strong>Почтовый индекс:</strong> {{ order.postal_code }}</li>
+    </ul>
+    <p><strong>Дополнительная информация:</strong> {{ order.additional_info }}</p>
 
-    <br>
-
+    <h3>История статусов заказа:</h3>
+    <ul>
+        {% for status_record in status_history %}
+            <li>{{ status_record.timestamp }}: {{ status_record.status }}</li>
+        {% endfor %}
+    </ul>
 
     <h2>Товары в заказе:</h2>
     <table>
         <thead>
             <tr>
                 <th>Наименование товара</th>
-                            <th>SKU</th> <!-- Новый заголовок столбца для SKU -->
+                <th>SKU</th>
                 <th>Количество</th>
                 <th>Цена за единицу</th>
                 <th>Общая стоимость</th>
@@ -33,7 +42,7 @@
             {% for item in items %}
                 <tr>
                     <td>{{ item.product.name }}</td>
-                                    <td>{{ item.order_sku }}</td> <!-- Отображение SKU товара -->
+                    <td>{{ item.order_sku }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.product.price }}</td>
                     <td>{{ item.total }}</td>
@@ -41,4 +50,6 @@
             {% endfor %}
         </tbody>
     </table>
+        <h3>Общая сумма заказа: {{ total_amount }} $</h3>
+
 {% endblock %}

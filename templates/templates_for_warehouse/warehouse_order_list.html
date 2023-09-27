@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Список заказов для обработки</h1>
+<h1>List of orders for processing</h1>
 
 <table>
     <thead>
         <tr>
-            <th>ID заказа</th>
+            <th>Order ID</th>
             <th>Имя клиента</th>
             <th>Email клиента</th>
             <th>Телефон клиента</th>
@@ -21,7 +21,8 @@
             <td>{{ order.customer_email }}</td>
             <td>{{ order.customer_phone }}</td>
             <td>
-                <a href="{% url 'orders:take_order' order.id %}">передать к авто </a>
+                <a href="{% url 'orders:release_order' order.id %}" class="btn-danger">back to new order list</a>
+                <a href="{% url 'orders:pass_order_to_driver' order.id %}" class="btn-success">transfer to driver</a>
             </td>
         </tr>
         {% endfor %}
