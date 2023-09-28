@@ -2,40 +2,46 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Добавить товар к редактируемому заказу #{{ order.id }}</h2>
+        <h2>Добавить товар к новому заказу #{{ order.id }}</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">add product more</button>
+        <button type="submit" class="btn btn-primary">add more product</button>
     </form>
-
-<a href="{% url 'orders:operator_order_detail' order.id %}" class="btn btn-secondary mt-3">Save</a>
+    <a href="{% url 'orders:operator_order_detail'  order.id %}" class="btn btn-secondary mt-3">Save</a>
 </div>
-<script>
+
+
+    <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const productSelect = document.getElementById("id_product");
-        const skuField = document.getElementById("id_order_sku");
-        const priceField = document.getElementById("id_price");
+    const orderField = document.getElementById("id_order");
+    const productSelect = document.getElementById("id_product");
+    const skuField = document.getElementById("id_order_sku");
+    const priceField = document.getElementById("id_price");
 
-        productSelect.addEventListener("change", function() {
-            const productId = this.value;
+    // Установите значение поля "order" сразу после загрузки страницы
+    orderField.value = "{{ order.id }}";
 
-            if (productId) {
-                fetch(`/api/get_product_details/${productId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    skuField.value = data.sku;
-                    priceField.value = data.price;
-                })
-                .catch(error => {
-                    console.error("Error fetching product details:", error);
-                });
-            } else {
-                skuField.value = "";
-                priceField.value = "";
-            }
-        });
+    productSelect.addEventListener("change", function() {
+        const productId = this.value;
+
+        if (productId) {
+            fetch(`/api/get_product_details/${productId}/`)
+            .then(response => response.json())
+            .then(data => {
+                skuField.value = data.sku;
+                priceField.value = data.price;
+            })
+            .catch(error => {
+                console.error("Error fetching product details:", error);
+            });
+        } else {
+            skuField.value = "";
+            priceField.value = "";
+        }
     });
+});
+
 </script>
 
 {% endblock %}
