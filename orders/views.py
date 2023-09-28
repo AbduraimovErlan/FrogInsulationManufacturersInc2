@@ -11,6 +11,12 @@ from Warehouse1.models import Driver
 from orders.forms import OrderItemForm, OrderForm
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem
 from MainWepSite.models import Product
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.views import View
+from django.shortcuts import render, redirect
+from django.urls import reverse
+
 
 def create_order(request):
     if request.method == 'POST':
@@ -249,40 +255,105 @@ class OperatorOrderListView(BaseOrderListView):
         # Получаем все заказы со статусом "Получен"
         return Order.objects.filter(status=OrderStatus.RECEIVED)
 
+from django.urls import reverse
+@login_required
+def operator_create_order(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save()
+            # Создание нового ключа сессии для этого заказа
+            request.session[f'order_skus_{order.id}'] = []
+            messages.success(request, "Заказ успешно создан!")
+            return redirect(reverse('orders:new_order_call_add_product', kwargs={'order_id': order.id}))
+    else:
+        form = OrderForm()
+
+    return render(request, 'templates_for_orders/create_order.html', {'form': form})
 
 
-from django.views.generic.edit import FormView
 
-class BaseAddProductView(FormView):
+
+
+from django.shortcuts import render, redirect
+from django.views import View
+from django.contrib import messages
+from django.urls import reverse
+
+class BaseAddProductView(View):
     form_class = OrderItemForm
 
-    def dispatch(self, request, *args, **kwargs):
-        self.order = get_object_or_404(Order, id=kwargs['order_id'])
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        order_item = form.save(commit=False)
-        order_item.order = self.order
-        order_item.save()
-        messages.success(self.request, "Товар успешно добавлен к заказу!")
-        return render(self.request, self.template_name, self.get_context_data(form=self.form_class()))
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial=self.get_initial())
+        return render(request, self.template_name, {'form': form, 'order': self.order})
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['order'] = self.order
+        context = {
+            'order': self.order
+        }
+        context.update(kwargs)
         return context
 
     def get_initial(self):
-        initial = super().get_initial()
-        initial['order'] = self.order
-        return initial
+        return {
+            'order': self.order
+        }
+
+    def dispatch(self, request, *args, **kwargs):
+        self.order = get_object_or_404(Order, id=kwargs['order_id'])
+        print(f"Заказ ID: {self.order.id} {self.order}")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return self.request.path
+
+    def post(self, request, *args, **kwargs):
+        print(f"POST data: {request.POST}")
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # Проверка на уникальность SKU в сессии
+            sku = form.cleaned_data['order_sku']
+
+            # Используем новый ключ сессии, связанный с идентификатором заказа
+            session_key = f'order_skus_{self.order.id}'
+            session_skus = request.session.get(session_key, [])
+            if sku in session_skus:
+                messages.error(request,
+                               "Продукт с таким SKU уже существует в этом заказе. Пожалуйста, попробуйте использовать другой SKU.")
+                return render(request, self.template_name, self.get_context_data(form=form))
+
+            # Если SKU не найден в сессии, добавляем его туда
+            session_skus.append(sku)
+            request.session[session_key] = session_skus
+
+            order_item = form.save(commit=False)
+            order_item.order = self.order
+            order_item.save()
+
+            print(f"Товар {order_item.product} успешно добавлен к заказу {order_item.order.id}!")
+            messages.success(request, "Товар успешно добавлен к заказу!")
+            return redirect(self.get_success_url())
+        else:
+            print(form.errors)
+            return render(request, self.template_name, self.get_context_data(form=form))
+
 
 class NewOrderCallView(BaseAddProductView):
     template_name = 'templates_for_orders/new_order_call_add_product.html'
 
+    def get_success_url(self):
+        return reverse('orders:new_order_call_add_product', kwargs={'order_id': self.order.id})
+
+
 class EditOrderCallView(BaseAddProductView):
     template_name = 'templates_for_orders/edit_order_call_add_product.html'
-    # Если вы хотите специфическую логику для этого класса, добавьте ее здесь
+
+    def get_success_url(self):
+        # Возвращаем URL страницы добавления товара
+        return reverse('orders:edit_order_call_add_product', kwargs={'order_id': self.order.id})
+
+
+
 
 
 
@@ -304,21 +375,7 @@ def get_product_details(request, product_id):
         return JsonResponse({'error': 'Product not found'}, status=404)
 
 
-from django.urls import reverse
 
-@login_required
-def operator_create_order(request):
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            order = form.save()
-            messages.success(request, "Заказ успешно создан!")
-            # Перенаправляем на страницу добавления продукта к новому заказу
-            return redirect(reverse('orders:new_order_call_add_product', kwargs={'order_id': order.id}))
-    else:
-        form = OrderForm()
-
-    return render(request, 'templates_for_orders/create_order.html', {'form': form})
 
 
 
