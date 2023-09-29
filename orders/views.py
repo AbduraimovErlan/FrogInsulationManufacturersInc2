@@ -1,8 +1,5 @@
-from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
 from django.views.generic import ListView, View
-from django import forms
 from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
@@ -11,11 +8,9 @@ from Warehouse1.models import Driver
 from orders.forms import OrderItemForm, OrderForm
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem
 from MainWepSite.models import Product
-from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views import View
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.http import JsonResponse
+
 
 
 def create_order(request):
@@ -217,7 +212,7 @@ class CanceledOrderListView(ListView):
         return Order.objects.filter(status=OrderStatus.CANCELED)
 
 
-
+# Warehouse
 
 @login_required
 def pass_order_to_warehouse(request, order_id):
@@ -231,12 +226,7 @@ def pass_order_to_warehouse(request, order_id):
     return redirect('orders:warehouse_order_list')
 
 
-class WarehouseOrderListView(ListView):
-    model = Order
-    template_name = 'templates_for_warehouse/warehouse_order_list.html'
 
-    def get_queryset(self):
-        return Order.objects.filter(status=OrderStatus.WAREHOUSE_PROCESSING)
 
 
 
@@ -275,10 +265,7 @@ def operator_create_order(request):
 
 
 
-from django.shortcuts import render, redirect
-from django.views import View
-from django.contrib import messages
-from django.urls import reverse
+
 
 class BaseAddProductView(View):
     form_class = OrderItemForm
@@ -355,14 +342,6 @@ class EditOrderCallView(BaseAddProductView):
 
 
 
-
-
-
-
-
-
-from django.http import JsonResponse
-
 def get_product_details(request, product_id):
     try:
         product = Product.objects.get(id=product_id)
@@ -378,8 +357,6 @@ def get_product_details(request, product_id):
 
 
 
-
-
 @login_required
 def process_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -388,10 +365,6 @@ def process_order(request, order_id):
 
     messages.success(request, "Заказ успешно обработан.")
     return redirect('orders:own_operator_order_list')
-
-
-
-
 
 
 
@@ -498,6 +471,76 @@ def release_order(request, order_id):
     return redirect('orders:operator_order_list')
 
 
+
+@login_required
+def warehouse_order_list(request):
+    user = request.user
+
+    # Проверяем, является ли пользователь одним из сотрудников офиса
+    office_roles = [
+        OperationalManager, President, AccountsReceivableManager,
+        AccountsReceivable, AccountsPayable
+    ]
+    is_office_employee = any(role.objects.filter(user=user).exists() for role in office_roles)
+
+    if is_office_employee or Driver.objects.filter(user=user).exists():
+        orders = Order.objects.filter(status=OrderStatus.WAREHOUSE_PROCESSING)
+    else:
+        orders = []
+
+    return render(request, 'templates_for_warehouse/warehouse_order_list.html', {'orders': orders})
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def warehouse_order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+
+    # Создаем список items для заказа
+    items = []
+    for item in order_items:
+        items.append({
+            'id': item.id,
+            'product': item.product,
+            'quantity': item.quantity,
+            'total': item.price * item.quantity,
+            'order_sku': item.order_sku
+        })
+
+    drivers = Driver.objects.all()  # Получаем всех водителей
+
+    if request.method == 'POST':
+        selected_driver_id = request.POST.get('driver')
+        selected_driver = get_object_or_404(Driver, id=selected_driver_id)
+
+        order.driver = selected_driver
+        order.save()
+
+        messages.success(request, f"Заказ {order.id} был назначен водителю {selected_driver.user.username}.")
+        return redirect('warehouse_order_list')  # или другой URL
+
+    context = {
+        'order': order,
+        'items': items,  # Добавляем список items в контекст
+        'drivers': drivers,
+        'address_line1': order.address_line1,
+        'address_line2': order.address_line2,
+        'city': order.city,
+        'state': order.state,
+        'country': order.country,
+        'postal_code': order.postal_code,
+        'additional_info': order.additional_info,
+        'total_amount': order.get_total_amount()
+    }
+
+    return render(request, 'templates_for_warehouse/warehouse_order_detail.html', context)
+
+
 @login_required
 def own_driver_order_list(request):
     user = request.user
@@ -515,6 +558,42 @@ def own_driver_order_list(request):
         orders = []
 
     return render(request, 'templates_for_warehouse/own_driver_order_list.html', {'orders': orders})
+
+
+
+
+from django.shortcuts import get_object_or_404, render
+from .models import Order, OrderItem
+
+def DriverOrderDetailView(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+    items = []
+
+    for item in order_items:
+        items.append({
+            'id': item.id,
+            'product': item.product,
+            'quantity': item.quantity,
+            'total': item.price * item.quantity,
+            'order_sku': item.order_sku
+        })
+
+    context = {
+        'order': order,
+        'items': items,
+        'address_line1': order.address_line1,
+        'address_line2': order.address_line2,
+        'city': order.city,
+        'state': order.state,
+        'country': order.country,
+        'postal_code': order.postal_code,
+        'additional_info': order.additional_info,
+        'total_amount': order.get_total_amount(),
+    }
+
+    return render(request, 'templates_for_warehouse/driver_order_detail.html', context)
+
 
 
 @login_required

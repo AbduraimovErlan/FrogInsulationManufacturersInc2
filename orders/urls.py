@@ -1,7 +1,7 @@
 from django.urls import path, register_converter
 from . import views
 from .views import CustomerOrderDetailView, OperatorOrderDetailView, BaseOrderListView, OperatorOrderListView, \
-    WarehouseOrderListView, CanceledOrderListView
+    CanceledOrderListView, DriverOrderDetailView
 from . import converters
 
 register_converter(converters.BoolConverter, 'bool')
@@ -11,6 +11,7 @@ register_converter(converters.BoolConverter, 'bool')
 app_name = 'orders'  # только если вы используете пространство имен
 
 urlpatterns = [
+
     path('create_order/', views.create_order, name='create_order'),
     path('order/<int:order_id>/', CustomerOrderDetailView.as_view(), name='customer_order_detail'),
     path('operator/order/<int:order_id>/', OperatorOrderDetailView.as_view(), name='operator_order_detail'),
@@ -41,10 +42,12 @@ urlpatterns = [
 
     path('release_order/<int:order_id>/', views.release_order, name='release_order'),
 
-    path('warehouse_orders/', WarehouseOrderListView.as_view(), name='warehouse_order_list'),
+    path('warehouse_orders/', views.warehouse_order_list, name='warehouse_order_list'),
+    path('warehouse/order/<int:order_id>/', views.warehouse_order_detail, name='warehouse_order_detail'),
     path('pass_to_warehouse/<int:order_id>/', views.pass_order_to_warehouse, name='pass_order_to_warehouse'),
 
-    path('driver/orders/', views.own_driver_order_list, name='own_driver_order_list'),
+    path('driver_orders/', views.own_driver_order_list, name='own_driver_order_list'),
+    path('driver_order_detail/<int:order_id>/', DriverOrderDetailView, name='driver_order_detail'),
     path('pass_to_driver/<int:order_id>/', views.pass_order_to_driver, name='pass_order_to_driver'),
 
 ]

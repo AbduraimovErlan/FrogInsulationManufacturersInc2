@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Order Detail (Driver View) - Order #{{ order.id }}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>SKU</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.total }}</td>
+            <td>{{ item.order_sku }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Delivery Information:</h3>
+<p>Address Line 1: {{ address_line1 }}</p>
+<p>Address Line 2: {{ address_line2 }}</p>
+<p>City: {{ city }}</p>
+<p>State: {{ state }}</p>
+<p>Country: {{ country }}</p>
+<p>Postal Code: {{ postal_code }}</p>
+<p>Additional Info: {{ additional_info }}</p>
+{% endblock %}

@@ -6,7 +6,9 @@ from .views import (PresidentCreateView, OperationalManagerCreateView, AccountsR
                     PresidentUpdateView, OperationalManagerUpdateView, AccountsReceivableManagerUpdateView,
                     AccountsReceivableUpdateView, AccountsPayableUpdateView,
                     PresidentDeleteView, OperationalManagerDeleteView, AccountsReceivableManagerDeleteView,
-                    AccountsReceivableDeleteView, AccountsPayableDeleteView, AllEmployeesListView)
+                    AccountsReceivableDeleteView, AccountsPayableDeleteView, AllEmployeesListView, PresidentLoginView,
+                    OperationalManagerLoginView, AccountsReceivableManagerLoginView, AccountsReceivableLoginView,
+                    AccountsPayableLoginView, EmployeeRegistrationView)
 
 
 app_name = 'MainOffice'
@@ -19,6 +21,14 @@ urlpatterns = [
     path('create/accounts_receivable_manager/', AccountsReceivableManagerCreateView.as_view(), name='create_accounts_receivable_manager'),
     path('create/accounts_receivable/', AccountsReceivableCreateView.as_view(), name='create_accounts_receivable'),
     path('create/accounts_payable/', AccountsPayableCreateView.as_view(), name='create_accounts_payable'),
+
+
+    path('login/president/', PresidentLoginView.as_view(), name='president_login'),
+    path('login/manager/', OperationalManagerLoginView.as_view(), name='manager_login'),
+    path('login/accounts_receivable_manager/', AccountsReceivableManagerLoginView.as_view(), name='accounts_receivable_manager_login'),
+    path('login/accounts_receivable/', AccountsReceivableLoginView.as_view(), name='accounts_receivable_login'),
+    path('login/accounts_payable/', AccountsPayableLoginView.as_view(), name='accounts_payable_login'),
+
 
     # List Views
     path('list/president/', PresidentListView.as_view(), name='list_president'),
@@ -42,4 +52,5 @@ urlpatterns = [
     path('delete/accounts_payable/<int:pk>/', AccountsPayableDeleteView.as_view(), name='delete_accounts_payable'),
 
     path('all_employees/', AllEmployeesListView.as_view(), name='all_employees_list'),
+    path('register/', EmployeeRegistrationView.as_view(), name='register'),
 ]

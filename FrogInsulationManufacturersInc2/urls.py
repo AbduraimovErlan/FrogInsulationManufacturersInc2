@@ -6,10 +6,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('MainWepSite.urls', namespace='MainWepSite')),  # подключаем urls приложения
-    path('', include('orders.urls', namespace='orders')),  # подключаем urls приложения
-    path('', include('MainOffice.urls', namespace='MainOffice')),  # подключаем urls приложения
-    # path('users/', include('custom_users.urls', namespace='custom_users')),  # подключаем urls приложения
+    path('', include('MainWepSite.urls', namespace='MainWepSite')),
+    path('', include('orders.urls', namespace='orders')),
+    path('', include('MainOffice.urls', namespace='MainOffice')),
+    path('users/', include('custom_users.urls', namespace='custom_users')),  # подключаем urls приложения
     # Можно добавить другие приложения по аналогии
 ]
 if settings.DEBUG:
