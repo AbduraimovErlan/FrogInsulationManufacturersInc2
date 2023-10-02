@@ -5,6 +5,9 @@ from .views import CustomerOrderDetailView, OperatorOrderDetailView, BaseOrderLi
 from . import converters
 
 register_converter(converters.BoolConverter, 'bool')
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LogoutView
+
 
 
 
@@ -49,6 +52,8 @@ urlpatterns = [
     path('driver_orders/', views.own_driver_order_list, name='own_driver_order_list'),
     path('driver_order_detail/<int:order_id>/', DriverOrderDetailView, name='driver_order_detail'),
     path('pass_to_driver/<int:order_id>/', views.pass_order_to_driver, name='pass_order_to_driver'),
-
+    path('driver_orders/<int:order_id>/mark_as_loaded/', views.mark_as_loaded, name='mark_as_loaded'),
+    path('orders/mark_truck_fully_loaded/', views.mark_truck_as_fully_loaded, name='mark_truck_as_fully_loaded'),
+    path('current_user/', views.current_user, name='current_user'),
 ]
 

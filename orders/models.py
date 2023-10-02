@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 from Warehouse1.models import WarehouseSupervisor, WarehouseWorker, Driver, WarehouseWorkerDriver
 from MainOffice.models import President, OperationalManager, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable, MainOfficeEmployee
@@ -8,6 +10,7 @@ class OrderStatus(models.TextChoices):
     RECEIVED = 'Received', 'Received'
     OPERATOR_REVIEW = 'OperatorReview', 'Operator Review'
     WAREHOUSE_PROCESSING = 'WarehouseProcessing', 'Warehouse Processing'
+    TRUCK_LOADING = 'TruckLoading', 'Truck Loading'
     DELIVERY = 'Delivery', 'Delivery'
     COMPLETED = 'Completed', 'Completed'
     CANCELED = 'Canceled', 'Canceled'
@@ -36,6 +39,25 @@ class Order(models.Model):
     country = models.CharField(max_length=100, blank=True, null=True)
     postal_code = models.CharField(max_length=15, blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
+
+    is_loaded = models.BooleanField(default=False, null=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    truck_fully_loaded = models.BooleanField(default=False, null=True)
+
+    def send_for_loading(self):
+        self.sent_for_loading_at = timezone.now()
+        self.save()
+
+    def mark_as_loaded(self):
+        self.is_loaded = True
+        self.loaded_at = timezone.now()
+        self.save()
+
+    def mark_truck_as_fully_loaded(self):
+        self.truck_fully_loaded = True
+        self.save()
+        for order in Order.objects.filter(driver=self, status=OrderStatus.TRUCK_LOADING):
+            order.change_status(OrderStatus.DELIVERY)
 
     def get_total_amount(self):
         return sum(item.get_total_price() for item in self.items.all())

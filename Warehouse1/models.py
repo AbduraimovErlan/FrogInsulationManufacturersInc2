@@ -1,7 +1,23 @@
+from django.contrib.auth.models import User
 from django.db import models
 
+
+MALE = 1
+FEMALE = 2
+OTHER = 3
+GENDER_TYPE = (
+    (MALE, 'MALE'),
+    (FEMALE, 'FEMALE'),
+    (OTHER, 'OTHER')
+)
+
+
 class WarehouseEmployee(models.Model):
-    name = models.CharField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    email = models.EmailField(null=True)
+    phone_number = models.CharField(max_length=15, null=True)
+    age = models.PositiveIntegerField(null=True)
+    gender = models.PositiveSmallIntegerField(choices=GENDER_TYPE, null=True)
     # Другие общие поля и методы для всех сотрудников
 
     class Meta:
@@ -17,28 +33,16 @@ class WarehouseEmployee(models.Model):
 
 
 class WarehouseSupervisor(WarehouseEmployee):
-    # Дополнительные поля и методы для начальника склада
     pass
-
-
 
 class WarehouseWorker(WarehouseEmployee):
-    # Дополнительные поля и методы для рабочего склада
     pass
-
-
-
-
 
 class Driver(WarehouseEmployee):
-    # Дополнительные поля и методы для водителя
-    pass
-
-
+    truck_fully_loaded = models.BooleanField(default=False)
 
 
 class WarehouseWorkerDriver(WarehouseEmployee):
-    # Дополнительные поля и методы для сотрудника, который является и рабочим склада, и водителем
     pass
 
 

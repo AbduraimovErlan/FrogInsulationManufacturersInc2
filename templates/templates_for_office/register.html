@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Регистрация сотрудника</h2>
-  <form method="post">
-    {% csrf_token %}
-      {{ user_form.as_p }}
 
+    <form method="post">
+    {% csrf_token %}
+    <h2>Регистрация</h2>
+    {{ user_form.as_p }}
+    <input type="submit" value="Зарегистрироваться">
 
 
     <label for="role">Выберите роль:</label>
@@ -16,10 +17,8 @@
         <option value="accounts_receivable">Сотрудник по сбору средств</option>
         <option value="accounts_payable">Сотрудник по оплате счетов</option>
     </select><br><br>
+</form>
 
-
-    <button type="submit">Регистрация</button>
-  </form>
 {% endblock %}
 
 

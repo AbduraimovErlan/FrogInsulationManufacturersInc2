@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
+
+
 {% block content %}
+
+
+
 <h1>Own Orders</h1>
     <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
     <a href="{% url 'orders:operator_order_list'%}" class="btn btn-primary">new order list</a>
@@ -12,18 +17,42 @@
 <table>
 
     <tbody>
-    {% for order in orders %}
-  <div>
+
+ {% for order in orders %}
+<div>
     <h2>Order #{{ order.id }}</h2>
     <p>Status: {{ order.get_status_display }}</p>
-      <a href="{% url 'orders:release_order' order.id %}" class="btn-danger">back to new order list</a>
-    <a href="{% url 'orders:driver_order_detail' order.id %}" class="btn-success" >View order details</a>
-    <!-- Добавьте кнопку или форму для обработки заказа -->
+    <a href="{% url 'orders:release_order' order.id %}" class="btn-danger">back to new order list</a>
+    <a href="{% url 'orders:driver_order_detail' order.id %}" class="btn-success">View order details</a>
+
+<div class="order-container">
+    <form method="post" action="{% url 'orders:mark_as_loaded' order.id %}">
+        {% csrf_token %}
+        <input type="checkbox" id="loaded-{{ order.id }}" name="is_loaded" {% if order.is_loaded %}checked{% endif %} onchange="this.form.submit()">
+        <label for="loaded-{{ order.id }}"></label>
+    </form>
+    {% if order.is_loaded %}
+    <div class="loaded-time">Loaded{{ order.loaded_at }}</div>
+    {% endif %}
+</div>
 
 
-  </div>
-        <br>
-        {% endfor %}
+
+</div>
+<br>
+{% endfor %}
+
+    <a href="{% url 'orders:mark_truck_as_fully_loaded' %}">Пометить грузовик как полностью загруженный</a>
+
+
     </tbody>
 </table>
+    {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% endblock %}

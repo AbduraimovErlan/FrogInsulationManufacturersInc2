@@ -1,5 +1,8 @@
 from django import forms
-from MainOffice.models import President, OperationalManager, AccountsReceivableManager, AccountsReceivable, AccountsPayable
+from Warehouse1.models import WarehouseSupervisor, WarehouseWorker, Driver, WarehouseWorkerDriver
+
+
+
 
 MALE = 1
 FEMALE = 2
@@ -10,7 +13,7 @@ GENDER_TYPE = (
     (OTHER, 'OTHER')
 )
 
-class BaseEmployeeForm(forms.ModelForm):
+class BaseEmployeeWarehouseForm(forms.ModelForm):
     email = forms.EmailField(required=True)
     phone_number = forms.CharField(required=True)
     age = forms.IntegerField(required=True)
@@ -22,7 +25,7 @@ class BaseEmployeeForm(forms.ModelForm):
         fields = ['user', 'email', 'phone_number', 'age', 'gender', 'password1', 'password2']  # Общие поля для всех сотрудников
 
     def save(self, commit=True):
-        user = super(BaseEmployeeForm, self).save(commit=False)
+        user = super(BaseEmployeeWarehouseForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         password = self.cleaned_data.get('password1')
         user.set_password(password)
@@ -39,22 +42,21 @@ class BaseEmployeeForm(forms.ModelForm):
         return cleaned_data
 
 
-class PresidentForm(BaseEmployeeForm):
-    class Meta(BaseEmployeeForm.Meta):
-        model = President
+class WarehouseSupervisorForm(BaseEmployeeWarehouseForm):
+    class Meta(BaseEmployeeWarehouseForm.Meta):
+        model = WarehouseSupervisor
 
-class OperationalManagerForm(BaseEmployeeForm):
-    class Meta(BaseEmployeeForm.Meta):
-        model = OperationalManager
+class WarehouseWorkerForm(BaseEmployeeWarehouseForm):
+    class Meta(BaseEmployeeWarehouseForm.Meta):
+        model = WarehouseWorker
 
-class AccountsReceivableManagerForm(BaseEmployeeForm):
-    class Meta(BaseEmployeeForm.Meta):
-        model = AccountsReceivableManager
 
-class AccountsReceivableForm(BaseEmployeeForm):
-    class Meta(BaseEmployeeForm.Meta):
-        model = AccountsReceivable
+class DriverForm(BaseEmployeeWarehouseForm):
+    class Meta(BaseEmployeeWarehouseForm.Meta):
+        model = Driver
 
-class AccountsPayableForm(BaseEmployeeForm):
-    class Meta(BaseEmployeeForm.Meta):
-        model = AccountsPayable
+
+class WarehouseWorkerDriverForm(BaseEmployeeWarehouseForm):
+    class Meta(BaseEmployeeWarehouseForm.Meta):
+        model = WarehouseWorkerDriver
+

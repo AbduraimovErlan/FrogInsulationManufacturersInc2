@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <form method="post">
+    {% csrf_token %}
+    <h2>Регистрация</h2>
+    {{ user_form.as_p }}
+    <input type="submit" value="Зарегистрироваться">
+
+
+    <label for="role">Выберите роль:</label>
+    <select name="role">
+        <option value="warehouse_supervisor">Warehouse Supervisor</option>
+        <option value="warehouse_worker">Warehouse Worker</option>
+        <option value="driver">Driver</option>
+        <option value="warehouse_worker_driver">Warehouse Worker and Driver</option>
+    </select><br><br>
+</form>
+
+{% endblock %}
+
+
+

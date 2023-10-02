@@ -16,6 +16,7 @@
         </tr>
     </thead>
     <tbody>
+
         {% for order in object_list %}
         <tr>
             <td>{{ order.id }}</td>
@@ -26,7 +27,37 @@
                 <a href="{% url 'orders:take_order' order.id %}" class="btn-success">Take order</a>
             </td>
         </tr>
+
+
+
         {% endfor %}
+
     </tbody>
 </table>
+
+<br>
+
+<h2>Статус грузовиков водителей:</h2>
+<ul>
+    {% for driver in all_drivers %}
+        <li>
+            {{ driver.user.username }} -
+            {% if driver.truck_fully_loaded %}
+                <span class="label label-success">Грузовик полностью загружен</span>
+            {% else %}
+                <span class="label label-warning">Грузовик не загружен</span>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+
+    {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% endblock %}

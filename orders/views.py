@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from django.views.generic import ListView, View
 from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable
-from Warehouse1.models import Driver
+from Warehouse1.models import Driver, WarehouseSupervisor
 from orders.forms import OrderItemForm, OrderForm
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem
 from MainWepSite.models import Product
@@ -242,8 +243,14 @@ class OperatorOrderListView(BaseOrderListView):
     template_name = 'templates_for_orders/operator_order_list.html'
 
     def get_queryset(self):
-        # Получаем все заказы со статусом "Получен"
         return Order.objects.filter(status=OrderStatus.RECEIVED)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['loaded_drivers'] = Driver.objects.filter(truck_fully_loaded=True)
+        context['all_drivers'] = Driver.objects.all()
+        return context
+
 
 from django.urls import reverse
 @login_required
@@ -479,7 +486,7 @@ def warehouse_order_list(request):
     # Проверяем, является ли пользователь одним из сотрудников офиса
     office_roles = [
         OperationalManager, President, AccountsReceivableManager,
-        AccountsReceivable, AccountsPayable
+        AccountsReceivable, AccountsPayable, WarehouseSupervisor
     ]
     is_office_employee = any(role.objects.filter(user=user).exists() for role in office_roles)
 
@@ -496,12 +503,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
+
 @login_required
 def warehouse_order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = OrderItem.objects.filter(order=order)
 
-    # Создаем список items для заказа
     items = []
     for item in order_items:
         items.append({
@@ -512,21 +519,23 @@ def warehouse_order_detail(request, order_id):
             'order_sku': item.order_sku
         })
 
-    drivers = Driver.objects.all()  # Получаем всех водителей
+    drivers = Driver.objects.all()
 
     if request.method == 'POST':
         selected_driver_id = request.POST.get('driver')
         selected_driver = get_object_or_404(Driver, id=selected_driver_id)
 
         order.driver = selected_driver
-        order.save()
+
+        # Изменяем статус заказа на DELIVERY используя метод change_status
+        order.change_status(OrderStatus.TRUCK_LOADING)
 
         messages.success(request, f"Заказ {order.id} был назначен водителю {selected_driver.user.username}.")
-        return redirect('warehouse_order_list')  # или другой URL
+        return redirect('orders:warehouse_order_list')
 
     context = {
         'order': order,
-        'items': items,  # Добавляем список items в контекст
+        'items': items,
         'drivers': drivers,
         'address_line1': order.address_line1,
         'address_line2': order.address_line2,
@@ -552,13 +561,16 @@ def own_driver_order_list(request):
     ]
     is_office_employee = any(role.objects.filter(user=user).exists() for role in office_roles)
 
-    if is_office_employee or Driver.objects.filter(user=user).exists():
-        orders = Order.objects.filter(status=OrderStatus.DELIVERY)
+    if is_office_employee:
+        # Если пользователь является сотрудником офиса, показываем все заказы
+        orders = Order.objects.filter(status__in=[OrderStatus.TRUCK_LOADING, OrderStatus.DELIVERY])
+    elif Driver.objects.filter(user=user).exists():
+        # Если пользователь является водителем, показываем только его заказы
+        orders = Order.objects.filter(driver__user=user, status__in=[OrderStatus.TRUCK_LOADING, OrderStatus.DELIVERY])
     else:
         orders = []
 
     return render(request, 'templates_for_warehouse/own_driver_order_list.html', {'orders': orders})
-
 
 
 
@@ -610,3 +622,58 @@ def pass_order_to_driver(request, order_id):
 
 
     return redirect('orders:own_driver_order_list')
+
+
+
+def mark_as_loaded(request, order_id):
+    order = get_object_or_404(Order, pk=order_id)
+    if request.method == "POST":
+        # Меняем статус на противоположный при каждом отправлении формы
+        order.is_loaded = not order.is_loaded
+        if order.is_loaded:
+            order.loaded_at = timezone.now()
+        else:
+            order.loaded_at = None
+        order.save()
+    return redirect('orders:own_driver_order_list') # или куда вам нужно
+
+
+
+
+@login_required
+def mark_truck_as_fully_loaded(request):
+    user = request.user
+    driver = get_object_or_404(Driver, user=user)
+
+    # Проверьте, все ли заказы водителя помечены как загруженные
+    driver_orders_not_loaded = Order.objects.filter(driver=driver, is_loaded=False)
+    if driver_orders_not_loaded.exists():
+        messages.error(request, "Есть заказы, которые еще не загружены!")
+        return redirect('orders:own_driver_order_list')
+
+    # Если все заказы загружены, пометьте каждый из них как "Трак полностью загружен"
+    # и измените статус заказа на DELIVERY
+    for order in Order.objects.filter(driver=driver, truck_fully_loaded=False):
+        order.truck_fully_loaded = True
+        order.status = OrderStatus.DELIVERY
+        order.save()
+        print(order)
+
+
+    messages.success(request, "Трак помечен как полностью загруженный и все заказы отправлены на доставку.")
+    return redirect('orders:own_driver_order_list')
+
+
+
+
+
+
+
+
+from django.shortcuts import render
+
+def current_user(request):
+    return render(request, 'base.html', {'user': request.user})
+
+
+

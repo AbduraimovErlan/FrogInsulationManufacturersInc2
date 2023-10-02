@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Подключаем ваш собственный CSS файл после Bootstrap -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 
     <title>{% block title %}Магазин{% endblock %}</title>
 </head>
@@ -12,6 +15,11 @@
             <br>
                 <a href="{% url 'orders:operator_order_list'%}" class="btn btn-light">new order list</a>
                 <a href="{% url 'orders:own_operator_order_list'%}" class="btn btn-light">Own list</a>
+            <div>
+        <p>Logged in as: {{ user.username }}</p>
+        {% if user.is_authenticated %}
+        {% endif %}
+    </div>
         </header>
 
         <main>

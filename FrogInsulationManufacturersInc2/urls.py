@@ -9,7 +9,8 @@ urlpatterns = [
     path('', include('MainWepSite.urls', namespace='MainWepSite')),
     path('', include('orders.urls', namespace='orders')),
     path('', include('MainOffice.urls', namespace='MainOffice')),
-    path('users/', include('custom_users.urls', namespace='custom_users')),  # подключаем urls приложения
+    path('', include('Warehouse1.urls', namespace='Warehouse1')),
+    # path('users/', include('custom_users.urls', namespace='custom_users')),  # подключаем urls приложения
     # Можно добавить другие приложения по аналогии
 ]
 if settings.DEBUG:
