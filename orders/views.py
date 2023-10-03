@@ -7,7 +7,7 @@ from MainOffice.models import OperationalManager, President, AccountsReceivableM
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
 from orders.forms import OrderItemForm, OrderForm
-from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem
+from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
 from MainWepSite.models import Product
 from django.contrib import messages
 from django.http import JsonResponse
@@ -224,7 +224,7 @@ def pass_order_to_warehouse(request, order_id):
 
     order.pass_to_warehouse()
     messages.success(request, "Заказ успешно передан на склад.")
-    return redirect('orders:warehouse_order_list')
+    return redirect('orders:own_operator_order_list')
 
 
 
@@ -410,8 +410,15 @@ def take_order(request, order_id):
             order.accountsPayable = AccountsPayable.objects.get(user=user)
             order.change_status(OrderStatus.OPERATOR_REVIEW)  # Изменение статуса заказа
             order.save()
+
         # Добавьте аналогичные условия для других типов сотрудников
         messages.success(request, "Вы взяли этот заказ!")
+
+        if order.driver:
+            Notification.objects.create(
+                user=order.driver.user,
+                message=f"Оператор {user.username} взял заказ #{order.id}."
+            )
     else:
         messages.error(request, "Вы не являетесь сотрудником офиса.")
 
@@ -480,8 +487,31 @@ def release_order(request, order_id):
 
 
 @login_required
+def release_order_to_supervisor(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    user = request.user
+
+    # Проверяем, является ли пользователь оператором этого заказа
+    if (
+        order.driver and order.driver.user == user
+    ):
+        # Устанавливаем все поля операторов как None и меняем статус на "Получен"
+        order.driver = None
+        order.change_status(OrderStatus.WAREHOUSE_PROCESSING)
+        order.save()
+        messages.success(request, "Заказ возвращен в общий список SuperVisor.")
+    else:
+        messages.error(request, "Вы не можете вернуть этот заказ, так как он не связан с вами.")
+
+    return redirect('orders:warehouse_order_list')
+
+
+
+
+@login_required
 def warehouse_order_list(request):
     user = request.user
+
 
     # Проверяем, является ли пользователь одним из сотрудников офиса
     office_roles = [
@@ -490,18 +520,55 @@ def warehouse_order_list(request):
     ]
     is_office_employee = any(role.objects.filter(user=user).exists() for role in office_roles)
 
+
     if is_office_employee or Driver.objects.filter(user=user).exists():
         orders = Order.objects.filter(status=OrderStatus.WAREHOUSE_PROCESSING)
     else:
         orders = []
 
-    return render(request, 'templates_for_warehouse/warehouse_order_list.html', {'orders': orders})
+    drivers = Driver.objects.all()
+
+
+    return render(request, 'templates_for_warehouse/warehouse_order_list.html', {'orders': orders, 'drivers': drivers})
+
+
+
+@login_required
+def supervisor_take_order_back(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    user = request.user
+
+    # Проверка, является ли пользователь супервайзером
+    is_supervisor = WarehouseSupervisor.objects.filter(user=user).exists()
+
+    if is_supervisor:
+        # Проверяем, был ли заказ у водителя
+        if order.driver:
+            driver_user = order.driver.user  # Сохраняем атрибут user
+            order.driver = None
+            order.change_status(OrderStatus.WAREHOUSE_PROCESSING)
+            order.save()
+
+            Notification.objects.create(
+                user=driver_user,  # Используем сохраненный ранее атрибут user
+                message=f"Супервайзер {user.username} забрал заказ #{order.id}."
+            )
+
+            messages.success(request, "Вы забрали заказ у водителя!")
+        else:
+            messages.error(request, "Этот заказ не привязан к водителю.")
+    else:
+        messages.error(request, "Вы не являетесь супервайзером.")
+
+    return redirect('orders:warehouse_order_list')
+
+
+
 
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
 
 
 @login_required
@@ -528,7 +595,7 @@ def warehouse_order_detail(request, order_id):
         order.driver = selected_driver
 
         # Изменяем статус заказа на DELIVERY используя метод change_status
-        order.change_status(OrderStatus.TRUCK_LOADING)
+        order.change_status(OrderStatus.DELIVERY)
 
         messages.success(request, f"Заказ {order.id} был назначен водителю {selected_driver.user.username}.")
         return redirect('orders:warehouse_order_list')
@@ -551,6 +618,68 @@ def warehouse_order_detail(request, order_id):
 
 
 @login_required
+def driver_order_list(request, driver_id):
+    # Проверка, является ли пользователь супервайзером склада
+    if not WarehouseSupervisor.objects.filter(user=request.user).exists():
+        messages.error(request, "Доступ запрещен!")
+        return redirect('Warehouse1:all_employees_warehouse_list')  # редирект на главную страницу или другую страницу по умолчанию
+
+    driver = get_object_or_404(Driver, id=driver_id)
+    orders = Order.objects.filter(
+        driver=driver,
+        status__in=[OrderStatus.TRUCK_LOADING, OrderStatus.DELIVERY]
+    )
+
+    return render(request, 'templates_for_warehouse/driver_orders.html', {'orders': orders, 'driver': driver})
+
+
+
+@login_required
+def order_detail(request, order_id):
+    # Проверка, является ли пользователь супервайзером склада
+    if not WarehouseSupervisor.objects.filter(user=request.user).exists():
+        messages.error(request, "Доступ запрещен!")
+        return redirect('Warehouse1:all_employees_warehouse_list')  # редирект на главную страницу или другую страницу по умолчанию
+
+    order = get_object_or_404(Order, id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+    items = []
+
+
+
+    for item in order_items:
+        items.append({
+            'id': item.id,
+            'product': item.product,
+            'quantity': item.quantity,
+            'total': item.price * item.quantity,
+            'order_sku': item.order_sku
+        })
+
+    context = {
+        'order': order,
+        'items': items,
+        'address_line1': order.address_line1,
+        'address_line2': order.address_line2,
+        'city': order.city,
+        'state': order.state,
+        'country': order.country,
+        'postal_code': order.postal_code,
+        'additional_info': order.additional_info,
+        'total_amount': order.get_total_amount(),
+    }
+
+    return render(request, 'templates_for_warehouse/order_detail.html', context)
+
+
+
+
+
+
+
+
+
+@login_required
 def own_driver_order_list(request):
     user = request.user
 
@@ -570,7 +699,11 @@ def own_driver_order_list(request):
     else:
         orders = []
 
-    return render(request, 'templates_for_warehouse/own_driver_order_list.html', {'orders': orders})
+    notifications = Notification.objects.filter(user=request.user, is_read=False)
+
+    return render(request, 'templates_for_warehouse/own_driver_order_list.html',
+                  {'orders': orders, 'notifications': notifications})
+
 
 
 
@@ -625,7 +758,7 @@ def pass_order_to_driver(request, order_id):
 
 
 
-def mark_as_loaded(request, order_id):
+def mark_as_loaded_driver(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
     if request.method == "POST":
         # Меняем статус на противоположный при каждом отправлении формы
@@ -638,10 +771,31 @@ def mark_as_loaded(request, order_id):
     return redirect('orders:own_driver_order_list') # или куда вам нужно
 
 
+@login_required
+def mark_as_loaded_supervisor(request, order_id, driver_id):
+    user = request.user
+
+    # Убедитесь, что пользователь действительно супервайзер
+    if not WarehouseSupervisor.objects.filter(user=user).exists():
+        messages.error(request, "Доступ запрещен!")
+        return redirect('Warehouse1:all_employees_warehouse_list')  # или куда-то еще
+
+    order = get_object_or_404(Order, pk=order_id)
+
+    if request.method == "POST":
+        # Меняем статус на противоположный при каждом отправлении формы
+        order.is_loaded = not order.is_loaded
+        if order.is_loaded:
+            order.loaded_at = timezone.now()
+        else:
+            order.loaded_at = None
+        order.save()
+
+    return redirect('orders:driver_order', driver_id=driver_id)
 
 
 @login_required
-def mark_truck_as_fully_loaded(request):
+def mark_truck_as_fully_loaded_driver(request):
     user = request.user
     driver = get_object_or_404(Driver, user=user)
 
@@ -651,13 +805,17 @@ def mark_truck_as_fully_loaded(request):
         messages.error(request, "Есть заказы, которые еще не загружены!")
         return redirect('orders:own_driver_order_list')
 
+        # Обновите статус truck_fully_loaded для текущего водителя
+    driver.truck_fully_loaded = True
+    driver.save()
+
+
     # Если все заказы загружены, пометьте каждый из них как "Трак полностью загружен"
     # и измените статус заказа на DELIVERY
-    for order in Order.objects.filter(driver=driver, truck_fully_loaded=False):
-        order.truck_fully_loaded = True
-        order.status = OrderStatus.DELIVERY
-        order.save()
-        print(order)
+    # Если все заказы загружены, измените статус заказа на DELIVERY
+    for order in Order.objects.filter(driver=driver, status=OrderStatus.TRUCK_LOADING):
+        order.change_status(OrderStatus.DELIVERY)
+        # order.save()
 
 
     messages.success(request, "Трак помечен как полностью загруженный и все заказы отправлены на доставку.")
@@ -665,9 +823,33 @@ def mark_truck_as_fully_loaded(request):
 
 
 
+@login_required
+def mark_truck_as_fully_loaded_supervisor(request, driver_id):
+    user = request.user
 
+    # Убедитесь, что пользователь действительно супервайзер
+    if not WarehouseSupervisor.objects.filter(user=user).exists():
+        messages.error(request, "Доступ запрещен!")
+        return redirect('Warehouse1:all_employees_warehouse_list')  # или куда-то еще
 
+    driver = get_object_or_404(Driver, id=driver_id)
 
+    # Проверьте, все ли заказы водителя помечены как загруженные
+    driver_orders_not_loaded = Order.objects.filter(driver=driver, is_loaded=False)
+    if driver_orders_not_loaded.exists():
+        messages.error(request, "Есть заказы, которые еще не загружены!")
+        return redirect('orders:driver_order', driver_id=driver_id)  # редирект на страницу заказов водителя
+
+    # Обновите статус truck_fully_loaded для выбранного водителя
+    driver.truck_fully_loaded = True
+    driver.save()
+
+    # Если все заказы загружены, пометьте каждый из них как "Трак полностью загружен"
+    for order in Order.objects.filter(driver=driver, status=OrderStatus.TRUCK_LOADING):
+        order.change_status(OrderStatus.DELIVERY)
+
+    messages.success(request, f"Трак водителя {driver.user.username} помечен как полностью загруженный и все его заказы отправлены на доставку.")
+    return redirect('orders:driver_order', driver_id=driver_id)  # редирект на страницу заказов водителя
 
 
 from django.shortcuts import render

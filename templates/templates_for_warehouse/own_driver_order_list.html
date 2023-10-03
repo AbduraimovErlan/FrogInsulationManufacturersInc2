@@ -6,11 +6,24 @@
 
 
 
+
 <h1>Own Orders</h1>
-    <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
+    {% if request.user.driver%}
+    <a href="{% url 'orders:own_driver_order_list'%}" class="btn btn-primary">My list</a>
+    <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">warehouse list</a>
+    {% endif %}
+
+
+{% if request.user.president or request.user.operationalmanager or request.user.accountsreceivablemanager or request.user.accountsreceivable or request.user.accountspayable %}    <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
+    <a href="{% url 'orders:own_operator_order_list'%}" class="btn btn-primary">My Own list</a>
     <a href="{% url 'orders:operator_order_list'%}" class="btn btn-primary">new order list</a>
     <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">warehouse list</a>
     <a href="{% url 'orders:operator_create_order'%}" class="btn btn-info">create new order</a>
+    <a href="{% url 'orders:own_driver_order_list'%}" class="btn btn-info">driver order list</a>
+    <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
+
+    {% endif %}
+
     <br>
     <br>
 
@@ -22,9 +35,17 @@
 <div>
     <h2>Order #{{ order.id }}</h2>
     <p>Status: {{ order.get_status_display }}</p>
-    <a href="{% url 'orders:release_order' order.id %}" class="btn-danger">back to new order list</a>
-    <a href="{% url 'orders:driver_order_detail' order.id %}" class="btn-success">View order details</a>
+    {% if request.user.driver%}
+    <a href="{% url 'orders:release_order_to_supervisor' order.id %}" class="btn-danger">back to supervisor list</a>
+    {% endif %}
 
+    <a href="{% url 'orders:driver_order_detail' order.id %}" class="btn-success">View order details</a>
+{% if request.user.president or request.user.operationalmanager or request.user.accountsreceivablemanager or request.user.accountsreceivable or request.user.accountspayable %}
+    <a href="{% url 'orders:take_order' order.id %}" class="btn-danger">Take order</a>
+    {% endif %}
+
+
+    {% if request.user.driver%}
 <div class="order-container">
     <form method="post" action="{% url 'orders:mark_as_loaded' order.id %}">
         {% csrf_token %}
@@ -34,19 +55,26 @@
     {% if order.is_loaded %}
     <div class="loaded-time">Loaded{{ order.loaded_at }}</div>
     {% endif %}
+    {% endif %}
+
 </div>
-
-
-
 </div>
 <br>
 {% endfor %}
-
+     {% if request.user.driver%}
     <a href="{% url 'orders:mark_truck_as_fully_loaded' %}">Пометить грузовик как полностью загруженный</a>
+    {% endif %}
 
 
     </tbody>
 </table>
+    {% for notification in notifications %}
+    <div class="alert alert-info">
+        {{ notification.message }}
+    </div>
+{% endfor %}
+
+
     {% if messages %}
 <ul class="messages">
     {% for message in messages %}

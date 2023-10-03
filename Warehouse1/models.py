@@ -39,7 +39,7 @@ class WarehouseWorker(WarehouseEmployee):
     pass
 
 class Driver(WarehouseEmployee):
-    truck_fully_loaded = models.BooleanField(default=False)
+    truck_fully_loaded = models.BooleanField(default=False, null=True)
 
 
 class WarehouseWorkerDriver(WarehouseEmployee):

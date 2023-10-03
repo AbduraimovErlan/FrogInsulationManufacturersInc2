@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
@@ -120,4 +121,12 @@ class OrderItem(models.Model):
 
     def get_total_price(self):
         return self.price * self.quantity
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    message = models.TextField(null=True)
+    is_read = models.BooleanField(default=False, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
+
 

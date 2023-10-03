@@ -2,6 +2,10 @@
 
 {% block content %}
 <h1>Список заказов для обработки</h1>
+    {% if request.user.warehousesupervisor %}
+    <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">back My list</a>
+        <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
+    {% endif %}
 
 
 
@@ -43,21 +47,13 @@
         <li>
             {{ driver.user.username }} -
             {% if driver.truck_fully_loaded %}
-                <span class="label label-success">Грузовик полностью загружен</span>
+                <span class="label-success">Грузовик полностью загружен</span>
             {% else %}
-                <span class="label label-warning">Грузовик не загружен</span>
+                <span class="label-warning">Грузовик не загружен</span>
             {% endif %}
         </li>
     {% endfor %}
 </ul>
 
-
-    {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
 
 {% endblock %}

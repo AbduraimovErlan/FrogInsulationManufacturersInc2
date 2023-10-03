@@ -1,7 +1,7 @@
 from django.urls import path, register_converter
 from . import views
 from .views import CustomerOrderDetailView, OperatorOrderDetailView, BaseOrderListView, OperatorOrderListView, \
-    CanceledOrderListView, DriverOrderDetailView
+    CanceledOrderListView, DriverOrderDetailView, driver_order_list
 from . import converters
 
 register_converter(converters.BoolConverter, 'bool')
@@ -44,16 +44,25 @@ urlpatterns = [
     path('order/<int:order_id>/return-to-processing/', views.return_order_to_processing_view, name='return_order_to_processing'),
 
     path('release_order/<int:order_id>/', views.release_order, name='release_order'),
+    path('release_order_to_supervisor/<int:order_id>/', views.release_order_to_supervisor, name='release_order_to_supervisor'),
 
     path('warehouse_orders/', views.warehouse_order_list, name='warehouse_order_list'),
     path('warehouse/order/<int:order_id>/', views.warehouse_order_detail, name='warehouse_order_detail'),
     path('pass_to_warehouse/<int:order_id>/', views.pass_order_to_warehouse, name='pass_order_to_warehouse'),
+    path('supervisor_take_order/<int:order_id>/', views.supervisor_take_order_back, name='supervisor_take_order'),
+
+    path('driver_orders/<int:driver_id>/', driver_order_list, name='driver_order'),
+    path('order_detail/<int:order_id>/', views.order_detail, name='order_detail'),
 
     path('driver_orders/', views.own_driver_order_list, name='own_driver_order_list'),
     path('driver_order_detail/<int:order_id>/', DriverOrderDetailView, name='driver_order_detail'),
     path('pass_to_driver/<int:order_id>/', views.pass_order_to_driver, name='pass_order_to_driver'),
-    path('driver_orders/<int:order_id>/mark_as_loaded/', views.mark_as_loaded, name='mark_as_loaded'),
-    path('orders/mark_truck_fully_loaded/', views.mark_truck_as_fully_loaded, name='mark_truck_as_fully_loaded'),
+    path('driver_orders/<int:order_id>/mark_as_loaded/', views.mark_as_loaded_driver, name='mark_as_loaded'),
+    path('supervisor_mark_as_loaded/<int:order_id>/<int:driver_id>/', views.mark_as_loaded_supervisor,
+         name='mark_as_loaded_supervisor'),
+    path('mark_truck_as_fully_loaded/', views.mark_truck_as_fully_loaded_driver, name='mark_truck_as_fully_loaded'),
+    path('supervisor_mark_truck/<int:driver_id>/', views.mark_truck_as_fully_loaded_supervisor,
+         name='mark_truck_as_fully_loaded_supervisor'),
     path('current_user/', views.current_user, name='current_user'),
 ]
 
