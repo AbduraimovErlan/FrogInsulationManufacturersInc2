@@ -22,12 +22,36 @@ urlpatterns = [
 
     path('order_item/edit/<int:order_id>/', views.edit_order_item, name='edit_order_item'),
     path('order_item/delete/<int:order_id>/', views.delete_order_item, name='delete_order_item'),
+    path('order_item_from_driver/delete/<int:order_id>/', views.delete_order_item_from_driver, name='delete_order_item_from_driver'),
+
+
+
     path('order/edit_address/<int:order_id>/', views.edit_order_address, name='edit_order_address'),
+    path('order/edit_order_address_from_warehouse/<int:order_id>/', views.edit_order_address_from_warehouse, name='edit_order_address_from_warehouse'),
+    path('order/edit_order_address_from_driver/<int:order_id>/', views.edit_order_address_from_driver, name='edit_order_address_from_driver'),
+
 
     path('new_order_call/<int:order_id>/add_product/', views.NewOrderCallView.as_view(),
          name='new_order_call_add_product'),
+
+
+
+
+
     path('edit_order_call/<int:order_id>/add_product/', views.EditOrderCallView.as_view(),
          name='edit_order_call_add_product'),
+
+    path('edit_order_call/<int:order_id>/add_product_from_supervisor/', views.EditOrderCallFromSupervisorView.as_view(),
+         name='edit_order_call_add_product_from_supervisor'),
+
+    #
+    # path('edit_order_call/<int:order_id>/add_product_from_driver/', views.EditOrderCallFromDriverView.as_view(),
+    #      name='edit_order_call_add_product_from_driver'),
+
+
+
+
+
 
     path('api/get_product_details/<int:product_id>/', views.get_product_details, name='get_product_details'),
     path('operator_create_order/', views.operator_create_order, name='operator_create_order'),

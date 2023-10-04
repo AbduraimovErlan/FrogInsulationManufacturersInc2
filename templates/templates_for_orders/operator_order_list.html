@@ -3,7 +3,11 @@
 {% block content %}
 <h1>Список заказов для обработки</h1>
     {% if request.user.warehousesupervisor %}
-    <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">back My list</a>
+    <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-success">back My list</a>
+        <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
+    {% endif %}
+    {% if request.user.operationalmanager %}
+    <a href="{% url 'orders:own_operator_order_list'%}" class="btn btn-success">My list</a>
         <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
     {% endif %}
 

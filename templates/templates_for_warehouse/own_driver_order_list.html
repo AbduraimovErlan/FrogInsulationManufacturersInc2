@@ -9,18 +9,17 @@
 
 <h1>Own Orders</h1>
     {% if request.user.driver%}
-    <a href="{% url 'orders:own_driver_order_list'%}" class="btn btn-primary">My list</a>
+    <a href="{% url 'orders:own_driver_order_list'%}" class="btn btn-success">My list</a>
     <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">warehouse list</a>
     {% endif %}
 
 
 {% if request.user.president or request.user.operationalmanager or request.user.accountsreceivablemanager or request.user.accountsreceivable or request.user.accountspayable %}    <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
-    <a href="{% url 'orders:own_operator_order_list'%}" class="btn btn-primary">My Own list</a>
+    <a href="{% url 'orders:own_operator_order_list'%}" class="btn btn-success">My Own list</a>
     <a href="{% url 'orders:operator_order_list'%}" class="btn btn-primary">new order list</a>
     <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">warehouse list</a>
+    <a href="/warehouse_orders/#drivers-list" class="btn btn-primary">driver order list</a>
     <a href="{% url 'orders:operator_create_order'%}" class="btn btn-info">create new order</a>
-    <a href="{% url 'orders:own_driver_order_list'%}" class="btn btn-info">driver order list</a>
-    <a href="{% url 'orders:canceled_order_list'%}" class="btn btn-primary">canceled list</a>
 
     {% endif %}
 

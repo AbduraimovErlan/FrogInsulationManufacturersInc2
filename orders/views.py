@@ -163,6 +163,39 @@ def edit_order_address(request, order_id):
 
     return render(request, 'templates_for_orders/edit_order_address.html', {'form': form, 'order': order})
 
+@login_required
+def edit_order_address_from_warehouse(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == "POST":
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Order address updated successfully.")
+            return redirect('orders:warehouse_order_detail', order_id=order.id)
+    else:
+        form = OrderForm(instance=order)
+
+    return render(request, 'templates_for_orders/edit_order_address.html', {'form': form, 'order': order})
+
+
+
+@login_required
+def edit_order_address_from_driver(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == "POST":
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Order address updated successfully.")
+            return redirect('orders:driver_order_detail', order_id=order.id)
+    else:
+        form = OrderForm(instance=order)
+
+    return render(request, 'templates_for_orders/edit_order_address.html', {'form': form, 'order': order})
+
+
 
 @login_required
 def edit_order_item(request, order_id):
@@ -188,6 +221,23 @@ def delete_order_item(request, order_id):
         order_item.delete()
         messages.success(request, "Order item deleted successfully.")
         return redirect('orders:operator_order_detail', order_id=order)
+
+
+@login_required
+def delete_order_item_from_driver(request, order_id):
+    order_item = get_object_or_404(OrderItem, id=order_id)
+    order = order_item.order.id
+
+    if request.method == "POST":
+        order_item.delete()
+        messages.success(request, "Order item deleted successfully.")
+        return redirect('orders:driver_order_detail', order_id=order)
+
+
+
+
+
+
 
 @login_required
 def return_order_to_processing_view(request, order_id):
@@ -345,6 +395,25 @@ class EditOrderCallView(BaseAddProductView):
     def get_success_url(self):
         # Возвращаем URL страницы добавления товара
         return reverse('orders:edit_order_call_add_product', kwargs={'order_id': self.order.id})
+
+
+
+class EditOrderCallFromSupervisorView(BaseAddProductView):
+    template_name = 'templates_for_orders/edit_order_call_add_product_from_supervisor.html'
+
+    def get_success_url(self):
+        # Возвращаем URL страницы добавления товара
+        return reverse('orders:edit_order_call_add_product_from_supervisor', kwargs={'order_id': self.order.id})
+
+
+#
+# class EditOrderCallFromDriverView(BaseAddProductView):
+#     template_name = 'templates_for_orders/edit_order_call_add_product_from_driver.html'
+#
+#     def get_success_url(self):
+#         # Возвращаем URL страницы добавления товара
+#         return reverse('orders:edit_order_call_add_product_from_driver', kwargs={'order_id': self.order.id})
+
 
 
 
@@ -619,10 +688,23 @@ def warehouse_order_detail(request, order_id):
 
 @login_required
 def driver_order_list(request, driver_id):
-    # Проверка, является ли пользователь супервайзером склада
-    if not WarehouseSupervisor.objects.filter(user=request.user).exists():
+    user = request.user
+
+    # Список ролей, которым разрешен доступ
+    allowed_roles = [
+        WarehouseSupervisor, President, OperationalManager,
+        AccountsReceivableManager, AccountsReceivable, AccountsPayable
+    ]
+
+    has_access = False
+    for role in allowed_roles:
+        if role.objects.filter(user=user).exists():
+            has_access = True
+            break
+
+    if not has_access:
         messages.error(request, "Доступ запрещен!")
-        return redirect('Warehouse1:all_employees_warehouse_list')  # редирект на главную страницу или другую страницу по умолчанию
+        return redirect('Warehouse1:all_employees_warehouse_list')
 
     driver = get_object_or_404(Driver, id=driver_id)
     orders = Order.objects.filter(
@@ -634,27 +716,46 @@ def driver_order_list(request, driver_id):
 
 
 
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+
+
 @login_required
 def order_detail(request, order_id):
-    # Проверка, является ли пользователь супервайзером склада
-    if not WarehouseSupervisor.objects.filter(user=request.user).exists():
+    user = request.user
+
+    # Список ролей, которым разрешен доступ
+    allowed_roles = [
+        WarehouseSupervisor, President, OperationalManager,
+        AccountsReceivableManager, AccountsReceivable, AccountsPayable
+    ]
+
+    has_access = False
+    for role in allowed_roles:
+        if role.objects.filter(user=user).exists():
+            has_access = True
+            break
+
+    if not has_access:
         messages.error(request, "Доступ запрещен!")
-        return redirect('Warehouse1:all_employees_warehouse_list')  # редирект на главную страницу или другую страницу по умолчанию
+        return redirect('Warehouse1:all_employees_warehouse_list')
 
     order = get_object_or_404(Order, id=order_id)
-    order_items = OrderItem.objects.filter(order=order)
-    items = []
+    order_items = order.items.all()
 
-
-
-    for item in order_items:
-        items.append({
+    items = [
+        {
             'id': item.id,
             'product': item.product,
             'quantity': item.quantity,
             'total': item.price * item.quantity,
             'order_sku': item.order_sku
-        })
+        } for item in order_items
+    ]
+
+    drivers = Driver.objects.all()
 
     context = {
         'order': order,
@@ -667,16 +768,10 @@ def order_detail(request, order_id):
         'postal_code': order.postal_code,
         'additional_info': order.additional_info,
         'total_amount': order.get_total_amount(),
+        'drivers': drivers  # Добавляем список водителей
     }
 
     return render(request, 'templates_for_warehouse/order_detail.html', context)
-
-
-
-
-
-
-
 
 
 @login_required

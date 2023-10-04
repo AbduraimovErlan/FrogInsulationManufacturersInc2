@@ -5,6 +5,16 @@
     {% if request.user.warehousesupervisor %}
     <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">back My list</a>
     {% endif %}
+
+    {% if request.user.president or request.user.operationalmanager or request.user.accountsreceivablemanager or request.user.accountsreceivable or request.user.accountspayable %}
+        <a href="{% url 'orders:own_operator_order_list'%}" class="btn btn-success">back My list</a>
+        <a href="{% url 'orders:operator_order_list'%}" class="btn btn-primary">new order list</a>
+        <a href="{% url 'orders:warehouse_order_list'%}" class="btn btn-primary">warehouse list</a>
+        <a href="/warehouse_orders/#drivers-list" class="btn btn-primary">driver order list</a>
+        <a href="{% url 'orders:operator_create_order'%}" class="btn btn-info">create new order</a>
+
+    {% endif %}
+
 <ul>
     {% for order in object_list %}
     <li>
