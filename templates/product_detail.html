@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}{{ product.name }}{% endblock %}
@@ -69,139 +68,100 @@
             <br>
             <button type="submit">Add to Cart</button>
         </form>
-
-
-
-
 <script>
-    // Когда документ загрузится, выполнится этот код
-document.addEventListener("DOMContentLoaded", function() {
-    // Получение элементов выпадающего списка (select) на странице
-    const packageTypeSelect = document.getElementById('packageType');
-    const zestonSelect = document.getElementById('zeston');
-    const sizeDescSelect = document.getElementById('size_desc');
-    const sizeSkuSelect = document.getElementById('size_sku');
+    $(document).ready(function() {
+    // Инициализация Select2
+    function initSelect2() {
+        $('#packageType').select2();
+        $('#zeston').select2();
+        $('#size_desc').select2();
+        $('#size_sku').select2();
+    }
 
+    initSelect2();
 
+    const productId = {{ product.id }};
 
-        // Функция для обновления списка packageType на основе полученных данных
+    // Функция для обновления списка packageType на основе полученных данных
     function updatePackageTypeSelect(data) {
-        packageTypeSelect.innerHTML = ''; // Очищаем список
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.package_type;
-            option.textContent = item.package_type;
-            packageTypeSelect.appendChild(option);
-        });
+        let options = data.map(item => `<option value="${item.package_type}">${item.package_type}</option>`);
+        $('#packageType').empty().append(options.join('')).trigger('change').trigger('select2:updated');
     }
 
 
-
-
-
-
-
-
-    // Функция для обновления списка Zeston на основе полученных данных
-    function updateZestonSelect(data) {
-        zestonSelect.innerHTML = ''; // Очищаем список
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.product_number;
-            option.textContent = item.product_number;
-            zestonSelect.appendChild(option);
-        });
+        // Функция для обновления списка Zeston на основе полученных данных
+           function updateZestonSelect(data) {
+        let options = data.map(item => `<option value="${item.product_number}">${item.product_number}</option>`);
+        $('#zeston').empty().append(options.join('')).trigger('change').trigger('select2:updated');
     }
 
-    // Функция для обновления списка Size SKU на основе полученных данных
-    function updateSizeSkuSelect(data) {
-        sizeSkuSelect.innerHTML = ''; // Очищаем список
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.sku;
-            option.textContent = item.sku;
-            sizeSkuSelect.appendChild(option);
-        });
+
+        // Функция для обновления списка Size SKU на основе полученных данных
+        function updateSizeSkuSelect(data) {
+        let options = data.map(item => `<option value="${item.sku}">${item.sku}</option>`);
+        $('#size_sku').empty().append(options.join('')).trigger('change').trigger('select2:updated');
     }
 
-    // Функция для обновления списка Size Description на основе полученных данных
-    function updateSizeDescSelect(data) {
-        sizeDescSelect.innerHTML = ''; // Очищаем список
-        data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.value;
-            option.textContent = `${item.value} (Price: ${item.price} $)`;
-            sizeDescSelect.appendChild(option);
-        });
+
+        // Функция для обновления списка Size Description на основе полученных данных
+        function updateSizeDescSelect(data) {
+        let options = data.map(item => `<option value="${item.value}">${item.value}</option>`);
+        $('#size_desc').empty().append(options.join('')).trigger('change').trigger('select2:updated');
     }
 
-    // Проверка, что все необходимые элементы страницы найдены
-    if (packageTypeSelect && zestonSelect && sizeDescSelect && sizeSkuSelect) {
-        const productId = {{ product.id }};
 
-        // Если значение в списке packageType изменится, выполнится этот код
-        packageTypeSelect.addEventListener('change', function() {
-    fetch(`/update_based_on_package/${productId}/${packageTypeSelect.value}/`)
-        .then(response => response.json())
-        .then(data => {
-            updateZestonSelect(data); // Обновляем список Zeston
-            updateSizeSkuSelect(data); // Обновляем список Size SKU
-            updateSizeDescSelect(data); // Обновляем список Size Description
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    // ... [Аналогичные изменения для других функций]
+
+    // Если значение в списке packageType изменится, выполнится этот код
+    $('#packageType').on('select2:select', function() {
+        fetch(`/update_based_on_package/${productId}/${$(this).val()}/`)
+            .then(response => response.json())
+            .then(data => {
+                updateZestonSelect(data);
+                updateSizeSkuSelect(data);
+                updateSizeDescSelect(data);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+    $('#zeston').on('select2:select', function() {
+        fetch(`/update_based_on_product_number/${productId}/${$(this).val()}/${$('#packageType').val()}/`)
+            .then(response => response.json())
+            .then(data => {
+                updateSizeSkuSelect(data);
+                updateSizeDescSelect(data);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+    $('#size_sku').on('select2:select', function() {
+        fetch(`/update_based_on_sku/${productId}/${$(this).val()}/`)
+            .then(response => response.json())
+            .then(data => {
+                updateZestonSelect(data);
+                updateSizeSkuSelect(data);
+                updateSizeDescSelect(data);
+                updatePackageTypeSelect(data);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+    $('#size_desc').on('select2:select', function() {
+        fetch(`/update_based_on_size/${productId}/${$(this).val()}/`)
+            .then(response => response.json())
+            .then(data => {
+                updateZestonSelect(data);
+                updateSizeSkuSelect(data);
+                updateSizeDescSelect(data);
+                updatePackageTypeSelect(data);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+
+
+
 });
-        // Если значение в списке zeston изменится, выполнится этот код
-       zestonSelect.addEventListener('change', function() {
-    fetch(`/update_based_on_product_number/${productId}/${zestonSelect.value}/${packageTypeSelect.value}/`)
-        .then(response => response.json())
-        .then(data => {
-            updateSizeSkuSelect(data);
-            updateSizeDescSelect(data);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-});
-
-
-
-        // Если значение в списке sizeSku изменится, выполнится этот код
-        sizeSkuSelect.addEventListener('change', function() {
-            fetch(`/update_based_on_sku/${productId}/${sizeSkuSelect.value}/`)
-                .then(response => response.json())
-                .then(data => {
-                    updateZestonSelect(data); // Обновляем список Zeston
-                    updateSizeSkuSelect(data); // Обновляем список Size SKU
-                    updateSizeDescSelect(data); // Обновляем список Size Description
-                    updatePackageTypeSelect(data);
-
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        });
-
-        // Если значение в списке sizeDesc изменится, выполнится этот код
-        sizeDescSelect.addEventListener('change', function() {
-            fetch(`/update_based_on_size/${productId}/${sizeDescSelect.value}/`)
-                .then(response => response.json())
-                .then(data => {
-                    updateZestonSelect(data); // Обновляем список Zeston
-                    updateSizeSkuSelect(data); // Обновляем список Size SKU
-                    updateSizeDescSelect(data); // Обновляем список Size Description
-                    updatePackageTypeSelect(data);
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        });
-    }
-});
-
-
-
-
-$(document).ready(function() {
-    $('#packageType').select2();
-    $('#zeston').select2();
-    $('#size_desc').select2();
-    $('#size_sku').select2();
-});
-
 
 </script>
 
@@ -219,8 +179,6 @@ $(document).ready(function() {
 
 
 {% endblock %}
-
-
 
 
 
