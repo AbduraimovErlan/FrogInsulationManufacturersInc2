@@ -1,6 +1,6 @@
 from _decimal import Decimal
 from django.contrib import messages
-from .models import Product, Category, Brand, ProductSize
+from .models import Product, Category, Brand, ProductSize, Size
 from .models import ProductImage  # Импортируйте ваши модели
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
@@ -234,15 +234,121 @@ def product_detail(request, slug):
     additional_images = product.images.all()  # Это дополнительные изображения
     product_sizes = ProductSize.objects.filter(product=product)  # Получаем все размеры для данного продукта
 
+    unique_package_types = ProductSize.objects.filter(product=product).values_list('package_type', flat=True).distinct()
+
     context = {
         'product': product,
         'main_image': main_image,
         'additional_images': additional_images,
-        'product_sizes': product_sizes  # Добавляем размеры продукта в контекст
+        'product_sizes': product_sizes,  # Добавляем размеры продукта в контекст
+        'unique_package_types': unique_package_types
 
     }
 
     return render(request, 'product_detail.html', context)
+
+
+from django.http import JsonResponse, Http404
+
+# def get_product_by_sku(request, sku):
+#     try:
+#         product_size = ProductSize.objects.get(sku=sku)
+#         data = {
+#             'size': product_size.size.value,
+#             'price': product_size.size_price,
+#             'sku_number': product_size.product_number,
+#             # Добавьте другие необходимые поля
+#         }
+#         return JsonResponse(data)
+#     except ProductSize.DoesNotExist:
+#         return JsonResponse({'error': 'Product with this SKU not found'}, status=404)
+
+
+
+
+from .models import ProductSize
+
+from django.shortcuts import get_list_or_404
+from django.http import JsonResponse
+from .models import ProductSize
+from django.shortcuts import get_list_or_404
+from django.http import JsonResponse
+
+def update_based_on_package(request, product_id, package_type):
+    sizes_p = get_list_or_404(ProductSize, product_id=product_id, package_type=package_type)
+    sizes_data = [
+        {
+            "id": size.size.id,
+            "value": size.size.value,
+            "price": size.size_price,
+            "sku": size.size_sku,
+            "product_number": size.product_number,
+            "package_type": size.package_type
+        }
+        for size in sizes_p
+    ]
+    return JsonResponse(sizes_data, safe=False)
+
+def update_based_on_product_number(request, product_id, product_number, package_type):
+    sizes_n = ProductSize.objects.filter(product_id=product_id, product_number=product_number, package_type=package_type)
+    sizes_data = [
+        {
+            "id": size.size.id,
+            "value": size.size.value,
+            "price": size.size_price,
+            "sku": size.size_sku,
+            "product_number": size.product_number,
+            "package_type": size.package_type
+        }
+        for size in sizes_n
+    ]
+    return JsonResponse(sizes_data, safe=False)
+
+def update_based_on_sku(request, product_id, size_sku):
+    sizes_s = ProductSize.objects.filter(product_id=product_id, size_sku=size_sku)
+    sizes_data = [
+        {
+            "id": size.size.id,
+            "value": size.size.value,
+            "price": size.size_price,
+            "sku": size.size_sku,
+            "product_number": size.product_number,
+            "package_type": size.package_type
+        }
+        for size in sizes_s
+    ]
+    return JsonResponse(sizes_data, safe=False)
+
+
+def update_based_on_size(request, product_id, size_value):
+    sizes_v = ProductSize.objects.filter(product_id=product_id, size__value=size_value)
+    sizes_data = [
+        {
+            "id": size.size.id,
+            "value": size.size.value,
+            "price": size.size_price,
+            "sku": size.size_sku,
+            "product_number": size.product_number,
+            "package_type": size.package_type
+        }
+        for size in sizes_v
+    ]
+    return JsonResponse(sizes_data, safe=False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

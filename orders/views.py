@@ -10,8 +10,7 @@ from orders.forms import OrderItemForm, OrderForm
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
 from MainWepSite.models import Product
 from django.contrib import messages
-from django.http import JsonResponse
-
+from django.http import JsonResponse, HttpResponseRedirect
 
 
 def create_order(request):
@@ -147,9 +146,8 @@ class OperatorOrderDetailView(BaseOrderDetailView):
             messages.success(request, f"Order status changed to {new_status}.")
         return redirect('orders:operator_order_detail', order_id=self.order.id)
 
-
 @login_required
-def edit_order_address(request, order_id):
+def edit_order_address(request, order_id, source="operator"):
     order = get_object_or_404(Order, id=order_id)
 
     if request.method == "POST":
@@ -157,22 +155,14 @@ def edit_order_address(request, order_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Order address updated successfully.")
-            return redirect('orders:operator_order_detail', order_id=order.id)
-    else:
-        form = OrderForm(instance=order)
 
-    return render(request, 'templates_for_orders/edit_order_address.html', {'form': form, 'order': order})
+            if source == 'warehouse':
+                return redirect('orders:warehouse_order_detail', order_id=order.id)
+            elif source == 'driver':
+                return redirect('orders:driver_order_detail', order_id=order.id)
+            else:  # по умолчанию 'operator'
+                return redirect('orders:operator_order_detail', order_id=order.id)
 
-@login_required
-def edit_order_address_from_warehouse(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    if request.method == "POST":
-        form = OrderForm(request.POST, instance=order)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Order address updated successfully.")
-            return redirect('orders:warehouse_order_detail', order_id=order.id)
     else:
         form = OrderForm(instance=order)
 
@@ -181,24 +171,7 @@ def edit_order_address_from_warehouse(request, order_id):
 
 
 @login_required
-def edit_order_address_from_driver(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    if request.method == "POST":
-        form = OrderForm(request.POST, instance=order)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Order address updated successfully.")
-            return redirect('orders:driver_order_detail', order_id=order.id)
-    else:
-        form = OrderForm(instance=order)
-
-    return render(request, 'templates_for_orders/edit_order_address.html', {'form': form, 'order': order})
-
-
-
-@login_required
-def edit_order_item(request, order_id):
+def edit_order_item(request, order_id, source):
     order_item = get_object_or_404(OrderItem, id=order_id)
 
     if request.method == "POST":
@@ -206,34 +179,33 @@ def edit_order_item(request, order_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Order item updated successfully.")
-            return redirect('orders:operator_order_detail', order_id=order_item.order.id)
+            if source == 'warehouse':
+                return redirect('orders:warehouse_order_detail', order_id=order_item.order.id)
+            elif source == 'driver':
+                return redirect('orders:driver_order_detail', order_id=order_item.order.id)
+            else:  # Default to operator
+                return redirect('orders:operator_order_detail', order_id=order_item.order.id)
     else:
         form = OrderItemForm(instance=order_item)
 
     return render(request, 'templates_for_orders/edit_order_item.html', {'form': form, 'order_item': order_item})
 
+
+
+
+
+
 @login_required
 def delete_order_item(request, order_id):
     order_item = get_object_or_404(OrderItem, id=order_id)
-    order = order_item.order.id
 
     if request.method == "POST":
         order_item.delete()
         messages.success(request, "Order item deleted successfully.")
-        return redirect('orders:operator_order_detail', order_id=order)
 
-
-@login_required
-def delete_order_item_from_driver(request, order_id):
-    order_item = get_object_or_404(OrderItem, id=order_id)
-    order = order_item.order.id
-
-    if request.method == "POST":
-        order_item.delete()
-        messages.success(request, "Order item deleted successfully.")
-        return redirect('orders:driver_order_detail', order_id=order)
-
-
+        # Возврат на предыдущую страницу
+        referer = request.META.get('HTTP_REFERER')
+        return HttpResponseRedirect(referer)
 
 
 
@@ -393,27 +365,17 @@ class EditOrderCallView(BaseAddProductView):
     template_name = 'templates_for_orders/edit_order_call_add_product.html'
 
     def get_success_url(self):
-        # Возвращаем URL страницы добавления товара
-        return reverse('orders:edit_order_call_add_product', kwargs={'order_id': self.order.id})
+        source = self.kwargs.get('source', 'operator')  # теперь по умолчанию используем 'operator'
 
-
-
-class EditOrderCallFromSupervisorView(BaseAddProductView):
-    template_name = 'templates_for_orders/edit_order_call_add_product_from_supervisor.html'
-
-    def get_success_url(self):
-        # Возвращаем URL страницы добавления товара
-        return reverse('orders:edit_order_call_add_product_from_supervisor', kwargs={'order_id': self.order.id})
-
-
-#
-# class EditOrderCallFromDriverView(BaseAddProductView):
-#     template_name = 'templates_for_orders/edit_order_call_add_product_from_driver.html'
-#
-#     def get_success_url(self):
-#         # Возвращаем URL страницы добавления товара
-#         return reverse('orders:edit_order_call_add_product_from_driver', kwargs={'order_id': self.order.id})
-
+        if source == 'warehouse':
+            return reverse('orders:warehouse_order_detail', kwargs={'order_id': self.order.id})
+        elif source == 'driver':
+            return reverse('orders:driver_order_detail', kwargs={'order_id': self.order.id})
+        elif source == 'operator':
+            return reverse('orders:operator_order_detail', kwargs={'order_id': self.order.id})
+        else:
+            # Если не удалось определить источник, можете вернуть редирект на какую-либо стандартную страницу
+            return reverse('orders:own_operator_order_list')
 
 
 

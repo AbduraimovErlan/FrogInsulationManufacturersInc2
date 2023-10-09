@@ -136,8 +136,24 @@ class ProductSize(models.Model):
     size_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     size_sku = models.CharField(max_length=100, unique=True, null=True)  # Уникальный SKU для комбинации продукт-размер
 
-    class Meta:
-        unique_together = ('product', 'size')
+    # Product number for this specific SKU.
+    product_number = models.CharField(max_length=100, blank=True, null=True)
+
+    # Packaging options: Boxed or Single
+    BX = 'bx'
+    EACH = 'each'
+    PACKAGE_CHOICES = [
+        (BX, 'bx'),
+        (EACH, 'each'),
+    ]
+    package_type = models.CharField(max_length=10, choices=PACKAGE_CHOICES, default=EACH, null=True)
+
+
+    def __str__(self):
+        return f"{self.size_sku} - {self.product.name} ({self.size.value})"
+
+
+
 
 class Wishlist(models.Model):
     user = models.OneToOneField('auth.User', related_name='wishlist', on_delete=models.CASCADE)

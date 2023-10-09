@@ -31,8 +31,7 @@
     <p>Статус: {{ order.get_status_display }}</p>
 {% if request.user.president or request.user.operationalmanager or request.user.accountsreceivablemanager or request.user.accountsreceivable or request.user.accountspayable %}
     <div>
-        <a href="{% url 'orders:edit_order_address_from_driver' order.id %}" class="btn-warning" >Edit address</a>
-
+    <a href="{% url 'orders:edit_order_address' order.id 'driver' %}" class="btn-warning">Edit address</a>
     </div>
 
     <div class="row">
@@ -43,7 +42,7 @@
         </form>
     </div>
     <div class="col-md-2">
-        <form method="post" action="{% url 'orders:edit_order_call_add_product' order.id %}">
+        <form method="post" action="{% url 'orders:edit_order_call_add_product' order.id 'driver' %}">
             {% csrf_token %}
             <button type="submit" class="btn-info">c</button>
         </form>
@@ -76,11 +75,11 @@
                     <td>{{ item.total }}</td>
                     {% if request.user.president or request.user.operationalmanager or request.user.accountsreceivablemanager or request.user.accountsreceivable or request.user.accountspayable %}
                     <td>
-                         <form method="post" action="{% url 'orders:delete_order_item_from_driver' order_id=item.id %}" style="display: inline;">
+                         <form method="post" action="{% url 'orders:delete_order_item' order_id=item.id %}" style="display: inline;">
                 {% csrf_token %}
                 <input type="submit" value="Delete" class="btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">
             </form>
-                    <a href="{% url 'orders:edit_order_item' order_id=item.id %}" class="btn-warning">Edit</a>
+                    <a href="{% url 'orders:edit_order_item' order_id=item.id source='driver' %}" class="btn-warning">Edit</a>
                     </td>
                     {% endif %}
 

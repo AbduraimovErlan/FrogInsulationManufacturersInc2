@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}{{ product.name }}{% endblock %}
@@ -19,27 +20,190 @@
                     <div class="product-info">
                         <h1>{{ product.name }}</h1>
                         <p>brand: {{ product.brand }}</p>
-                        <p>Price: {{ product.price }}</p>
+
+
                         <p>SKU: {{ product.sku }}</p>
 
                         <p>Stock: {{ product.stock_quantity }}</p>
-                        <!-- Доступные размеры -->
 
-                        <!-- Доступные размеры -->
+
 <h3>Доступные размеры:</h3>
-<form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
-{% csrf_token %}
-    <select name="selected_size">
-        {% for size in product_sizes %}
-    <option value="{{ size.size.value }}">{{ size.size.value }} (SKU: {{ size.sku }}, Price: {{ size.size_price }} $)</option>
-{% endfor %}
+        <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
+            {% csrf_token %}
 
-    </select>
-    <input type="number" name="quantity" value="1">
-    <button type="submit">Add to Cart</button>
-</form>
+            <label for="packageType">Packaging:</label>
+<select id="packageType" name="packageType">
+    {% for package_type in unique_package_types %}
+        <option value="{{ package_type }}">{{ package_type }}</option>
+    {% endfor %}
+</select>
+            <br>
+        <label for="zeston">Zeston:    #</label>
+            <select id="zeston" name="zeston">
+                {% for size in product_sizes %}
+                    <option data-package-type="{{ size.package_type }}" value="{{ size.size.value }}">{{ size.product_number }}</option>
+                {% endfor %}
+            </select>
+            <br>
 
 
+
+        <label for="size_sku">Size SKU:</label>
+<select id="size_sku" name="size_sku">
+    {% for size in product_sizes %}
+        <option data-package-type="{{ size.package_type }}" value="{{ size.size_sku }}">{{ size.size_sku }}</option>
+    {% endfor %}
+</select>
+            <br>
+
+
+            <label for="size_desc">Size Description:</label>
+            <select id="size_desc" name="size_desc">
+                {% for size in product_sizes %}
+                    <option data-package-type="{{ size.package_type }}" value="{{ size.size.value }}">{{ size.size.value }} (Price: {{ size.size_price }} $)</option>
+                {% endfor %}
+            </select>
+
+            <br>
+            <input type="number" name="quantity" value="1">
+            <br>
+            <button type="submit">Add to Cart</button>
+        </form>
+
+
+
+
+<script>
+    // Когда документ загрузится, выполнится этот код
+document.addEventListener("DOMContentLoaded", function() {
+    // Получение элементов выпадающего списка (select) на странице
+    const packageTypeSelect = document.getElementById('packageType');
+    const zestonSelect = document.getElementById('zeston');
+    const sizeDescSelect = document.getElementById('size_desc');
+    const sizeSkuSelect = document.getElementById('size_sku');
+
+
+
+        // Функция для обновления списка packageType на основе полученных данных
+    function updatePackageTypeSelect(data) {
+        packageTypeSelect.innerHTML = ''; // Очищаем список
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.package_type;
+            option.textContent = item.package_type;
+            packageTypeSelect.appendChild(option);
+        });
+    }
+
+
+
+
+
+
+
+
+    // Функция для обновления списка Zeston на основе полученных данных
+    function updateZestonSelect(data) {
+        zestonSelect.innerHTML = ''; // Очищаем список
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.product_number;
+            option.textContent = item.product_number;
+            zestonSelect.appendChild(option);
+        });
+    }
+
+    // Функция для обновления списка Size SKU на основе полученных данных
+    function updateSizeSkuSelect(data) {
+        sizeSkuSelect.innerHTML = ''; // Очищаем список
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.sku;
+            option.textContent = item.sku;
+            sizeSkuSelect.appendChild(option);
+        });
+    }
+
+    // Функция для обновления списка Size Description на основе полученных данных
+    function updateSizeDescSelect(data) {
+        sizeDescSelect.innerHTML = ''; // Очищаем список
+        data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.value;
+            option.textContent = `${item.value} (Price: ${item.price} $)`;
+            sizeDescSelect.appendChild(option);
+        });
+    }
+
+    // Проверка, что все необходимые элементы страницы найдены
+    if (packageTypeSelect && zestonSelect && sizeDescSelect && sizeSkuSelect) {
+        const productId = {{ product.id }};
+
+        // Если значение в списке packageType изменится, выполнится этот код
+        packageTypeSelect.addEventListener('change', function() {
+    fetch(`/update_based_on_package/${productId}/${packageTypeSelect.value}/`)
+        .then(response => response.json())
+        .then(data => {
+            updateZestonSelect(data); // Обновляем список Zeston
+            updateSizeSkuSelect(data); // Обновляем список Size SKU
+            updateSizeDescSelect(data); // Обновляем список Size Description
+        })
+        .catch(error => console.error('Error fetching data:', error));
+});
+        // Если значение в списке zeston изменится, выполнится этот код
+       zestonSelect.addEventListener('change', function() {
+    fetch(`/update_based_on_product_number/${productId}/${zestonSelect.value}/${packageTypeSelect.value}/`)
+        .then(response => response.json())
+        .then(data => {
+            updateSizeSkuSelect(data);
+            updateSizeDescSelect(data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+});
+
+
+
+        // Если значение в списке sizeSku изменится, выполнится этот код
+        sizeSkuSelect.addEventListener('change', function() {
+            fetch(`/update_based_on_sku/${productId}/${sizeSkuSelect.value}/`)
+                .then(response => response.json())
+                .then(data => {
+                    updateZestonSelect(data); // Обновляем список Zeston
+                    updateSizeSkuSelect(data); // Обновляем список Size SKU
+                    updateSizeDescSelect(data); // Обновляем список Size Description
+                    updatePackageTypeSelect(data);
+
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+
+        // Если значение в списке sizeDesc изменится, выполнится этот код
+        sizeDescSelect.addEventListener('change', function() {
+            fetch(`/update_based_on_size/${productId}/${sizeDescSelect.value}/`)
+                .then(response => response.json())
+                .then(data => {
+                    updateZestonSelect(data); // Обновляем список Zeston
+                    updateSizeSkuSelect(data); // Обновляем список Size SKU
+                    updateSizeDescSelect(data); // Обновляем список Size Description
+                    updatePackageTypeSelect(data);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+    }
+});
+
+
+
+
+$(document).ready(function() {
+    $('#packageType').select2();
+    $('#zeston').select2();
+    $('#size_desc').select2();
+    $('#size_sku').select2();
+});
+
+
+</script>
 
 
                     </div>
@@ -55,6 +219,7 @@
 
 
 {% endblock %}
+
 
 
 

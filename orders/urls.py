@@ -19,39 +19,19 @@ urlpatterns = [
     path('order/<int:order_id>/', CustomerOrderDetailView.as_view(), name='customer_order_detail'),
     path('operator/order/<int:order_id>/', OperatorOrderDetailView.as_view(), name='operator_order_detail'),
 
+    path('edit_order_item/<int:order_id>/<str:source>/', views.edit_order_item, name='edit_order_item'),
 
-    path('order_item/edit/<int:order_id>/', views.edit_order_item, name='edit_order_item'),
     path('order_item/delete/<int:order_id>/', views.delete_order_item, name='delete_order_item'),
-    path('order_item_from_driver/delete/<int:order_id>/', views.delete_order_item_from_driver, name='delete_order_item_from_driver'),
 
 
 
-    path('order/edit_address/<int:order_id>/', views.edit_order_address, name='edit_order_address'),
-    path('order/edit_order_address_from_warehouse/<int:order_id>/', views.edit_order_address_from_warehouse, name='edit_order_address_from_warehouse'),
-    path('order/edit_order_address_from_driver/<int:order_id>/', views.edit_order_address_from_driver, name='edit_order_address_from_driver'),
 
+    path('edit_order_address/<int:order_id>/<str:source>/', views.edit_order_address, name='edit_order_address'),
 
     path('new_order_call/<int:order_id>/add_product/', views.NewOrderCallView.as_view(),
          name='new_order_call_add_product'),
 
-
-
-
-
-    path('edit_order_call/<int:order_id>/add_product/', views.EditOrderCallView.as_view(),
-         name='edit_order_call_add_product'),
-
-    path('edit_order_call/<int:order_id>/add_product_from_supervisor/', views.EditOrderCallFromSupervisorView.as_view(),
-         name='edit_order_call_add_product_from_supervisor'),
-
-    #
-    # path('edit_order_call/<int:order_id>/add_product_from_driver/', views.EditOrderCallFromDriverView.as_view(),
-    #      name='edit_order_call_add_product_from_driver'),
-
-
-
-
-
+    path('edit_order_call_add_product/<int:order_id>/<str:source>/', views.EditOrderCallView.as_view(), name='edit_order_call_add_product'),
 
     path('api/get_product_details/<int:product_id>/', views.get_product_details, name='get_product_details'),
     path('operator_create_order/', views.operator_create_order, name='operator_create_order'),
@@ -71,7 +51,7 @@ urlpatterns = [
     path('release_order_to_supervisor/<int:order_id>/', views.release_order_to_supervisor, name='release_order_to_supervisor'),
 
     path('warehouse_orders/', views.warehouse_order_list, name='warehouse_order_list'),
-    path('warehouse/order/<int:order_id>/', views.warehouse_order_detail, name='warehouse_order_detail'),
+    path('warehouse_orders_d/<int:order_id>/', views.warehouse_order_detail, name='warehouse_order_detail'),
     path('pass_to_warehouse/<int:order_id>/', views.pass_order_to_warehouse, name='pass_order_to_warehouse'),
     path('supervisor_take_order/<int:order_id>/', views.supervisor_take_order_back, name='supervisor_take_order'),
 
