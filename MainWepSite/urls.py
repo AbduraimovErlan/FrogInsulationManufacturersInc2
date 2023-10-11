@@ -21,9 +21,11 @@ path('update_based_on_size/<int:product_id>/<str:size_value>/', views.update_bas
 
     path('cart/', views.view_cart, name='view_cart'),
     path('add_to_cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
-    path('remove_from_cart/<int:sku>/', views.remove_from_cart, name='remove_from_cart'),
-    path('update_cart_quantity/<int:sku>/', views.update_cart_quantity, name='update_cart_quantity'),
+    path('remove_from_cart/(?P<sku>[\w-]+)/\\Z', views.remove_from_cart, name='remove_from_cart'),
+    path('update_cart_quantity/(?P<sku>[\w-]+)/\\Z', views.update_cart_quantity, name='update_cart_quantity'),
     path('clear_cart/', views.clear_cart, name='clear_cart'),
+
+
 ]
 
 

@@ -11,6 +11,8 @@
             <th>Продукт</th>
             <th>SKU</th>
             <th>Размер</th>
+            <th>Номер продукта</th>  <!-- Новый столбец -->
+            <th>Тип упаковки</th>    <!-- Новый столбец -->
             <th>Цена за единицу</th>
             <th>Количество</th>
             <th>Всего</th>
@@ -20,6 +22,7 @@
     <tbody>
         {% for item in cart_items %}
         <tr>
+
             <td><img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" width="100"></td>
             <td>{{ item.product.name }}</td>
             <td>{{ item.sku }}</td>
@@ -30,6 +33,8 @@
                     -
                 {% endif %}
             </td>
+            <td>{{ item.product_number }}</td>  <!-- Ячейка для номера продукта -->
+            <td>{{ item.package_type }}</td>    <!-- Ячейка для типа упаковки -->
             <td>{{ item.price }} $</td>
             <td>
                 {% if item.sku %}
@@ -61,3 +66,4 @@
 
 
 {% endblock %}
+

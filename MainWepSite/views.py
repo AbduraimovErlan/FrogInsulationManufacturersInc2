@@ -5,6 +5,9 @@ from .models import ProductImage  # Импортируйте ваши модел
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from MainWepSite.models import Product, CartItem
+from .models import ProductSize
+from django.shortcuts import get_list_or_404
+from django.http import JsonResponse
 
 
 # Главная страница
@@ -38,31 +41,23 @@ def index(request):
         'categories': categories,
         'brands': brands,
     })
-def view_cart(request):
+
+
+def view_cart(request, size=None):
     cart = request.session.get('cart', {})
     cart_items = []
     total_price = 0
+    skus_to_remove = []  # list to hold skus that should be removed
 
-    # Создайте копию корзины для безопасной итерации
     for sku, item_data in list(cart.items()):
         try:
-            # Проверка на наличие 'product_id' в данных корзины
-            if 'product_id' not in item_data:
-                product_id = int(sku)
-            else:
-                product_id = item_data['product_id']
-
+            product_id = item_data['product_id']
             product = Product.objects.get(id=product_id)
 
-            if 'size' in item_data:
-                size = item_data['size']
-                product_size = ProductSize.objects.get(product=product, size__value=size)
-                price = product_size.size_price if 'size' in item_data else Decimal(item_data['price'])
-                sku_value = product_size.size_sku
-            else:
-                size = None
-                price = product.price
-                sku_value = product.sku
+            # Используем SKU для получения объекта ProductSize
+            product_size = ProductSize.objects.get(product=product, size_sku=sku)
+            price = product_size.size_price
+            sku_value = product_size.size_sku
 
             quantity = item_data['quantity']
             total_price += price * quantity
@@ -70,14 +65,22 @@ def view_cart(request):
             cart_items.append({
                 'product': product,
                 'quantity': quantity,
-                'size': size,
                 'price': price,
+                'size': product_size.size.value,
                 'total': price * quantity,
-                'sku': sku_value  # добавляем SKU в словарь
+                'sku': sku_value,
+                'product_number': item_data.get('product_number'),
+                'package_type': item_data.get('package_type')
             })
         except Product.DoesNotExist:
             messages.warning(request, f"Product with SKU {sku} was removed or does not exist.")
-            del cart[sku]
+            skus_to_remove.append(sku)
+        except ProductSize.DoesNotExist:
+            messages.warning(request, f"Product size with SKU {sku} not found for product {product.name}.")
+            skus_to_remove.append(sku)
+
+    for sku in skus_to_remove:  # Remove skus after iterating through the cart
+        del cart[sku]
 
     request.session['cart'] = cart
 
@@ -89,7 +92,7 @@ def view_cart(request):
 
 
 
-def _add_product_to_session_cart(request, product_id, quantity, selected_size=None):
+def _add_product_to_session_cart(request, product_id, quantity, selected_package_type, selected_zeston, selected_sku, selected_size_desc):
     cart = request.session.get('cart', {})
 
     # Попытка получить продукт по ID
@@ -98,34 +101,32 @@ def _add_product_to_session_cart(request, product_id, quantity, selected_size=No
     except Product.DoesNotExist:
         raise ValueError(f"Product with ID {product_id} does not exist.")
 
-    # Определение SKU и цены на основе наличия размера
-    if selected_size:
-        try:
-            product_size = ProductSize.objects.get(product=product, size__value=selected_size)
-            sku = product_size.size_sku  # Изменили здесь
-            price = product_size.size_price
-        except ProductSize.DoesNotExist:
-            raise ValueError(f"Size {selected_size} for product {product_id} does not exist.")
-    else:
-        if hasattr(product, 'sku') and product.sku:
-            sku = product.sku
-            price = product.price
-        else:
-            raise ValueError("The product must either have a size selected or an SKU if no size is selected.")
+    # Попытка получить конкретный размер продукта на основе предоставленных параметров
+    try:
+        product_size = ProductSize.objects.get(product=product, package_type=selected_package_type,
+                                               product_number=selected_zeston, size_sku=selected_sku,
+                                               size__value=selected_size_desc)
+        price = product_size.size_price
+    except ProductSize.DoesNotExist:
+        raise ValueError(f"Combination of product ID {product_id}, package type {selected_package_type}, zeston {selected_zeston}, size sku {selected_sku}, and size description {selected_size_desc} does not exist.")
 
     # Обновление или добавление продукта в корзину
     cart_data = {
         'product_id': product_id,
-        'quantity': cart.get(sku, {}).get('quantity', 0) + quantity,  # обновление количества, если продукт уже в корзине
+        'quantity': cart.get(selected_sku, {}).get('quantity', 0) + quantity,  # обновление количества, если продукт уже в корзине
         'price': str(price),
-        'sku': sku
+        'sku': selected_sku,
+        'product_number': product_size.product_number,  # добавлено
+        'package_type': selected_package_type,
+        'zeston': selected_zeston,
+        'size_desc': selected_size_desc
     }
-    if selected_size:
-        cart_data['size'] = selected_size
-    cart[sku] = cart_data
+    cart[selected_sku] = cart_data
+
 
     # Сохранение обновленной корзины в сессии
     request.session['cart'] = cart
+
 
 
 
@@ -137,12 +138,21 @@ def add_to_cart(request, product_id):
         try:
             product = get_object_or_404(Product, id=product_id)
             quantity = int(request.POST.get('quantity', 1))
-            selected_size = request.POST.get('selected_size')
+            selected_size_desc = request.POST.get('size_desc')
+            selected_package_type = request.POST.get('packageType')
+            selected_sku = request.POST.get('size_sku')
+            selected_zeston = request.POST.get('zeston')
 
-            if not selected_size:
-                raise ValueError("Size not selected.")
+            # Проверим, существует ли сочетание
+            product_size = ProductSize.objects.get(product=product, package_type=selected_package_type, product_number=selected_zeston, size_sku=selected_sku, size__value=selected_size_desc)
 
-            _add_product_to_session_cart(request, product.id, quantity, selected_size)
+
+            _add_product_to_session_cart(request, product.id, quantity, selected_package_type, selected_zeston,
+                                         selected_sku, selected_size_desc)
+            return redirect('MainWepSite:view_cart')
+
+        except ProductSize.MultipleObjectsReturned:
+            messages.error(request, "Multiple matching product sizes found. Please contact support.")
             return redirect('MainWepSite:view_cart')
         except ValueError as e:
             messages.error(request, str(e))
@@ -150,13 +160,12 @@ def add_to_cart(request, product_id):
         except Product.DoesNotExist:
             messages.error(request, "Product not found.")
             return redirect('MainWepSite:index')
+        except ProductSize.DoesNotExist:
+            messages.error(request, "Selected product size or SKU combination does not exist.")
+            return redirect('MainWepSite:view_cart')
     else:
         messages.warning(request, "Invalid request type.")
         return redirect('MainWepSite:view_cart')
-
-
-
-
 
 
 def remove_from_cart(request, sku):
@@ -248,31 +257,9 @@ def product_detail(request, slug):
     return render(request, 'product_detail.html', context)
 
 
-from django.http import JsonResponse, Http404
-
-# def get_product_by_sku(request, sku):
-#     try:
-#         product_size = ProductSize.objects.get(sku=sku)
-#         data = {
-#             'size': product_size.size.value,
-#             'price': product_size.size_price,
-#             'sku_number': product_size.product_number,
-#             # Добавьте другие необходимые поля
-#         }
-#         return JsonResponse(data)
-#     except ProductSize.DoesNotExist:
-#         return JsonResponse({'error': 'Product with this SKU not found'}, status=404)
 
 
 
-
-from .models import ProductSize
-
-from django.shortcuts import get_list_or_404
-from django.http import JsonResponse
-from .models import ProductSize
-from django.shortcuts import get_list_or_404
-from django.http import JsonResponse
 
 def update_based_on_package(request, product_id, package_type):
     sizes_p = get_list_or_404(ProductSize, product_id=product_id, package_type=package_type)

@@ -26,9 +26,11 @@
                         <p>Stock: {{ product.stock_quantity }}</p>
 
 
+
 <h3>Доступные размеры:</h3>
         <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
             {% csrf_token %}
+
 
             <label for="packageType">Packaging:</label>
 <select id="packageType" name="packageType">
@@ -86,6 +88,7 @@
     function updatePackageTypeSelect(data) {
         let options = data.map(item => `<option value="${item.package_type}">${item.package_type}</option>`);
         $('#packageType').empty().append(options.join('')).trigger('change').trigger('select2:updated');
+        $('#selected_packageType_input').val($('#packageType').val());
     }
 
 
@@ -93,6 +96,7 @@
            function updateZestonSelect(data) {
         let options = data.map(item => `<option value="${item.product_number}">${item.product_number}</option>`);
         $('#zeston').empty().append(options.join('')).trigger('change').trigger('select2:updated');
+        $('#selected_zeston_input').val($('#zeston').val());
     }
 
 
@@ -100,6 +104,7 @@
         function updateSizeSkuSelect(data) {
         let options = data.map(item => `<option value="${item.sku}">${item.sku}</option>`);
         $('#size_sku').empty().append(options.join('')).trigger('change').trigger('select2:updated');
+        $('#selected_size_sku_input').val($('#size_sku').val());
     }
 
 
@@ -107,6 +112,7 @@
         function updateSizeDescSelect(data) {
         let options = data.map(item => `<option value="${item.value}">${item.value}</option>`);
         $('#size_desc').empty().append(options.join('')).trigger('change').trigger('select2:updated');
+        $('#selected_size_desc_input').val($('#size_desc').val());
     }
 
 

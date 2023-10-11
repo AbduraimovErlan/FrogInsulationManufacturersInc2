@@ -45,3 +45,134 @@
 </script>
 
 {% endblock %}
+
+{##}
+{#{% extends "base.html" %}#}
+{#{% block content %}#}
+{#<h2>Редактировать элемент заказа</h2>#}
+{##}
+{##}
+{#<form method="post">#}
+{#{% if form.errors %}#}
+{#    <div class="alert alert-danger">#}
+{#        {{ form.errors }}#}
+{#    </div>#}
+{#{% endif %}#}
+{##}
+{#    {% csrf_token %}#}
+{##}
+{#    {{ form.order }}#}
+{##}
+{#    <div class="form-group">#}
+{#    <label for="{{ form.package_type.id_for_label }}">Package Type:</label>#}
+{#    {{ form.package_type }}#}
+{#</div>#}
+{##}
+{#<div class="form-group">#}
+{#    <label for="{{ form.product_number.id_for_label }}">Product Number:</label>#}
+{#    {{ form.product_number }}#}
+{#</div>#}
+{##}
+{#    <div class="form-group">#}
+{#        <label for="{{ form.size.id_for_label }}">Размер:</label>#}
+{#        {{ form.size }}#}
+{#    </div>#}
+{##}
+{#    <div class="form-group">#}
+{#        <label for="{{ form.size_sku.id_for_label }}">Size SKU:</label>#}
+{#        {{ form.size_sku }}#}
+{#    </div>#}
+{##}
+{#    <div class="form-group">#}
+{#        <label for="{{ form.quantity.id_for_label }}">Количество:</label>#}
+{#        {{ form.quantity }}#}
+{#    </div>#}
+{##}
+{#    <div class="form-group">#}
+{#        <label for="{{ form.price.id_for_label }}">Цена:</label>#}
+{#        {{ form.price }}#}
+{#    </div>#}
+{##}
+{#    <div class="form-group">#}
+{#        <label for="{{ form.order_sku.id_for_label }}">Order SKU:</label>#}
+{#        {{ form.order_sku }}#}
+{#    </div>#}
+{##}
+{#    <button type="submit">Обновить</button>#}
+{#</form>#}
+{##}
+{#<h3>Удалить элемент из заказа</h3>#}
+{#<form method="post" action="{% url 'orders:delete_order_item' order_item.id %}">#}
+{#    {% csrf_token %}#}
+{#    <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить этот элемент из заказа?');">Удалить товар</button>#}
+{#</form>#}
+{##}
+{#<script>#}
+{#    $(document).ready(function() {#}
+{#        function initSelect2() {#}
+{#            $('#{{ form.package_type.id_for_label }}').select2();#}
+{#            $('#{{ form.product_number.id_for_label }}').select2();#}
+{#            $('#{{ form.size_sku.id_for_label }}').select2();#}
+{#            $('#{{ form.size.id_for_label }}').select2();#}
+{#        }#}
+{##}
+{#        initSelect2();#}
+{##}
+{#        const productId = {{ product.id }};#}
+{#        const csrfToken = '{{ csrf_token }}'; // Получение CSRF-токена#}
+{##}
+{#        function fetchDataBasedOnParams(url, params) {#}
+{#            return fetch(url, {#}
+{#                method: 'POST',#}
+{#                headers: {#}
+{#                    'Content-Type': 'application/json',#}
+{#                    'X-CSRFToken': csrfToken#}
+{#                },#}
+{#                body: JSON.stringify(params)#}
+{#            }).then(response => response.json());#}
+{#        }#}
+{##}
+{#        $('#{{ form.package_type.id_for_label }}').on('select2:select', function() {#}
+{#            fetchDataBasedOnParams('/update_package_type/', { product_id: productId, package_type: $(this).val() })#}
+{#                .then(data => {#}
+{#                    updateZestonSelect(data);#}
+{#                    updateSizeSkuSelect(data);#}
+{#                    updateSizeDescSelect(data);#}
+{#                })#}
+{#                .catch(error => console.error('Error fetching data:', error));#}
+{#        });#}
+{##}
+{#        $('#{{ form.product_number.id_for_label }}').on('select2:select', function() {#}
+{#            fetchDataBasedOnParams('/update_product_number/', { product_id: productId, product_number: $(this).val(), package_type: $('#{{ form.package_type.id_for_label }}').val() })#}
+{#                .then(data => {#}
+{#                    updateSizeSkuSelect(data);#}
+{#                    updateSizeDescSelect(data);#}
+{#                })#}
+{#                .catch(error => console.error('Error fetching data:', error));#}
+{#        });#}
+{##}
+{#        $('#{{ form.size_sku.id_for_label }}').on('select2:select', function() {#}
+{#            fetchDataBasedOnParams('/update_size_sku/', { product_id: productId, size_sku: $(this).val() })#}
+{#                .then(data => {#}
+{#                    updateZestonSelect(data);#}
+{#                    updateSizeSkuSelect(data);#}
+{#                    updateSizeDescSelect(data);#}
+{#                    updatePackageTypeSelect(data);#}
+{#                })#}
+{#                .catch(error => console.error('Error fetching data:', error));#}
+{#        });#}
+{##}
+{#        $('#{{ form.size.id_for_label }}').on('select2:select', function() {#}
+{#            fetchDataBasedOnParams('/update_size_value/', { product_id: productId, size_value: $(this).val() })#}
+{#                .then(data => {#}
+{#                    updateZestonSelect(data);#}
+{#                    updateSizeSkuSelect(data);#}
+{#                    updateSizeDescSelect(data);#}
+{#                    updatePackageTypeSelect(data);#}
+{#                })#}
+{#                .catch(error => console.error('Error fetching data:', error));#}
+{#        });#}
+{#    });#}
+{#</script>#}
+{##}
+{#{% endblock %}#}
