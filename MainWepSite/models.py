@@ -41,14 +41,7 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
-# Модель для размеров и других характеристик
-class ProductSpecification(models.Model):
-    length = models.FloatField(null=True, blank=True)
-    width = models.FloatField(null=True, blank=True)
-    height = models.FloatField(null=True, blank=True)
 
-    def __str__(self):
-        return f"Specification #{self.id}"
 
 
 
@@ -70,11 +63,10 @@ class Color(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    sku = models.CharField(max_length=50, unique=True)  # Уникальный SKU
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    sku = models.CharField(max_length=50, unique=True, null=True)  # Уникальный SKU
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, related_name='products', on_delete=models.CASCADE)
-    specification = models.OneToOneField(ProductSpecification, related_name='product', on_delete=models.CASCADE)
     rating = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)  # Средний рейтинг
     sales_count = models.IntegerField(default=0)  # Количество проданных единиц
     meta_description = models.TextField(blank=True, null=True)

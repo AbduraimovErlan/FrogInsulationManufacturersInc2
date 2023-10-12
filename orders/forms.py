@@ -1,6 +1,7 @@
 from django import forms
 from .models import OrderItem, Order
-from MainWepSite.models import Product
+from MainWepSite.models import Product, ProductSize, Size
+
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -23,49 +24,34 @@ class OrderForm(forms.ModelForm):
             'additional_info': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
+
+
+
 class OrderItemForm(forms.ModelForm):
-    order = forms.ModelChoiceField(
-        queryset=Order.objects.all(),
-        widget=forms.HiddenInput(),
-        required=True
-    )
-    product = forms.ModelChoiceField(
-        queryset=Product.objects.all(),
-        label="Product",
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        required=True
-    )
-    quantity = forms.IntegerField(
-        label="Quantity",
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
-        required=True
-    )
-    price = forms.DecimalField(
-        label="Price",
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-        required=True
-    )
-    order_sku = forms.CharField(
-        label="Order SKU",
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-        required=False
-    )
+    package_type = forms.ChoiceField(choices=ProductSize.PACKAGE_CHOICES, widget=forms.Select(attrs={'id': 'packageType'}))
+    size_sku = forms.ModelChoiceField(queryset=ProductSize.objects.all().values_list('size_sku', flat=True).distinct(),
+                                      widget=forms.Select(attrs={'id': 'size_sku'}))
+    product_number = forms.ModelChoiceField(
+        queryset=ProductSize.objects.all().values_list('product_number', flat=True).distinct(),
+        widget=forms.Select(attrs={'id': 'zeston'}))
+    size = forms.ModelChoiceField(
+        queryset=Size.objects.all(),
+        widget=forms.Select(attrs={'id': 'size_desc'}))
 
     class Meta:
         model = OrderItem
-        fields = ['order', 'product', 'quantity', 'price', 'order_sku']
+        fields = ['package_type', 'product_number', 'size_sku', 'size', 'quantity']
 
     def clean(self):
         cleaned_data = super().clean()
-        # Дополнительные проверки и валидации можно добавить здесь
+        # Вы можете добавить дополнительную валидацию здесь, если это необходимо
         return cleaned_data
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        # Дополнительные операции сохранения можно добавить здесь
-        if commit:
-            instance.save()
-        return instance
+
+
+
+
+
 
 
 

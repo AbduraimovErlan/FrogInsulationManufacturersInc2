@@ -58,20 +58,25 @@
         <thead>
             <tr>
                 <th>Наименование товара</th>
-                <th>SKU</th> <!-- Заголовок столбца для SKU -->
+                <th>SKU</th>
+                <th>Номер продукта</th>  <!-- добавлено -->
+                <th>Тип упаковки</th>  <!-- добавлено -->
+                <th>Размер</th>  <!-- добавлено -->
                 <th>Количество</th>
                 <th>Цена за единицу</th>
                 <th>Общая стоимость</th>
-                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
             {% for item in items %}
                 <tr>
                     <td>{{ item.product.name }}</td>
-                    <td>{{ item.order_sku }}</td> <!-- Отображение SKU товара -->
+                    <td>{{ item.order_sku }}</td>
+                    <td>{{ item.product_number }}</td>  <!-- добавлено -->
+                    <td>{{ item.package_type }}</td>  <!-- добавлено -->
+                    <td>{{ item.size }}</td>  <!-- добавлено -->
                     <td>{{ item.quantity }}</td>
-                    <td>{{ item.product.price }}</td>
+                    <td>{{ item.unit_price }}</td>
                     <td>{{ item.total }}</td>
                     {% if request.user.president or request.user.operationalmanager or request.user.accountsreceivablemanager or request.user.accountsreceivable or request.user.accountspayable %}
                     <td>

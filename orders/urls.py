@@ -1,12 +1,12 @@
 from django.urls import path, register_converter
+
 from . import views
 from .views import CustomerOrderDetailView, OperatorOrderDetailView, BaseOrderListView, OperatorOrderListView, \
     CanceledOrderListView, DriverOrderDetailView, driver_order_list
 from . import converters
 
 register_converter(converters.BoolConverter, 'bool')
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.views import LogoutView
+
 
 
 
@@ -33,7 +33,6 @@ urlpatterns = [
 
     path('edit_order_call_add_product/<int:order_id>/<str:source>/', views.EditOrderCallView.as_view(), name='edit_order_call_add_product'),
 
-    path('api/get_product_details/<int:product_id>/', views.get_product_details, name='get_product_details'),
     path('operator_create_order/', views.operator_create_order, name='operator_create_order'),
 
     path('order_list/', BaseOrderListView.as_view(), name='base_order_list'),
@@ -68,5 +67,16 @@ urlpatterns = [
     path('supervisor_mark_truck/<int:driver_id>/', views.mark_truck_as_fully_loaded_supervisor,
          name='mark_truck_as_fully_loaded_supervisor'),
     path('current_user/', views.current_user, name='current_user'),
+
+
+
+path('api/update_based_on_package/<str:package_type>/', views.update_based_on_package, name='update_based_on_package'),
+    path('api/update_based_on_product_number/<str:product_number>/', views.update_based_on_product_number, name='update_based_on_product_number'),
+    path('api/update_based_on_sku/<str:size_sku>/', views.update_based_on_sku, name='update_based_on_sku'),
+    path('api/update_based_on_size/<str:size_value>/', views.update_based_on_size, name='update_based_on_size'),
+
+
+
+
 ]
 
