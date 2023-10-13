@@ -372,36 +372,40 @@ class EditOrderCallView(BaseAddProductView):
 # Update this method to fetch the details from ProductSize, not Product:
 from django.http import JsonResponse
 
-def update_based_on_package(request, package_type):
+def update_based_on_package_call(request, package_type):
     data = {
         'product_numbers': list(ProductSize.objects.filter(package_type=package_type).values_list('product_number', flat=True).distinct()),
         'size_skus': list(ProductSize.objects.filter(package_type=package_type).values_list('size_sku', flat=True).distinct()),
-        'size_descs': list(Size.objects.all().values_list('value', flat=True))
+        'size_descs': list(ProductSize.objects.filter(package_type=package_type).values_list('size__value', flat=True).distinct())
     }
     return JsonResponse(data)
 
-def update_based_on_product_number(request, product_number):
+def update_based_on_product_number_call(request, package_type, product_number):
     data = {
-        'size_skus': list(ProductSize.objects.filter(product_number=product_number).values_list('size_sku', flat=True).distinct()),
-        'size_descs': list(Size.objects.all().values_list('value', flat=True))
+        'size_skus': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number).values_list('size_sku', flat=True).distinct()),
+        'size_descs': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number).values_list('size__value', flat=True).distinct())
     }
     return JsonResponse(data)
 
-def update_based_on_sku(request, size_sku):
-    product_size = ProductSize.objects.filter(size_sku=size_sku).first()
+def update_based_on_sku_call(request, package_type, product_number, size_sku):
     data = {
-        'product_numbers': [product_size.product_number] if product_size else [],
-        'size_descs': [product_size.size.value] if product_size and product_size.size else []
+        'product_numbers': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('product_number', flat=True).distinct()),
+        'size_skus': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('size_sku', flat=True).distinct()),
+        'size_descs': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('size__value', flat=True).distinct())
     }
     return JsonResponse(data)
 
-def update_based_on_size(request, size_value):
-    product_size = ProductSize.objects.filter(size__value=size_value).first()
+
+
+def update_based_on_size_call(request, package_type, product_number, size_sku, size_value):
     data = {
-        'product_numbers': [product_size.product_number] if product_size else [],
-        'size_skus': [product_size.size_sku] if product_size else []
+        'product_numbers': list(ProductSize.objects.filter(product_number=product_number, package_type=package_type, size_sku=size_sku, size__value=size_value).values_list('product_number', flat=True).distinct()),
+        'size_skus': list(ProductSize.objects.filter(product_number=product_number, package_type=package_type, size_sku=size_sku, size__value=size_value).values_list('size_sku', flat=True).distinct()),
+        'size_descs': list(ProductSize.objects.filter(product_number=product_number, package_type=package_type, size_sku=size_sku, size__value=size_value).values_list('size__value', flat=True).distinct())
     }
     return JsonResponse(data)
+
+
 
 
 

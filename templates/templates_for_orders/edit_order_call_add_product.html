@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     packageTypeSelect.addEventListener("change", function() {
-        fetch(`/api/update_based_on_package/${this.value}/`)
+        fetch(`/api/update_based_on_package_call/${this.value}/`)
         .then(response => response.json())
         .then(data => {
             populateSelectOptions(zestonSelect, data.product_numbers);
@@ -33,26 +33,27 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     zestonSelect.addEventListener("change", function() {
-        fetch(`/api/update_based_on_product_number/${this.value}/`)
-        .then(response => response.json())
-        .then(data => {
-            populateSelectOptions(sizeSkuSelect, data.size_skus);
-            populateSelectOptions(sizeDescSelect, data.size_descs);
-        });
+    fetch(`/api/update_based_on_product_number_call/${packageTypeSelect.value}/${this.value}/`)
+    .then(response => response.json())
+    .then(data => {
+        populateSelectOptions(sizeSkuSelect, data.size_skus);
+        populateSelectOptions(sizeDescSelect, data.size_descs);
     });
+});
 
-    sizeSkuSelect.addEventListener("change", function() {
-        fetch(`/api/update_based_on_sku/${this.value}/`)
-        .then(response => response.json())
-        .then(data => {
-            populateSelectOptions(zestonSelect, data.product_numbers);
-            populateSelectOptions(sizeSkuSelect, data.size_skus);
-            populateSelectOptions(sizeDescSelect, data.size_descs);
-        });
+sizeSkuSelect.addEventListener("change", function() {
+    fetch(`/api/update_based_on_sku_call/${packageTypeSelect.value}/${zestonSelect.value}/${this.value}/`)
+    .then(response => response.json())
+    .then(data => {
+        populateSelectOptions(zestonSelect, data.product_numbers);
+        populateSelectOptions(sizeSkuSelect, data.size_skus);
+        populateSelectOptions(sizeDescSelect, data.size_descs);
     });
+});
+
 
     sizeDescSelect.addEventListener("change", function() {
-        fetch(`/api/update_based_on_size/${this.value}/`)
+        fetch(`/api/update_based_on_size_call/${packageTypeSelect.value}/${zestonSelect.value}/${sizeSkuSelect.value}/${this.value}/`)
         .then(response => response.json())
         .then(data => {
             populateSelectOptions(zestonSelect, data.product_numbers);
@@ -65,5 +66,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 {% endblock %}
+
+
+
+
 
 

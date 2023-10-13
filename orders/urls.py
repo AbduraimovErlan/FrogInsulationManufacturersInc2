@@ -70,10 +70,13 @@ urlpatterns = [
 
 
 
-path('api/update_based_on_package/<str:package_type>/', views.update_based_on_package, name='update_based_on_package'),
-    path('api/update_based_on_product_number/<str:product_number>/', views.update_based_on_product_number, name='update_based_on_product_number'),
-    path('api/update_based_on_sku/<str:size_sku>/', views.update_based_on_sku, name='update_based_on_sku'),
-    path('api/update_based_on_size/<str:size_value>/', views.update_based_on_size, name='update_based_on_size'),
+    path('api/update_based_on_package_call/<str:package_type>/', views.update_based_on_package_call, name='update_based_on_package_call'),
+    path('api/update_based_on_product_number_call/<str:package_type>/<str:product_number>/', views.update_based_on_product_number_call,
+         name='update_based_on_product_number_call'),
+    path('api/update_based_on_sku_call/<str:package_type>/<str:product_number>/<str:size_sku>/', views.update_based_on_sku_call,
+         name='update_based_on_sku_call'),
+
+    path('api/update_based_on_size_call/<str:package_type>/<str:product_number>/<str:size_sku>/<str:size_value>/', views.update_based_on_size_call, name='update_based_on_size_call'),
 
 
 
