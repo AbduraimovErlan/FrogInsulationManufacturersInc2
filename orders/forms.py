@@ -27,25 +27,6 @@ class OrderForm(forms.ModelForm):
 
 
 
-class OrderItemForm(forms.ModelForm):
-    package_type = forms.ChoiceField(choices=ProductSize.PACKAGE_CHOICES, widget=forms.Select(attrs={'id': 'packageType'}))
-    size_sku = forms.ModelChoiceField(queryset=ProductSize.objects.all().values_list('size_sku', flat=True).distinct(),
-                                      widget=forms.Select(attrs={'id': 'size_sku'}))
-    product_number = forms.ModelChoiceField(
-        queryset=ProductSize.objects.all().values_list('product_number', flat=True).distinct(),
-        widget=forms.Select(attrs={'id': 'zeston'}))
-    size = forms.ModelChoiceField(
-        queryset=Size.objects.all(),
-        widget=forms.Select(attrs={'id': 'size_desc'}))
-
-    class Meta:
-        model = OrderItem
-        fields = ['package_type', 'product_number', 'size_sku', 'size', 'quantity']
-
-    def clean(self):
-        cleaned_data = super().clean()
-        # Вы можете добавить дополнительную валидацию здесь, если это необходимо
-        return cleaned_data
 
 
 

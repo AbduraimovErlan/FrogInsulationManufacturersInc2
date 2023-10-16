@@ -147,6 +147,8 @@ class ProductSize(models.Model):
 
 
 
+
+
 class Wishlist(models.Model):
     user = models.OneToOneField('auth.User', related_name='wishlist', on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, related_name='wishlists')

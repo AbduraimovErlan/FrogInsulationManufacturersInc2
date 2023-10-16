@@ -1,3 +1,5 @@
+from _decimal import InvalidOperation
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic import ListView, View
@@ -6,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
-from orders.forms import OrderItemForm, OrderForm
+from orders.forms import OrderForm
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
 from MainWepSite.models import Product, ProductSize, Size
 from django.contrib import messages
@@ -80,8 +82,8 @@ class CustomerOrderDetailView(BaseOrderDetailView):
                 'id': item.id,
                 'product': item.product,
                 'quantity': item.quantity,
-                'unit_price': item.price,  # добавлено
-                'total': item.price * item.quantity,
+                'unit_price': item.price_at_time_of_purchase,  # добавлено
+                'total': item.price_at_time_of_purchase * item.quantity,
                 'order_sku': item.order_sku,
                 'product_number': item.product_size.product_number,  # добавлено
                 'package_type': item.product_size.get_package_type_display(),  # добавлено
@@ -120,8 +122,8 @@ class OperatorOrderDetailView(BaseOrderDetailView):
                 'id': item.id,
                 'product': item.product,
                 'quantity': item.quantity,
-                'unit_price': item.price,  # добавлено
-                'total': item.price * item.quantity,
+                'unit_price': item.price_at_time_of_purchase,  # добавлено
+                'total': item.price_at_time_of_purchase * item.quantity,
                 'order_sku': item.order_sku,
                 'product_number': item.product_size.product_number,  # добавлено
                 'package_type': item.product_size.get_package_type_display(),  # добавлено
@@ -177,27 +179,48 @@ def edit_order_address(request, order_id, source="operator"):
 
     return render(request, 'templates_for_orders/edit_order_address.html', {'form': form, 'order': order})
 
-
-
 @login_required
 def edit_order_item(request, order_id, source):
     order_item = get_object_or_404(OrderItem, id=order_id)
 
     if request.method == "POST":
-        form = OrderItemForm(request.POST, instance=order_item)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Order item updated successfully.")
-            if source == 'warehouse':
-                return redirect('orders:warehouse_order_detail', order_id=order_item.order.id)
-            elif source == 'driver':
-                return redirect('orders:driver_order_detail', order_id=order_item.order.id)
-            else:  # Default to operator
-                return redirect('orders:operator_order_detail', order_id=order_item.order.id)
-    else:
-        form = OrderItemForm(instance=order_item)
+        # Updating quantity for OrderItem
+        try:
+            new_quantity = int(request.POST.get('quantity'))
+            order_item.quantity = new_quantity
+        except ValueError:
+            messages.error(request, "Invalid quantity value.")
+            return render(request, 'templates_for_orders/edit_order_item.html', {'order_item': order_item})
 
-    return render(request, 'templates_for_orders/edit_order_item.html', {'form': form, 'order_item': order_item})
+        # Updating size_price for associated ProductSize
+        try:
+            new_size_price = Decimal(request.POST.get('size_price'))
+            order_item.product_size.size_price = new_size_price
+            order_item.product_size.save()
+        except (ValueError, InvalidOperation):
+            messages.error(request, "Invalid size_price value.")
+            return render(request, 'templates_for_orders/edit_order_item.html', {'order_item': order_item})
+
+        order_item.save()
+        messages.success(request, "Order item updated successfully.")
+
+        if source == 'warehouse':
+            return redirect('orders:warehouse_order_detail', order_id=order_item.order.id)
+        elif source == 'driver':
+            return redirect('orders:driver_order_detail', order_id=order_item.order.id)
+        else:  # Default to operator
+            return redirect('orders:operator_order_detail', order_id=order_item.order.id)
+
+    context = {
+        'order_item': order_item
+    }
+
+    return render(request, 'templates_for_orders/edit_order_item.html', context)
+
+
+
+
+
 
 
 
@@ -305,43 +328,70 @@ def operator_create_order(request):
 
 
 class BaseAddProductView(View):
-    form_class = OrderItemForm
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class(initial=self.get_initial())
-        return render(request, self.template_name, {'form': form, 'order': self.order})
+        return render(request, self.template_name, self.get_context_data())
 
     def get_context_data(self, **kwargs):
         context = {
-            'order': self.order
+            'order': self.order,
+            'unique_package_types': ProductSize.objects.values_list('package_type', flat=True).distinct(),
+            'product_number': ProductSize.objects.values_list('product_number', flat=True).distinct(),
+            'size_sku': ProductSize.objects.values_list('size_sku', flat=True).distinct(),
+            'size_price': ProductSize.objects.values_list('size_price', flat=True).distinct(),
         }
         context.update(kwargs)
         return context
 
-    def get_initial(self):
-        return {
-            'order': self.order
-        }
-
     def dispatch(self, request, *args, **kwargs):
         self.order = get_object_or_404(Order, id=kwargs['order_id'])
+        print(f"Заказ ID: {self.order.id} {self.order}")
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return self.request.path
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            order_item = form.save(commit=False)
-            order_item.order = self.order
-            order_item.save()
-            messages.success(request, "Товар успешно добавлен к заказу!")
-            return redirect(self.get_success_url())
-        else:
-            return render(request, self.template_name, self.get_context_data(form=form))
+        # Получите данные из request.POST напрямую
+        product_id = request.POST.get('product')
+        package_type = request.POST.get('packageType')
+        product_number = request.POST.get('zeston')
+        size_sku = request.POST.get('size_sku')
+        size_id = request.POST.get('size_desc')  # предполагая, что поле 'value' Size является уникальным
+        quantity = request.POST.get('quantity')
 
+        # Валидация (это просто базовая валидация; вы можете добавить больше в зависимости от ваших требований)
+        if not all([product_id, package_type, product_number, size_sku, size_id, quantity]):
+            messages.error(request, "Пожалуйста, заполните все поля.")
+            return render(request, self.template_name, self.get_context_data())
 
+        # Проверка на уникальность SKU в сессии
+        session_key = f'order_skus_{self.order.id}'
+        session_skus = request.session.get(session_key, [])
+        if size_sku in session_skus:
+            messages.error(request,
+                           "Продукт с таким SKU уже существует в этом заказе. Пожалуйста, попробуйте использовать другой SKU.")
+            return render(request, self.template_name, self.get_context_data())
+
+        # Если SKU не найден в сессии, добавляем его туда
+        session_skus.append(size_sku)
+        request.session[session_key] = session_skus
+
+        # Создайте объект OrderItem напрямую
+        order_item = OrderItem(
+            order=self.order,
+            product_id=product_id,
+            package_type=package_type,
+            product_number=product_number,
+            size_sku=size_sku,
+            size_id=size_id,
+            quantity=quantity
+        )
+        order_item.save()
+
+        print(f"Товар {order_item.product} успешно добавлен к заказу {order_item.order.id}!")
+        messages.success(request, "Товар успешно добавлен к заказу!")
+        return redirect(self.get_success_url())
 
 
 class NewOrderCallView(BaseAddProductView):
@@ -371,27 +421,31 @@ class EditOrderCallView(BaseAddProductView):
 
 # Update this method to fetch the details from ProductSize, not Product:
 from django.http import JsonResponse
+from django.http import JsonResponse
+
+
+
 
 def update_based_on_package_call(request, package_type):
     data = {
-        'product_numbers': list(ProductSize.objects.filter(package_type=package_type).values_list('product_number', flat=True).distinct()),
-        'size_skus': list(ProductSize.objects.filter(package_type=package_type).values_list('size_sku', flat=True).distinct()),
-        'size_descs': list(ProductSize.objects.filter(package_type=package_type).values_list('size__value', flat=True).distinct())
+        'product_numbers': list(ProductSize.objects.filter(package_type=package_type).values_list('product_number', flat=True)),
+        'size_skus': list(ProductSize.objects.filter(package_type=package_type).values_list('size_sku', flat=True)),
+        'size_descs': list(ProductSize.objects.filter(package_type=package_type).values_list('size__value', flat=True))
     }
     return JsonResponse(data)
 
 def update_based_on_product_number_call(request, package_type, product_number):
     data = {
-        'size_skus': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number).values_list('size_sku', flat=True).distinct()),
-        'size_descs': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number).values_list('size__value', flat=True).distinct())
+        'size_skus': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number).values_list('size_sku', flat=True)),
+        'size_descs': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number).values_list('size__value', flat=True))
     }
     return JsonResponse(data)
 
 def update_based_on_sku_call(request, package_type, product_number, size_sku):
     data = {
-        'product_numbers': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('product_number', flat=True).distinct()),
-        'size_skus': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('size_sku', flat=True).distinct()),
-        'size_descs': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('size__value', flat=True).distinct())
+        'product_numbers': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('product_number', flat=True)),
+        'size_skus': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('size_sku', flat=True)),
+        'size_descs': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku).values_list('size__value', flat=True))
     }
     return JsonResponse(data)
 
@@ -399,9 +453,9 @@ def update_based_on_sku_call(request, package_type, product_number, size_sku):
 
 def update_based_on_size_call(request, package_type, product_number, size_sku, size_value):
     data = {
-        'product_numbers': list(ProductSize.objects.filter(product_number=product_number, package_type=package_type, size_sku=size_sku, size__value=size_value).values_list('product_number', flat=True).distinct()),
-        'size_skus': list(ProductSize.objects.filter(product_number=product_number, package_type=package_type, size_sku=size_sku, size__value=size_value).values_list('size_sku', flat=True).distinct()),
-        'size_descs': list(ProductSize.objects.filter(product_number=product_number, package_type=package_type, size_sku=size_sku, size__value=size_value).values_list('size__value', flat=True).distinct())
+        'product_numbers': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku, size__value=size_value).values_list('product_number', flat=True)),
+        'size_skus': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku, size__value=size_value).values_list('size_sku', flat=True)),
+        'size_descs': list(ProductSize.objects.filter(package_type=package_type, product_number=product_number, size_sku=size_sku, size__value=size_value).values_list('size__value', flat=True))
     }
     return JsonResponse(data)
 
@@ -631,8 +685,8 @@ def warehouse_order_detail(request, order_id):
             'id': item.id,
             'product': item.product,
             'quantity': item.quantity,
-            'unit_price': item.price,  # добавлено
-            'total': item.price * item.quantity,
+            'unit_price': item.price_at_time_of_purchase,  # добавлено
+            'total': item.price_at_time_of_purchase * item.quantity,
             'order_sku': item.order_sku,
             'product_number': item.product_size.product_number,  # добавлено
             'package_type': item.product_size.get_package_type_display(),  # добавлено
@@ -734,8 +788,8 @@ def order_detail(request, order_id):
             'id': item.id,
             'product': item.product,
             'quantity': item.quantity,
-            'unit_price': item.price,  # добавлено
-            'total': item.price * item.quantity,
+            'unit_price': item.price_at_time_of_purchase,  # добавлено
+            'total': item.price_at_time_of_purchase * item.quantity,
             'order_sku': item.order_sku,
             'product_number': item.product_size.product_number,  # добавлено
             'package_type': item.product_size.get_package_type_display(),  # добавлено
@@ -803,8 +857,8 @@ def DriverOrderDetailView(request, order_id):
             'id': item.id,
             'product': item.product,
             'quantity': item.quantity,
-            'unit_price': item.price,  # добавлено
-            'total': item.price * item.quantity,
+            'unit_price': item.price_at_time_of_purchase,  # добавлено
+            'total': item.price_at_time_of_purchase * item.quantity,
             'order_sku': item.order_sku,
             'product_number': item.product_size.product_number,  # добавлено
             'package_type': item.product_size.get_package_type_display(),  # добавлено
@@ -943,6 +997,19 @@ from django.shortcuts import render
 
 def current_user(request):
     return render(request, 'base.html', {'user': request.user})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

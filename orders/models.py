@@ -114,14 +114,18 @@ class OrderItem(models.Model):
     product = models.ForeignKey('MainWepSite.Product', related_name='order_items', on_delete=models.CASCADE)
     product_size = models.ForeignKey('MainWepSite.ProductSize', related_name='order_items', on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    price_at_time_of_purchase = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     order_sku = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"OrderItem #{self.id} for Order #{self.order.id}"
 
     def get_total_price(self):
-        return self.price * self.quantity
+        return self.price_at_time_of_purchase * self.quantity
+
+
+
+
 
 
 class Notification(models.Model):

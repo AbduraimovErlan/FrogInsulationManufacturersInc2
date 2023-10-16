@@ -142,12 +142,12 @@ def view_cart(request):
             if variant_id:
                 variant = ProductVariant.objects.get(id=variant_id)
                 attributes = variant.attributes.all()
-                price = variant.price
+                price = variant.price_at_time_of_purchase
             else:
                 # Если вариант не выбран, используется основной продукт
                 variant = product
                 attributes = []  # Основной продукт не имеет атрибутов
-                price = product.price
+                price = product.price_at_time_of_purchase
 
             total_price += price * quantity  # Расчет общей стоимости для данного товара
             cart_items.append({
@@ -345,7 +345,7 @@ def order_detail(request, order_id):
         items.append({
             'product': item.product,  # Объект товара
             'quantity': item.quantity,  # Количество товара в заказе
-            'total': item.product.price * item.quantity  # Общая стоимость товара в заказе
+            'total': item.product.price_at_time_of_purchase * item.quantity  # Общая стоимость товара в заказе
         })
 
     # Отправляем информацию о заказе и его товарах на страницу order_detail.html для отображения
