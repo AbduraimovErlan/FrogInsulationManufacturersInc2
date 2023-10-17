@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
-from orders.forms import OrderForm
+from orders.forms import OrderForm, OrderItemForm
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
 from MainWepSite.models import Product, ProductSize, Size
 from django.contrib import messages
@@ -29,16 +29,16 @@ def create_order(request):
                     product_id = item_data['product_id']
                     product = Product.objects.get(id=product_id)
                     product_size = ProductSize.objects.get(product=product, size_sku=sku)  # Получаем размер продукта по SKU
-                    price = Decimal(item_data['price'])
+                    price_at_time_of_purchase = Decimal(item_data['price'])
                     quantity = item_data['quantity']
-                    total_price += price * quantity
+                    total_price += price_at_time_of_purchase * quantity
 
                     order_item = OrderItem(
                         order=order,
                         product=product,
                         product_size=product_size,  # Указываем размер продукта
                         quantity=quantity,
-                        price=price,
+                        price_at_time_of_purchase=price_at_time_of_purchase,
                         order_sku=sku,
                     )
                     order_item.save()
@@ -83,7 +83,7 @@ class CustomerOrderDetailView(BaseOrderDetailView):
                 'product': item.product,
                 'quantity': item.quantity,
                 'unit_price': item.price_at_time_of_purchase,  # добавлено
-                'total': item.price_at_time_of_purchase * item.quantity,
+                'total': item.get_total_price(),
                 'order_sku': item.order_sku,
                 'product_number': item.product_size.product_number,  # добавлено
                 'package_type': item.product_size.get_package_type_display(),  # добавлено
@@ -123,7 +123,7 @@ class OperatorOrderDetailView(BaseOrderDetailView):
                 'product': item.product,
                 'quantity': item.quantity,
                 'unit_price': item.price_at_time_of_purchase,  # добавлено
-                'total': item.price_at_time_of_purchase * item.quantity,
+                'total': item.get_total_price(),
                 'order_sku': item.order_sku,
                 'product_number': item.product_size.product_number,  # добавлено
                 'package_type': item.product_size.get_package_type_display(),  # добавлено
@@ -335,6 +335,7 @@ class BaseAddProductView(View):
     def get_context_data(self, **kwargs):
         context = {
             'order': self.order,
+            'products': Product.objects.all(),
             'unique_package_types': ProductSize.objects.values_list('package_type', flat=True).distinct(),
             'product_number': ProductSize.objects.values_list('product_number', flat=True).distinct(),
             'size_sku': ProductSize.objects.values_list('size_sku', flat=True).distinct(),
@@ -377,16 +378,21 @@ class BaseAddProductView(View):
         session_skus.append(size_sku)
         request.session[session_key] = session_skus
 
+        # Получение объекта ProductSize на основе size_sku
+        try:
+            product_size = ProductSize.objects.get(size_sku=size_sku)
+        except ProductSize.DoesNotExist:
+            messages.error(request, "Продукт с таким SKU не найден.")
+            return render(request, self.template_name, self.get_context_data())
+
         # Создайте объект OrderItem напрямую
         order_item = OrderItem(
             order=self.order,
             product_id=product_id,
-            package_type=package_type,
-            product_number=product_number,
-            size_sku=size_sku,
-            size_id=size_id,
+            product_size_id=product_size.id,
             quantity=quantity
         )
+
         order_item.save()
 
         print(f"Товар {order_item.product} успешно добавлен к заказу {order_item.order.id}!")

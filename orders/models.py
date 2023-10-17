@@ -121,11 +121,9 @@ class OrderItem(models.Model):
         return f"OrderItem #{self.id} for Order #{self.order.id}"
 
     def get_total_price(self):
+        if self.price_at_time_of_purchase is None:
+            return 0
         return self.price_at_time_of_purchase * self.quantity
-
-
-
-
 
 
 class Notification(models.Model):
