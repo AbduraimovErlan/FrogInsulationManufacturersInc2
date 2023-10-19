@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'orders',
     'Warehouse1',
     'MainOffice',
+    'webcopy',
 ]
 
 MIDDLEWARE = [
