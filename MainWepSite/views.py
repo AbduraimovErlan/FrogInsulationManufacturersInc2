@@ -22,7 +22,7 @@ def index(request):
     brands = Brand.objects.all()
 
     # Фильтрация
-    category_slug = request.GET.get('category', None)
+    category_slug = request.GET.get('category.html', None)
     brand_slug = request.GET.get('brand', None)
     filter_category = request.GET.get('filter_category', '0')  # по умолчанию '0'
     filter_brand = request.GET.get('filter_brand', '0')  # по умолчанию '0'
@@ -36,7 +36,7 @@ def index(request):
     print(f"filter_category = {filter_category}, category_slug = {category_slug}")
     print(f"filter_brand = {filter_brand}, brand_slug = {brand_slug}")
 
-    return render(request, 'index.html', {
+    return render(request, 'ForMainWepSite/index.html', {
         'products': products,
         'categories': categories,
         'brands': brands,
@@ -84,7 +84,7 @@ def view_cart(request, size=None):
 
     request.session['cart'] = cart
 
-    return render(request, 'view_cart.html', {
+    return render(request, 'ForMainWepSite/view_cart.html', {
         'cart_items': cart_items,
         'total_price': total_price
     })
@@ -152,7 +152,7 @@ def add_to_cart(request, product_id):
             return redirect('MainWepSite:view_cart')
 
         except ProductSize.MultipleObjectsReturned:
-            messages.error(request, "Multiple matching product sizes found. Please contact support.")
+            messages.error(request, "Multiple matching product sizes found. Please contact.html support.")
             return redirect('MainWepSite:view_cart')
         except ValueError as e:
             messages.error(request, str(e))
@@ -254,7 +254,7 @@ def product_detail(request, slug):
 
     }
 
-    return render(request, 'product_detail.html', context)
+    return render(request, 'ForMainWepSite/product_detail.html', context)
 
 
 
@@ -343,13 +343,13 @@ def update_based_on_size(request, product_id, size_value):
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(category=category)
-    return render(request, 'category_detail.html', {'category': category, 'products': products})
+    return render(request, 'ForMainWepSite/category_detail.html', {'category.html': category, 'products': products})
 
 # Страница бренда
 def brand_detail(request, slug):
     brand = get_object_or_404(Brand, slug=slug)
     products = Product.objects.filter(brand=brand)
-    return render(request, 'brand_detail.html', {'brand': brand, 'products': products})
+    return render(request, 'ForMainWepSite/brand_detail.html', {'brand': brand, 'products': products})
 
 
 

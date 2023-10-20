@@ -37,10 +37,10 @@ urlpatterns = [
     path('delete/warehouse_worker_driver/<int:pk>/', WarehouseWorkerDriverDeleteView.as_view(), name='delete_warehouse_worker_driver'),
 
     # Login views
-    path('login/warehouse_supervisor/', WarehouseSupervisorLoginView.as_view(), name='login_warehouse_supervisor'),
-    path('login/warehouse_worker/', WarehouseWorkerLoginView.as_view(), name='login_warehouse_worker'),
-    path('login/driver/', DriverLoginView.as_view(), name='login_driver'),
-    path('login/warehouse_worker_driver/', WarehouseWorkerDriverLoginView.as_view(), name='login_warehouse_worker_driver'),
+    path('login.html/warehouse_supervisor/', WarehouseSupervisorLoginView.as_view(), name='login_warehouse_supervisor'),
+    path('login.html/warehouse_worker/', WarehouseWorkerLoginView.as_view(), name='login_warehouse_worker'),
+    path('login.html/driver/', DriverLoginView.as_view(), name='login_driver'),
+    path('login.html/warehouse_worker_driver/', WarehouseWorkerDriverLoginView.as_view(), name='login_warehouse_worker_driver'),
 
     # Other views
     path('all_employees_list/', AllEmployeesWarehouseListView.as_view(), name='all_employees_warehouse_list'),

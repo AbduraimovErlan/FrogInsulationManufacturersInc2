@@ -37,7 +37,7 @@ def index(request):
     brands = Brand.objects.all()
 
     # Фильтрация продуктов по категории и бренду
-    category_slug = request.GET.get('category', None)
+    category_slug = request.GET.get('category.html', None)
     brand_slug = request.GET.get('brand', None)
 
     # Получение параметров 'filter_category' и 'filter_brand' из GET-запроса (по умолчанию '0')
@@ -53,7 +53,7 @@ def index(request):
         products = products.filter(brand__slug=brand_slug)
 
     # Выводим фильтры и результаты на главной странице
-    return render(request, 'index.html', {
+    return render(request, 'ForMainWepSite/index.html', {
         'products': products,  # Список отфильтрованных продуктов
         'categories': categories,  # Список всех категорий
         'brands': brands,  # Список всех брендов
@@ -94,7 +94,7 @@ def product_detail(request, slug):
     }
 
     # Отображение страницы с информацией о продукте
-    return render(request, 'product_detail.html', context)
+    return render(request, 'ForMainWepSite/product_detail.html', context)
 
 def category_detail(request, slug):
     # Получение объекта категории по его slug, или возврат страницы 404, если категория не найдена
@@ -104,7 +104,7 @@ def category_detail(request, slug):
     products = Product.objects.filter(category=category)
 
     # Отображение страницы с информацией о категории и связанных продуктах
-    return render(request, 'category_detail.html', {'category': category, 'products': products})
+    return render(request, 'ForMainWepSite/category_detail.html', {'category.html': category, 'products': products})
 
 
 
@@ -116,7 +116,7 @@ def brand_detail(request, slug):
     products = Product.objects.filter(brand=brand)
 
     # Отображение страницы с информацией о бренде и связанных продуктах
-    return render(request, 'brand_detail.html', {'brand': brand, 'products': products})
+    return render(request, 'ForMainWepSite/brand_detail.html', {'brand': brand, 'products': products})
 
 
 def view_cart(request):
@@ -165,7 +165,7 @@ def view_cart(request):
     request.session['cart'] = cart  # Обновление корзины в сессии
 
     # Отображение страницы с информацией о корзине и элементах корзины
-    return render(request, 'view_cart.html', {
+    return render(request, 'ForMainWepSite/view_cart.html', {
         'cart_items': cart_items,
         'total_price': total_price  # Общая стоимость всех товаров в корзине
     })
@@ -403,7 +403,7 @@ def wishlist_view(request):
     # Получаем все товары в списке желаний
     products = wishlist.products.all()
     # Отправляем список товаров в шаблон для отображения
-    return render(request, 'wishlist.html', {'products': products})
+    return render(request, 'ForMainWepSite/wishlist.html', {'products': products})
 
 # Удаление товара из списка желаний
 def remove_from_wishlist(request, product_id):

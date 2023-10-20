@@ -177,7 +177,7 @@ from django.contrib.auth.models import Group
 
 class EmployeeRegistrationView(FormView):
     template_name = 'templates_for_office/register.html'
-    success_url = reverse_lazy('MainOffice:login')  # Redirect to login page after registration
+    success_url = reverse_lazy('MainOffice:login')  # Redirect to login.html page after registration
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

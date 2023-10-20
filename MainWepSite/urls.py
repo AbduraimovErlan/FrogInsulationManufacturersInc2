@@ -15,7 +15,7 @@ path('update_based_on_sku/<int:product_id>/<str:size_sku>/', views.update_based_
 path('update_based_on_size/<int:product_id>/<str:size_value>/', views.update_based_on_size, name='update_based_on_size'),
 
 
-    path('category/<slug:slug>/', views.category_detail, name='category_detail'),
+    path('category.html/<slug:slug>/', views.category_detail, name='category_detail'),
     path('brand/<slug:slug>/', views.brand_detail, name='brand_detail'),
 
 

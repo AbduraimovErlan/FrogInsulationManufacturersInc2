@@ -1002,7 +1002,7 @@ def mark_truck_as_fully_loaded_supervisor(request, driver_id):
 from django.shortcuts import render
 
 def current_user(request):
-    return render(request, 'base.html', {'user': request.user})
+    return render(request, 'ForMainWepSite/base.html', {'user': request.user})
 
 
 

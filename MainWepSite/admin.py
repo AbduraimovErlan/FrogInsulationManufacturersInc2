@@ -15,10 +15,10 @@ class ColorAdmin(admin.ModelAdmin):
 class ProductSizeAdmin(admin.ModelAdmin):
     list_display = ['product', 'size', 'size_price', 'size_sku', 'product_number', 'package_type']
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'sku', 'price', 'stock_quantity', 'category', 'brand',)
+    list_display = ('name', 'sku', 'price', 'stock_quantity', 'category.html', 'brand',)
     search_fields = ('name', 'sku', 'category__name', 'brand__name')
     prepopulated_fields = {'slug': ('name',)}
-    list_filter = ('category', 'brand')  # новое поле
+    list_filter = ('category.html', 'brand')  # новое поле
     readonly_fields = ('sales_count', 'rating')  # новое поле
 
 

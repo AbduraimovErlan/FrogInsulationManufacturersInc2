@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
                 ('stock_quantity', models.IntegerField(null=True)),
                 ('main_image', models.ImageField(blank=True, null=True, upload_to='products/main_images/')),
                 ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='MainWepSite.brand')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='MainWepSite.category')),
+                ('category.html', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='MainWepSite.category.html')),
                 ('colors', models.ManyToManyField(blank=True, null=True, to='MainWepSite.color')),
             ],
         ),
