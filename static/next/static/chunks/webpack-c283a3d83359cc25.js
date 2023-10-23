@@ -130,7 +130,7 @@
 		}, "undefined" != typeof trustedTypes && trustedTypes.createPolicy && (u = trustedTypes.createPolicy("nextjs#bundler", u))), u
 	}, s.tu = function(e) {
 		return s.tt().createScriptURL(e)
-	}, s.p = "/_next/", i = {
+	}, s.p = "/next/", i = {
 		2272: 0,
 		4661: 0
 	}, s.f.j = function(e, t) {

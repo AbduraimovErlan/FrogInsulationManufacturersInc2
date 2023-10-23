@@ -55,16 +55,16 @@ urlpatterns = [
     path('delete/accounts_payable/<int:pk>/', AccountsPayableDeleteView.as_view(), name='delete_accounts_payable'),
 
     # Login views
-    path('login.html/president/', PresidentLoginView.as_view(), name='login_president'),
-    path('login.html/operational_manager/', OperationalManagerLoginView.as_view(), name='login_operational_manager'),
-    path('login.html/accounts_receivable_manager/', AccountsReceivableManagerLoginView.as_view(),
+    path('login/president/', PresidentLoginView.as_view(), name='login_president'),
+    path('login/operational_manager/', OperationalManagerLoginView.as_view(), name='login_operational_manager'),
+    path('login/accounts_receivable_manager/', AccountsReceivableManagerLoginView.as_view(),
          name='login_accounts_receivable_manager'),
-    path('login.html/accounts_receivable/', AccountsReceivableLoginView.as_view(), name='login_accounts_receivable'),
-    path('login.html/accounts_payable/', AccountsPayableLoginView.as_view(), name='login_accounts_payable'),
+    path('login/accounts_receivable/', AccountsReceivableLoginView.as_view(), name='login_accounts_receivable'),
+    path('login/accounts_payable/', AccountsPayableLoginView.as_view(), name='login_accounts_payable'),
 
     # Other views
     path('all_employees/', AllEmployeesListView.as_view(), name='all_employees_list'),
-    path('register.html/', EmployeeRegistrationView.as_view(), name='register_employee'),
-    path('login.html/', BaseLoginView.as_view(), name='login.html'),
+    path('register/', EmployeeRegistrationView.as_view(), name='register_employee'),
+    path('login/', BaseLoginView.as_view(), name='login'),
 ]
 
