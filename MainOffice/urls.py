@@ -65,6 +65,6 @@ urlpatterns = [
     # Other views
     path('all_employees/', AllEmployeesListView.as_view(), name='all_employees_list'),
     path('register/', EmployeeRegistrationView.as_view(), name='register_employee'),
-    path('login/', BaseLoginView.as_view(), name='login'),
+    path('login/', BaseLoginView.as_view(), name='login_employee'),
 ]
 

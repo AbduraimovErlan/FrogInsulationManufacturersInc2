@@ -12,13 +12,33 @@ GENDER_TYPE = (
 )
 
 class BaseEmployeeForm(forms.ModelForm):
-    username = forms.CharField(required=True, max_length=150, label="Username")
-    email = forms.EmailField(required=True)
-    phone_number = forms.CharField(required=True)
-    age = forms.IntegerField(required=True)
+    username = forms.CharField(
+        required=True,
+        max_length=150,
+        label="Username",
+        widget=forms.TextInput(attrs={'placeholder': 'Введите имя пользователя'})
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'placeholder': 'info@example.com'})
+    )
+    phone_number = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': 'Номер телефона'})
+    )
+    age = forms.IntegerField(
+        required=True,
+        widget=forms.NumberInput(attrs={'placeholder': 'Возраст'})
+    )
     gender = forms.ChoiceField(choices=GENDER_TYPE, required=True)
-    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'})
+    )
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={'placeholder': 'Подтвердите пароль'})
+    )
 
     class Meta:
         fields = ['username', 'email', 'phone_number', 'age', 'gender', 'password1', 'password2']
