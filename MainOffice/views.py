@@ -9,7 +9,7 @@ from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from .forms import (
     PresidentForm, OperationalManagerForm, AccountsReceivableManagerForm,
-    AccountsReceivableForm, AccountsPayableForm
+    AccountsReceivableForm, AccountsPayableForm, BaseEmployeeForm
 )
 from django.contrib.auth.forms import UserCreationForm
 
@@ -175,49 +175,52 @@ class AllEmployeesListView(TemplateView):
 from django.contrib.auth.models import Group
 
 
+
+
+from django.contrib.auth.models import Group
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormView
+
 class EmployeeRegistrationView(FormView):
     template_name = 'templates_for_office/register.html'
-    success_url = reverse_lazy('MainOffice:login')  # Redirect to login.html page after registration
+    success_url = reverse_lazy('MainOffice:login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user_form"] = UserCreationForm()
+        form_class = self.get_form_class()
+        context["user_form"] = form_class()
         return context
 
     def post(self, request, *args, **kwargs):
-        user_form = UserCreationForm(request.POST)
-        role = request.POST.get('role')
-
-        if user_form.is_valid():
-            user = user_form.save()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid():
+            user = form.save()
 
             # Add user to a group based on their role
+            role = request.POST.get('role')
             group = Group.objects.get(name=role)
             user.groups.add(group)
 
-            # Create corresponding employee entry
+            # Depending on the role, create the employee
             if role == "president":
-                president = President(user=user)
-                president.save()
+                President.objects.create(user=user)
             elif role == "operational_manager":
-                operational_manager = OperationalManager(user=user)
-                operational_manager.save()
+                OperationalManager.objects.create(user=user)
             elif role == "accounts_receivable_manager":
-                accounts_receivable_manager = AccountsReceivableManager(user=user)
-                accounts_receivable_manager.save()
+                AccountsReceivableManager.objects.create(user=user)
             elif role == "accounts_receivable":
-                accounts_receivable = AccountsReceivable(user=user)
-                accounts_receivable.save()
+                AccountsReceivable.objects.create(user=user)
             elif role == "accounts_payable":
-                accounts_payable = AccountsPayable(user=user)
-                accounts_payable.save()
+                AccountsPayable.objects.create(user=user)
+            # ... (do the same for other roles)
 
-            return self.form_valid(user_form)
+            return self.form_valid(form)
         else:
-            return self.form_invalid(user_form)
+            return self.form_invalid(form)
 
     def get_form_class(self):
-        role = self.request.POST.get('role', None)  # Используйте None вместо 'president'
+        role = self.request.POST.get('role', None)
         if role == "president":
             return PresidentForm
         elif role == "operational_manager":
@@ -228,8 +231,71 @@ class EmployeeRegistrationView(FormView):
             return AccountsReceivableForm
         elif role == "accounts_payable":
             return AccountsPayableForm
+        # ... (do the same for other roles)
         else:
-            return UserCreationForm
+            return PresidentForm
+
+
+
+
+
+
+#
+# class EmployeeRegistrationView(FormView):
+#     template_name = 'templates_for_office/register.html'
+#     success_url = reverse_lazy('MainOffice:login')  # Redirect to login.html page after registration
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["user_form"] = UserCreationForm()
+#         return context
+#
+#     def post(self, request, *args, **kwargs):
+#         user_form = UserCreationForm(request.POST)
+#         role = request.POST.get('role')
+#
+#         if user_form.is_valid():
+#             user = user_form.save()
+#
+#             # Add user to a group based on their role
+#             group = Group.objects.get(name=role)
+#             user.groups.add(group)
+#
+#             # Create corresponding employee entry
+#             if role == "president":
+#                 president = President(user=user)
+#                 president.save()
+#             elif role == "operational_manager":
+#                 operational_manager = OperationalManager(user=user)
+#                 operational_manager.save()
+#             elif role == "accounts_receivable_manager":
+#                 accounts_receivable_manager = AccountsReceivableManager(user=user)
+#                 accounts_receivable_manager.save()
+#             elif role == "accounts_receivable":
+#                 accounts_receivable = AccountsReceivable(user=user)
+#                 accounts_receivable.save()
+#             elif role == "accounts_payable":
+#                 accounts_payable = AccountsPayable(user=user)
+#                 accounts_payable.save()
+#
+#             return self.form_valid(user_form)
+#         else:
+#             return self.form_invalid(user_form)
+#
+#     def get_form_class(self):
+#         role = self.request.POST.get('role', None)  # Используйте None вместо 'president'
+#         if role == "president":
+#             return PresidentForm
+#         elif role == "operational_manager":
+#             return OperationalManagerForm
+#         elif role == "accounts_receivable_manager":
+#             return AccountsReceivableManagerForm
+#         elif role == "accounts_receivable":
+#             return AccountsReceivableForm
+#         elif role == "accounts_payable":
+#             return AccountsPayableForm
+#         else:
+#             return UserCreationForm
 
 
 

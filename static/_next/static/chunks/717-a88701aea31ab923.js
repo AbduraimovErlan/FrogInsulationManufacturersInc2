@@ -329,7 +329,7 @@
 					className: "swiper-button-prev"
 				}), s.createElement("div", {
 					ref: D,
-					className: "swiper-button-next"
+					className: "swiper-button-_next"
 				})), d(G) && s.createElement("div", {
 					ref: B,
 					className: "swiper-scrollbar"
@@ -381,7 +381,7 @@
 						isVisible: c.indexOf("swiper-slide-visible") >= 0,
 						isDuplicate: c.indexOf("swiper-slide-duplicate") >= 0,
 						isPrev: c.indexOf("swiper-slide-prev") >= 0 || c.indexOf("swiper-slide-duplicate-prev") >= 0,
-						isNext: c.indexOf("swiper-slide-next") >= 0 || c.indexOf("swiper-slide-duplicate-next") >= 0
+						isNext: c.indexOf("swiper-slide-_next") >= 0 || c.indexOf("swiper-slide-duplicate-_next") >= 0
 					},
 					b = () => "function" == typeof a ? a(v) : a;
 				return s.createElement(i, C({
@@ -1388,8 +1388,8 @@
 				slideDuplicateActiveClass: "swiper-slide-duplicate-active",
 				slideVisibleClass: "swiper-slide-visible",
 				slideDuplicateClass: "swiper-slide-duplicate",
-				slideNextClass: "swiper-slide-next",
-				slideDuplicateNextClass: "swiper-slide-duplicate-next",
+				slideNextClass: "swiper-slide-_next",
+				slideDuplicateNextClass: "swiper-slide-duplicate-_next",
 				slidePrevClass: "swiper-slide-prev",
 				slideDuplicatePrevClass: "swiper-slide-duplicate-prev",
 				wrapperClass: "swiper-wrapper",
@@ -2843,7 +2843,7 @@
 				function d() {
 					let t = e.params.navigation;
 					if (e.params.navigation = R(e, e.originalParams.navigation, e.params.navigation, {
-							nextEl: "swiper-button-next",
+							nextEl: "swiper-button-_next",
 							prevEl: "swiper-button-prev"
 						}), !(t.nextEl || t.prevEl)) return;
 					let i = a(t.nextEl),
@@ -2987,7 +2987,7 @@
 					if (e.params.loop ? ((t = Math.ceil((e.activeIndex - e.loopedSlides) / e.params.slidesPerGroup)) > d - 1 - 2 * e.loopedSlides && (t -= d - 2 * e.loopedSlides), t > u - 1 && (t -= u), t < 0 && "bullets" !== e.params.paginationType && (t = u + t)) : t = void 0 !== e.snapIndex ? e.snapIndex : e.activeIndex || 0, "bullets" === r.type && e.pagination.bullets && e.pagination.bullets.length > 0) {
 						let s, l, d;
 						let u = e.pagination.bullets;
-						if (r.dynamicBullets && (a = u.eq(0)[e.isHorizontal() ? "outerWidth" : "outerHeight"](!0), p.css(e.isHorizontal() ? "width" : "height", `${a*(r.dynamicMainBullets+4)}px`), r.dynamicMainBullets > 1 && void 0 !== e.previousIndex && ((n += t - (e.previousIndex - e.loopedSlides || 0)) > r.dynamicMainBullets - 1 ? n = r.dynamicMainBullets - 1 : n < 0 && (n = 0)), d = ((l = (s = Math.max(t - n, 0)) + (Math.min(u.length, r.dynamicMainBullets) - 1)) + s) / 2), u.removeClass(["", "-next", "-next-next", "-prev", "-prev-prev", "-main"].map(e => `${r.bulletActiveClass}${e}`).join(" ")), p.length > 1) u.each(e => {
+						if (r.dynamicBullets && (a = u.eq(0)[e.isHorizontal() ? "outerWidth" : "outerHeight"](!0), p.css(e.isHorizontal() ? "width" : "height", `${a*(r.dynamicMainBullets+4)}px`), r.dynamicMainBullets > 1 && void 0 !== e.previousIndex && ((n += t - (e.previousIndex - e.loopedSlides || 0)) > r.dynamicMainBullets - 1 ? n = r.dynamicMainBullets - 1 : n < 0 && (n = 0)), d = ((l = (s = Math.max(t - n, 0)) + (Math.min(u.length, r.dynamicMainBullets) - 1)) + s) / 2), u.removeClass(["", "-_next", "-_next-_next", "-prev", "-prev-prev", "-main"].map(e => `${r.bulletActiveClass}${e}`).join(" ")), p.length > 1) u.each(e => {
 							let i = m(e),
 								a = i.index();
 							a === t && i.addClass(r.bulletActiveClass), r.dynamicBullets && (a >= s && a <= l && i.addClass(`${r.bulletActiveClass}-main`), a === s && o(i, "prev"), a === l && o(i, "next"))

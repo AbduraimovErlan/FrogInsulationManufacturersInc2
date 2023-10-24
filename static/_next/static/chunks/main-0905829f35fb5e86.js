@@ -232,7 +232,7 @@
 						o !== document.title && (document.title = o), ["meta", "base", "link", "style", "script"].forEach(e => {
 							(function(e, t) {
 								let r = document.getElementsByTagName("head")[0],
-									o = r.querySelector("meta[name=next-head-count]"),
+									o = r.querySelector("meta[name=_next-head-count]"),
 									i = Number(o.content),
 									l = [];
 								for (let t = 0, r = o.previousElementSibling; t < i; t++, r = (null == r ? void 0 : r.previousElementSibling) || null) {
@@ -374,7 +374,7 @@
 				return (V = g(function*() {
 					arguments.length > 0 && void 0 !== arguments[0] && arguments[0], a = JSON.parse(document.getElementById("__NEXT_DATA__").textContent), window.__NEXT_DATA__ = a, h = a.defaultLocale;
 					let e = a.assetPrefix || "";
-					if (r.p = "".concat(e, "/next/"), j.setConfig({
+					if (r.p = "".concat(e, "/_next/"), j.setConfig({
 							serverRuntimeConfig: {},
 							publicRuntimeConfig: a.runtimeConfig || {}
 						}), o = O.getURL(), B.hasBasePath(o) && (o = D.removeBasePath(o)), a.scriptLoader) {
@@ -423,7 +423,7 @@
 					value: {
 						deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
 						imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-						path: "/next/image",
+						path: "/_next/image",
 						loader: "default",
 						dangerouslyAllowSVG: !1,
 						unoptimized: !1
@@ -589,7 +589,7 @@
 						}
 					}
 				}), _.default.createElement(Y, null, X(r, d), _.default.createElement(R.Portal, {
-					type: "next-route-announcer"
+					type: "_next-route-announcer"
 				}, _.default.createElement(T.RouteAnnouncer, null))));
 				return ! function(e, t) {
 					O.ST && performance.mark("beforeRender");
@@ -783,7 +783,7 @@
 					if ("/" !== m[0]) throw Error('Route name should start with a "/", got "'.concat(m, '"'));
 					return (e => {
 						let t = i.default(c.removeTrailingSlash(l.addLocale(e, n)), ".json");
-						return a.addBasePath("/next/data/".concat(this.buildId).concat(t).concat(p), !0)
+						return a.addBasePath("/_next/data/".concat(this.buildId).concat(t).concat(p), !0)
 					})(e.skipInterpolation ? h : s.isDynamicRoute(m) ? o.interpolateAs(d, h, f).result : m)
 				}
 				_isSsg(e) {
@@ -1097,7 +1097,7 @@
 			function d(e, t) {
 				return c().then(r => {
 					if (!(t in r)) throw l(Error("Failed to lookup route: ".concat(t)));
-					let a = r[t].map(t => e + "/next/" + encodeURI(t));
+					let a = r[t].map(t => e + "/_next/" + encodeURI(t));
 					return {
 						scripts: a.filter(e => e.endsWith(".js")).map(e => n.__unsafeCreateTrustedScriptURL(e)),
 						css: a.filter(e => e.endsWith(".css"))
@@ -1162,7 +1162,7 @@
 				d = ["push", "replace", "reload", "back", "prefetch", "beforePopState"];
 
 			function f() {
-				if (!u.router) throw Error('No router instance found.\nYou should only use "next/router" on the client side of your app.\n');
+				if (!u.router) throw Error('No router instance found.\nYou should only use "_next/router" on the client side of your app.\n');
 				return u.router
 			}
 			Object.defineProperty(u, "events", {
@@ -1476,10 +1476,10 @@
 						style: u.error
 					}, o.default.createElement(i.default, null, o.default.createElement("title", null, e ? "".concat(e, ": ").concat(r) : "Application error: a client-side exception has occurred")), o.default.createElement("div", null, o.default.createElement("style", {
 						dangerouslySetInnerHTML: {
-							__html: "\n                body { margin: 0; color: #000; background: #fff; }\n                .next-error-h1 {\n                  border-right: 1px solid rgba(0, 0, 0, .3);\n                }\n\n                ".concat(t ? "@media (prefers-color-scheme: dark) {\n                  body { color: #fff; background: #000; }\n                  .next-error-h1 {\n                    border-right: 1px solid rgba(255, 255, 255, .3);\n                  }\n                }" : "")
+							__html: "\n                body { margin: 0; color: #000; background: #fff; }\n                ._next-error-h1 {\n                  border-right: 1px solid rgba(0, 0, 0, .3);\n                }\n\n                ".concat(t ? "@media (prefers-color-scheme: dark) {\n                  body { color: #fff; background: #000; }\n                  ._next-error-h1 {\n                    border-right: 1px solid rgba(255, 255, 255, .3);\n                  }\n                }" : "")
 						}
 					}), e ? o.default.createElement("h1", {
-						className: "next-error-h1",
+						className: "_next-error-h1",
 						style: u.h1
 					}, e) : null, o.default.createElement("div", {
 						style: u.desc
@@ -1685,7 +1685,7 @@
 			}), t.imageConfigDefault = t.VALID_LOADERS = void 0, t.VALID_LOADERS = ["default", "imgix", "cloudinary", "akamai", "custom"], t.imageConfigDefault = {
 				deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
 				imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-				path: "/next/image",
+				path: "/_next/image",
 				loader: "default",
 				loaderFile: "",
 				domains: [],
@@ -1939,7 +1939,7 @@
 					i = o ? a.slice(o[0].length) : a,
 					s = i.split("?");
 				if ((s[0] || "").match(/(\/\/|\\)/)) {
-					console.error("Invalid href passed to next/router: ".concat(a, ", repeated forward-slashes (//) or backslashes \\ are not valid in the href"));
+					console.error("Invalid href passed to _next/router: ".concat(a, ", repeated forward-slashes (//) or backslashes \\ are not valid in the href"));
 					let e = m.normalizeRepeatedSlashes(i);
 					a = (o ? o[0] : "") + e
 				}
@@ -2963,7 +2963,7 @@
 				value: !0
 			}), t.formatNextPathnameInfo = function(e) {
 				let t = i.addLocale(e.pathname, e.locale, e.buildId ? void 0 : e.defaultLocale, e.ignorePrefix);
-				return (e.buildId || !e.trailingSlash) && (t = n.removeTrailingSlash(t)), e.buildId && (t = o.addPathSuffix(a.addPathPrefix(t, "/next/data/".concat(e.buildId)), "/" === e.pathname ? "index.json" : ".json")), t = a.addPathPrefix(t, e.basePath), !e.buildId && e.trailingSlash ? t.endsWith("/") ? t : o.addPathSuffix(t, "/") : n.removeTrailingSlash(t)
+				return (e.buildId || !e.trailingSlash) && (t = n.removeTrailingSlash(t)), e.buildId && (t = o.addPathSuffix(a.addPathPrefix(t, "/_next/data/".concat(e.buildId)), "/" === e.pathname ? "index.json" : ".json")), t = a.addPathPrefix(t, e.basePath), !e.buildId && e.trailingSlash ? t.endsWith("/") ? t : o.addPathSuffix(t, "/") : n.removeTrailingSlash(t)
 			};
 			var n = r(12),
 				a = r(4135),
@@ -3015,7 +3015,7 @@
 					pathname: e,
 					trailingSlash: "/" !== e ? e.endsWith("/") : s
 				};
-				if (i && o.pathHasPrefix(u.pathname, i) && (u.pathname = a.removePathPrefix(u.pathname, i), u.basePath = i), !0 === t.parseData && u.pathname.startsWith("/next/data/") && u.pathname.endsWith(".json")) {
+				if (i && o.pathHasPrefix(u.pathname, i) && (u.pathname = a.removePathPrefix(u.pathname, i), u.basePath = i), !0 === t.parseData && u.pathname.startsWith("/_next/data/") && u.pathname.endsWith(".json")) {
 					let e = u.pathname.replace(/^\/_next\/data\//, "").replace(/\.json$/, "").split("/"),
 						t = e[0];
 					u.pathname = "index" !== e[1] ? "/".concat(e.slice(1).join("/")) : "/", u.buildId = t

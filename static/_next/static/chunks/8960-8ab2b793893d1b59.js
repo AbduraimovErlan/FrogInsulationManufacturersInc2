@@ -8636,10 +8636,10 @@
 											e = t0(r.state.date, r.props)
 									}
 									if ((r.props.forceShowMonthNavigation || r.props.showDisabledMonthNavigation || !e) && !r.props.showTimeSelectOnly) {
-										var t = ["react-datepicker__navigation", "react-datepicker__navigation--next"];
-										r.props.showTimeSelect && t.push("react-datepicker__navigation--next--with-time"), r.props.todayButton && t.push("react-datepicker__navigation--next--with-today-button");
+										var t = ["react-datepicker__navigation", "react-datepicker__navigation--_next"];
+										r.props.showTimeSelect && t.push("react-datepicker__navigation--_next--with-time"), r.props.todayButton && t.push("react-datepicker__navigation--_next--with-today-button");
 										var n = r.increaseMonth;
-										(r.props.showMonthYearPicker || r.props.showQuarterYearPicker || r.props.showYearPicker) && (n = r.increaseYear), e && r.props.showDisabledMonthNavigation && (t.push("react-datepicker__navigation--next--disabled"), n = null);
+										(r.props.showMonthYearPicker || r.props.showQuarterYearPicker || r.props.showYearPicker) && (n = r.increaseYear), e && r.props.showDisabledMonthNavigation && (t.push("react-datepicker__navigation--_next--disabled"), n = null);
 										var o = r.props.showMonthYearPicker || r.props.showQuarterYearPicker || r.props.showYearPicker,
 											a = r.props,
 											i = a.nextMonthButtonLabel,
@@ -8654,7 +8654,7 @@
 											onKeyDown: r.props.handleOnKeyDown,
 											"aria-label": o ? void 0 === l ? "string" == typeof u ? u : "Next Year" : l : void 0 === s ? "string" == typeof i ? i : "Next Month" : s
 										}, eh.default.createElement("span", {
-											className: "react-datepicker__navigation-icon react-datepicker__navigation-icon--next"
+											className: "react-datepicker__navigation-icon react-datepicker__navigation-icon--_next"
 										}, o ? r.props.nextYearButtonLabel : r.props.nextMonthButtonLabel))
 									}
 								}

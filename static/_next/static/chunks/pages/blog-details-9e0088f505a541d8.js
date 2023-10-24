@@ -244,9 +244,9 @@
 											})]
 										})]
 									}), (0, a.jsxs)("div", {
-										className: "next-prev-pages-area mb-120",
+										className: "_next-prev-pages-area mb-120",
 										children: [(0, a.jsx)("div", {
-											className: "previous-area next-area",
+											className: "previous-area _next-area",
 											children: (0, a.jsx)(r(), {
 												legacyBehavior: !0,
 												href: "/blog-details",
@@ -274,7 +274,7 @@
 												})
 											})
 										}), (0, a.jsx)("div", {
-											className: "previous-area next-area two",
+											className: "previous-area _next-area two",
 											children: (0, a.jsx)(r(), {
 												legacyBehavior: !0,
 												href: "/blog-details",

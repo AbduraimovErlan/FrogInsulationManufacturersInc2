@@ -1,5 +1,6 @@
 from django import forms
 from MainOffice.models import President, OperationalManager, AccountsReceivableManager, AccountsReceivable, AccountsPayable
+from django.contrib.auth.models import User
 
 MALE = 1
 FEMALE = 2
@@ -11,6 +12,7 @@ GENDER_TYPE = (
 )
 
 class BaseEmployeeForm(forms.ModelForm):
+    username = forms.CharField(required=True, max_length=150, label="Username")
     email = forms.EmailField(required=True)
     phone_number = forms.CharField(required=True)
     age = forms.IntegerField(required=True)
@@ -19,11 +21,10 @@ class BaseEmployeeForm(forms.ModelForm):
     password2 = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
 
     class Meta:
-        fields = ['user', 'email', 'phone_number', 'age', 'gender', 'password1', 'password2']  # Общие поля для всех сотрудников
+        fields = ['username', 'email', 'phone_number', 'age', 'gender', 'password1', 'password2']
 
     def save(self, commit=True):
-        user = super(BaseEmployeeForm, self).save(commit=False)
-        user.email = self.cleaned_data['email']
+        user = User(username=self.cleaned_data['username'], email=self.cleaned_data['email'])
         password = self.cleaned_data.get('password1')
         user.set_password(password)
         if commit:
@@ -37,7 +38,6 @@ class BaseEmployeeForm(forms.ModelForm):
         if password1 != password2:
             raise forms.ValidationError("The two password fields didn’t match.")
         return cleaned_data
-
 
 class PresidentForm(BaseEmployeeForm):
     class Meta(BaseEmployeeForm.Meta):
