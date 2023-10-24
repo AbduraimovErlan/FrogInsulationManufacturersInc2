@@ -4559,8 +4559,8 @@
 	font-style: normal;
 	font-weight: 400;
 	font-display: block;
-	src: url(/_next/static/media/fa-regular-400.a0140e7c.eot);
-	src: url(/_next/static/media/fa-regular-400.a0140e7c.eot?#iefix) format("embedded-opentype"), url(/_next/static/media/fa-regular-400.e2b3a9dc.woff2) format("woff2"), url(/_next/static/media/fa-regular-400.04dd5282.woff) format("woff"), url(/_next/static/media/fa-regular-400.7346017c.ttf) format("truetype"), url(/_next/static/media/fa-regular-400.ee37fbcc.svg#fontawesome) format("svg")
+	src: url(/static/_next/static/media/fa-regular-400.a0140e7c.eot);
+	src: url(/static/_next/static/media/fa-regular-400.a0140e7c.eot?#iefix) format("embedded-opentype"), url(/static/_next/static/media/fa-regular-400.e2b3a9dc.woff2) format("woff2"), url(/static/_next/static/media/fa-regular-400.04dd5282.woff) format("woff"), url(/static/_next/static/media/fa-regular-400.7346017c.ttf) format("truetype"), url(/static/_next/static/media/fa-regular-400.ee37fbcc.svg#fontawesome) format("svg")
 }
 .fab, .far {
 	font-weight: 400
@@ -4570,8 +4570,8 @@
 	font-style: normal;
 	font-weight: 900;
 	font-display: block;
-	src: url(/_next/static/media/fa-solid-900.974801a4.eot);
-	src: url(/_next/static/media/fa-solid-900.974801a4.eot?#iefix) format("embedded-opentype"), url(/_next/static/media/fa-solid-900.620019ed.woff2) format("woff2"), url(/_next/static/media/fa-solid-900.e67670b0.woff) format("woff"), url(/_next/static/media/fa-solid-900.d5b0a356.ttf) format("truetype"), url(/_next/static/media/fa-solid-900.cd7322bf.svg#fontawesome) format("svg")
+	src: url(/static/_next/static/media/fa-solid-900.974801a4.eot);
+	src: url(/static/_next/static/media/fa-solid-900.974801a4.eot?#iefix) format("embedded-opentype"), url(/static/_next/static/media/fa-solid-900.620019ed.woff2) format("woff2"), url(/static/_next/static/media/fa-solid-900.e67670b0.woff) format("woff"), url(/static/_next/static/media/fa-solid-900.d5b0a356.ttf) format("truetype"), url(/static/_next/static/media/fa-solid-900.cd7322bf.svg#fontawesome) format("svg")
 }
 .fa, .far, .fas {
 	font-family: Font Awesome\ 5 Free
@@ -14309,8 +14309,8 @@ textarea.form-control-lg {
 	font-family: boxicons;
 	font-weight: 400;
 	font-style: normal;
-	src: url(/_next/static/media/boxicons.60e4d67e.eot);
-	src: url(/_next/static/media/boxicons.60e4d67e.eot) format("embedded-opentype"), url(/_next/static/media/boxicons.5814ebb1.woff2) format("woff2"), url(/_next/static/media/boxicons.8b8c7986.woff) format("woff"), url(/_next/static/media/boxicons.55cab627.ttf) format("truetype"), url(/_next/static/media/boxicons.3ffef2be.svg?#boxicons) format("svg")
+	src: url(/static/_next/static/media/boxicons.60e4d67e.eot);
+	src: url(/static/_next/static/media/boxicons.60e4d67e.eot) format("embedded-opentype"), url(/static/_next/static/media/boxicons.5814ebb1.woff2) format("woff2"), url(/static/_next/static/media/boxicons.8b8c7986.woff) format("woff"), url(/static/_next/static/media/boxicons.55cab627.ttf) format("truetype"), url(/static/_next/static/media/boxicons.3ffef2be.svg?#boxicons) format("svg")
 }
 .bx {
 	font-family: boxicons!important;
@@ -19082,7 +19082,7 @@ textarea.form-control-lg {
 }
 @font-face {
 	font-family: bootstrap-icons;
-	src: url(/_next/static/media/bootstrap-icons.eb8b2761.woff) format("woff2"), url(/_next/static/media/bootstrap-icons.afb4c7d9.woff2) format("woff")
+	src: url(/static/_next/static/media/bootstrap-icons.eb8b2761.woff) format("woff2"), url(/_next/static/media/bootstrap-icons.afb4c7d9.woff2) format("woff")
 }
 .bi:before, [class*=" bi-"]:before, [class^=bi-]:before {
 	display: inline-block;
@@ -24220,14 +24220,14 @@ button.swiper-pagination-bullet {
 	overflow: hidden
 }
 .slick-loading .slick-list {
-	background: #fff url(/next/static/media/ajax-loader.0b80f665.gif) 50% no-repeat
+	background: #fff url(/static/next/static/media/ajax-loader.0b80f665.gif) 50% no-repeat
 }
 @font-face {
 	font-family: slick;
 	font-weight: 400;
 	font-style: normal;
-	src: url(/next/static/media/slick.25572f22.eot);
-	src: url(/next/static/media/slick.25572f22.eot?#iefix) format("embedded-opentype"), url(/next/static/media/slick.653a4cbb.woff) format("woff"), url(/next/static/media/slick.6aa1ee46.ttf) format("truetype"), url(/next/static/media/slick.f895cfdf.svg#slick) format("svg")
+	src: url(/static/next/static/media/slick.25572f22.eot);
+	src: url(/static/next/static/media/slick.25572f22.eot?#iefix) format("embedded-opentype"), url(/static/next/static/media/slick.653a4cbb.woff) format("woff"), url(/static/next/static/media/slick.6aa1ee46.ttf) format("truetype"), url(/static/next/static/media/slick.f895cfdf.svg#slick) format("svg")
 }
 .slick-next, .slick-prev {
 	font-size: 0;
@@ -24796,62 +24796,62 @@ img.mfp-img {
 }
 @font-face {
 	font-family: Work Sans;
-	src: url(/_next/static/media/WorkSans-Black.7ed4ed95.ttf) format("truetype");
+	src: url(/static/_next/static/media/WorkSans-Black.7ed4ed95.ttf) format("truetype");
 	font-weight: 900
 }
 @font-face {
 	font-family: Work Sans;
-	src: url(/_next/static/media/WorkSans-ExtraBold.45d1feb4.ttf) format("truetype");
+	src: url(/static/_next/static/media/WorkSans-ExtraBold.45d1feb4.ttf) format("truetype");
 	font-weight: 800
 }
 @font-face {
 	font-family: Work Sans;
-	src: url(/_next/static/media/WorkSans-Bold.2309808b.ttf) format("truetype");
+	src: url(/static/_next/static/media/WorkSans-Bold.2309808b.ttf) format("truetype");
 	font-weight: 700
 }
 @font-face {
 	font-family: Work Sans;
-	src: url(/_next/static/media/WorkSans-SemiBold.2714dd97.ttf) format("truetype");
+	src: url(/static/_next/static/media/WorkSans-SemiBold.2714dd97.ttf) format("truetype");
 	font-weight: 600
 }
 @font-face {
 	font-family: Work Sans;
-	src: url(/_next/static/media/WorkSans-Medium.72848430.ttf) format("truetype");
+	src: url(/static/_next/static/media/WorkSans-Medium.72848430.ttf) format("truetype");
 	font-weight: 500
 }
 @font-face {
 	font-family: Work Sans;
-	src: url(/_next/static/media/WorkSans-Regular.807b1b4d.ttf) format("truetype");
+	src: url(/static/_next/static/media/WorkSans-Regular.807b1b4d.ttf) format("truetype");
 	font-weight: 400
 }
 @font-face {
 	font-family: Work Sans;
-	src: url(/_next/static/media/WorkSans-Light.34b211b6.ttf) format("truetype");
+	src: url(/static/_next/static/media/WorkSans-Light.34b211b6.ttf) format("truetype");
 	font-weight: 300
 }
 @font-face {
 	font-family: Exo\ 2;
-	src: url(/_next/static/media/Exo2-Light.d0399396.ttf) format("truetype");
+	src: url(/static/_next/static/media/Exo2-Light.d0399396.ttf) format("truetype");
 	font-weight: 300
 }
 @font-face {
 	font-family: Exo\ 2;
-	src: url(/_next/static/media/Exo2-Regular.e9450c71.ttf) format("truetype");
+	src: url(/static/_next/static/media/Exo2-Regular.e9450c71.ttf) format("truetype");
 	font-weight: 400
 }
 @font-face {
 	font-family: Exo\ 2;
-	src: url(/_next/static/media/Exo2-Medium.00adba24.ttf) format("truetype");
+	src: url(/static/_next/static/media/Exo2-Medium.00adba24.ttf) format("truetype");
 	font-weight: 500
 }
 @font-face {
 	font-family: Exo\ 2;
-	src: url(/_next/static/media/Exo2-SemiBold.ed8a6b21.ttf) format("truetype");
+	src: url(/static/_next/static/media/Exo2-SemiBold.ed8a6b21.ttf) format("truetype");
 	font-weight: 600
 }
 @font-face {
 	font-family: Exo\ 2;
-	src: url(/_next/static/media/Exo2-Bold.e18fd89b.ttf) format("truetype");
+	src: url(/static/_next/static/media/Exo2-Bold.e18fd89b.ttf) format("truetype");
 	font-weight: 700
 }
 ::selection {
@@ -25539,7 +25539,7 @@ select:focus {
 	transition: .35s
 }
 .explore-btn a span:after {
-	content: url(/_next/static/media/explore-arrow.57f28ddd.svg);
+	content: url(/static/_next/static/media/explore-arrow.57f28ddd.svg);
 	position: relative;
 	left: -35px;
 	top: 3px;
@@ -25570,7 +25570,7 @@ select:focus {
 	transition: .35s
 }
 .explore-btn6 a span:after {
-	content: url(/_next/static/media/explore-arrow.57f28ddd.svg);
+	content: url(/static/_next/static/media/explore-arrow.57f28ddd.svg);
 	position: relative;
 	left: -35px;
 	top: 3px;
@@ -25601,7 +25601,7 @@ select:focus {
 	transition: .35s
 }
 .explore-all-btn5 a span:after {
-	content: url(/_next/static/media/explore-arrow5.f75e8b82.svg);
+	content: url(/static/_next/static/media/explore-arrow5.f75e8b82.svg);
 	position: relative;
 	left: -35px;
 	top: 3px;
@@ -25632,7 +25632,7 @@ select:focus {
 	width: 18px
 }
 .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 0;
@@ -26730,7 +26730,7 @@ header.style-1 .main-menu ul>li:hover>ul.sub-menu {
 	transform: translateY(0)
 }
 header.style-1 .main-menu ul>li:before {
-	content: url(/_next/static/media/menu-active.15cdf8fd.svg);
+	content: url(/static/_next/static/media/menu-active.15cdf8fd.svg);
 	position: absolute;
 	top: -11px;
 	left: 50%;
@@ -27419,7 +27419,7 @@ header.style-2 .main-menu ul>li:hover>ul.sub-menu {
 	transform: translateY(0)
 }
 header.style-2 .main-menu ul>li:before {
-	content: url(/_next/static/media/menu-active.15cdf8fd.svg);
+	content: url(/static/_next/static/media/menu-active.15cdf8fd.svg);
 	position: absolute;
 	top: -11px;
 	left: 50%;
@@ -27988,7 +27988,7 @@ header.style-3 .main-menu ul>li:hover>ul.sub-menu {
 	transform: translateY(0)
 }
 header.style-3 .main-menu ul>li:before {
-	content: url(/_next/static/media/menu-active.15cdf8fd.svg);
+	content: url(/static/_next/static/media/menu-active.15cdf8fd.svg);
 	position: absolute;
 	top: 20px;
 	left: 50%;
@@ -30201,7 +30201,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	}
 }
 .hero1 {
-	background-image: url(/_next/static/media/h1-hero-bg.b5f38767.png);
+	background-image: url(/static/_next/static/media/h1-hero-bg.b5f38767.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat;
@@ -30322,7 +30322,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	position: relative
 }
 .hero1 .hero-content .category:after, .hero1 .hero-content .job-title:after {
-	content: url(/_next/static/media/job3.be504ce2.svg);
+	content: url(/static/_next/static/media/job3.be504ce2.svg);
 	position: absolute;
 	left: 25px;
 	top: 50%;
@@ -30344,7 +30344,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	max-width: 310px
 }
 .hero1 .hero-content .category:after {
-	content: url(/_next/static/media/category.2d6fc23f.svg)
+	content: url(/static/_next/static/media/category.2d6fc23f.svg)
 }
 @media (max-width:767px) {
 	.hero1 .hero-content .category {
@@ -30665,7 +30665,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	border: 1px solid rgba(0, 167, 172, .4)
 }
 .home1-work-process .single-work-process.one:after {
-	content: url(/_next/static/media/work-up-arrow.8bed56fe.svg);
+	content: url(/static/_next/static/media/work-up-arrow.8bed56fe.svg);
 	position: absolute;
 	top: -20px
 }
@@ -30676,7 +30676,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	}
 }
 .home1-work-process .single-work-process.two:after {
-	content: url(/_next/static/media/work-down-arrow.c657c39f.svg);
+	content: url(/static/_next/static/media/work-down-arrow.c657c39f.svg);
 	position: absolute;
 	bottom: -25px
 }
@@ -30720,7 +30720,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	}
 }
 .swiper-btn1 .right-btn:after {
-	content: url(/_next/static/media/explore-arrow.57f28ddd.svg);
+	content: url(/static/_next/static/media/explore-arrow.57f28ddd.svg);
 	position: relative;
 	left: -40px;
 	top: 3px;
@@ -30737,7 +30737,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transition: .35s
 }
 .swiper-btn1 .left-btn:after {
-	content: url(/_next/static/media/explore-arrow-left.726bd796.svg);
+	content: url(/static/_next/static/media/explore-arrow-left.726bd796.svg);
 	position: relative;
 	right: 21px;
 	top: 3px;
@@ -31071,7 +31071,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .home1-top-recruiters .recruters-card .job-details-vacancies .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -31560,7 +31560,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	color: var(--white)
 }
 .footer1.style-6 {
-	background-image: url(/_next/static/media/home6-footer-bg.4d7be875.png)
+	background-image: url(/static/_next/static/media/home6-footer-bg.4d7be875.png)
 }
 .footer1.style-6, .footer1.style-6 .footer-logo {
 	background-color: #030f11
@@ -31841,7 +31841,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	height: 130px;
 	width: 130px;
 	background: #f8f8f8;
-	background-image: url(/_next/static/media/image-upload-bg.3cdb1ec0.png);
+	background-image: url(/static/_next/static/media/image-upload-bg.3cdb1ec0.png);
 	border: 1px solid rgba(0, 0, 0, .2);
 	border-radius: 5px;
 	display: flex;
@@ -31995,7 +31995,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	height: 130px;
 	width: 130px;
 	background: #f8f8f8;
-	background-image: url(/_next/static/media/image-upload-bg.3cdb1ec0.png);
+	background-image: url(/static/_next/static/media/image-upload-bg.3cdb1ec0.png);
 	background-size: contain;
 	background-repeat: no-repeat;
 	border: 1px solid rgba(0, 0, 0, .2);
@@ -32611,7 +32611,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: block
 }
 .form-wrapper form .salary-wrap .checkbox-container .checkmark:after {
-	content: url(/_next/static/media/checkbox-check.0bf62ee4.svg);
+	content: url(/static/_next/static/media/checkbox-check.0bf62ee4.svg);
 	left: 1px;
 	top: -4px
 }
@@ -33992,7 +33992,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transition: .35s
 }
 .pagination-area .pagination .page-item:last-child .page-link:after {
-	content: url(/_next/static/media/explore-arrow.57f28ddd.svg);
+	content: url(/static/_next/static/media/explore-arrow.57f28ddd.svg);
 	position: relative;
 	right: 10px;
 	top: 2px;
@@ -34002,7 +34002,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	background-color: var(--white)
 }
 .pagination-area .pagination .page-item:last-child .page-link:hover:after {
-	content: url(/_next/static/media/explore-arrow.57f28ddd.svg);
+	content: url(/static/_next/static/media/explore-arrow.57f28ddd.svg);
 	position: relative;
 	right: 0;
 	top: 2px;
@@ -34017,7 +34017,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transition: .35s
 }
 .pagination-area .pagination .page-item:first-child .page-link:after {
-	content: url(/_next/static/media/explore-arrow-left.726bd796.svg);
+	content: url(/static/_next/static/media/explore-arrow-left.726bd796.svg);
 	position: relative;
 	left: 10px;
 	top: 2px;
@@ -34027,7 +34027,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	background-color: var(--white)
 }
 .pagination-area .pagination .page-item:first-child .page-link:hover:after {
-	content: url(/_next/static/media/explore-arrow-left.726bd796.svg);
+	content: url(/static/_next/static/media/explore-arrow-left.726bd796.svg);
 	position: relative;
 	left: 0;
 	top: 2px;
@@ -34908,7 +34908,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: inline-block
 }
 .inner-banner {
-	background-image: url(/_next/static/media/breadcrumb-bg.6b5129a4.png);
+	background-image: url(/static/_next/static/media/breadcrumb-bg.6b5129a4.png);
 	background-position: 50%;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -34967,7 +34967,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 .inner-banner .banner-content .breadcrumb .breadcrumb-item+.breadcrumb-item:before {
 	float: left;
 	padding-right: .4rem;
-	content: url(/_next/static/media/company-2.a7302910.svg)
+	content: url(/static/_next/static/media/company-2.a7302910.svg)
 }
 .job-sidebar {
 	background: #f8f8f8;
@@ -35098,7 +35098,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: block
 }
 .job-sidebar .job-widget .check-box-item .checkbox-container .checkmark:after {
-	content: url(/_next/static/media/checkbox-check.0bf62ee4.svg);
+	content: url(/static/_next/static/media/checkbox-check.0bf62ee4.svg);
 	left: 1.5px;
 	top: -10px
 }
@@ -35750,7 +35750,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .job-listing-card .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -36019,7 +36019,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .job-listing-card2 .job-content .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -36861,7 +36861,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .company-list-card1 .company-area .company-content .job-details-vacancies .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -37038,7 +37038,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .company-listing-card2 .job-details-vacancies .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 0;
@@ -37627,7 +37627,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .company-details-area .job-listing-card .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -37680,7 +37680,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 }
 .faq-page .genarel-qustions-area .accordion .accordion-item .accordion-header .accordion-button:after {
 	content: "";
-	background-image: url(/_next/static/media/accrodian--arrow.3c041215.svg);
+	background-image: url(/static/_next/static/media/accrodian--arrow.3c041215.svg);
 	width: 1.6rem;
 	height: 1.6rem;
 	opacity: .4
@@ -37694,7 +37694,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	padding: 20px 15px 10px
 }
 .error-page {
-	background-image: url(/_next/static/media/error-bg.67d8cd6f.png);
+	background-image: url(/static/_next/static/media/error-bg.67d8cd6f.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat;
@@ -39231,7 +39231,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	align-items: center
 }
 .hero3 {
-	background-image: url(/_next/static/media/hero3-bg.31eecca2.png);
+	background-image: url(/static/_next/static/media/hero3-bg.31eecca2.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat
@@ -40126,7 +40126,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .home3-top-company .top-company-card .job-details-vacancies .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -40290,7 +40290,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .recent-article-card3 .article-content .author-and-btn .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -40306,7 +40306,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transform: scale(1.02)
 }
 .hero2 {
-	background-image: url(/_next/static/media/home2-banner-bg.fc70ffbd.png);
+	background-image: url(/static/_next/static/media/home2-banner-bg.fc70ffbd.png);
 	background-color: rgba(0, 0, 0, .65);
 	background-size: cover;
 	background-position: 50%;
@@ -40394,7 +40394,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	position: relative
 }
 .hero2 .hero-wapper .hero-content .category:after, .hero2 .hero-wapper .hero-content .job-title:after {
-	content: url(/_next/static/media/job3.be504ce2.svg);
+	content: url(/static/_next/static/media/job3.be504ce2.svg);
 	position: absolute;
 	left: 25px;
 	top: 50%;
@@ -40416,7 +40416,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	max-width: 310px
 }
 .hero2 .hero-wapper .hero-content .category:after {
-	content: url(/_next/static/media/category.2d6fc23f.svg)
+	content: url(/static/_next/static/media/category.2d6fc23f.svg)
 }
 @media (max-width:767px) {
 	.hero2 .hero-wapper .hero-content .category {
@@ -40836,7 +40836,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	fill: var(--primary-color1)
 }
 .home2-job-list-area {
-	background-image: url(/_next/static/media/home2-job-list-bg.37b15a0d.png);
+	background-image: url(/static/_next/static/media/home2-job-list-bg.37b15a0d.png);
 	background-color: #f4f4f4;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -41056,7 +41056,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transition: .35s
 }
 .home2-working-process .working-process-card2 .working-process-sl h4:before {
-	content: url(/_next/static/media/home2-work-process-vec.dd3963ef.svg);
+	content: url(/static/_next/static/media/home2-work-process-vec.dd3963ef.svg);
 	position: absolute;
 	bottom: -15px;
 	transition: .35s
@@ -41146,12 +41146,12 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	margin-bottom: 0
 }
 .home2-working-process .working-process-card2:hover .working-process-sl h4:before {
-	content: url(/_next/static/media/home2-work-process-vec2.60a95f1b.svg);
+	content: url(/static/_next/static/media/home2-work-process-vec2.60a95f1b.svg);
 	position: absolute;
 	bottom: -15px
 }
 .home2-talent-area .talent-wrap {
-	background-image: url(/_next/static/media/home2-talent-bg.a0cdb132.png);
+	background-image: url(/static/_next/static/media/home2-talent-bg.a0cdb132.png);
 	background-color: rgba(0, 0, 0, .65);
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -41218,7 +41218,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	left: unset
 }
 .home2-recruiters-area .slick-prev:after {
-	content: url(/_next/static/media/slick-prev.710ce118.svg)
+	content: url(/static/_next/static/media/slick-prev.710ce118.svg)
 }
 .home2-recruiters-area .slick-next {
 	position: absolute;
@@ -41226,7 +41226,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	top: -105px
 }
 .home2-recruiters-area .slick-next:after {
-	content: url(/_next/static/media/slick-next.45fafa91.svg)
+	content: url(/static/_next/static/media/slick-next.45fafa91.svg)
 }
 .home2-recruiters-area .slick-arrow {
 	opacity: .5;
@@ -41344,7 +41344,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: initial
 }
 .home2-recruiters-area .recruters-card .job-details-vacancies .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -41361,7 +41361,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	border-color: #00a7ac
 }
 .home2-feedback-area .feedback-wrap {
-	background-image: url(/_next/static/media/home2-feedback-bg.35f6c584.png);
+	background-image: url(/static/_next/static/media/home2-feedback-bg.35f6c584.png);
 	background-color: #e2f7f7;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -41511,7 +41511,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transform: scale(1.03)
 }
 .hero4 {
-	background-image: url(/_next/static/media/home4-banner-bg.d6384d65.png);
+	background-image: url(/static/_next/static/media/home4-banner-bg.d6384d65.png);
 	background-color: rgba(0, 0, 0, .7);
 	background-size: cover;
 	background-position: 50%;
@@ -41665,7 +41665,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	position: relative
 }
 .hero4 .hero-wapper .hero-content .category:after, .hero4 .hero-wapper .hero-content .job-title:after {
-	content: url(/_next/static/media/job3.be504ce2.svg);
+	content: url(/static/_next/static/media/job3.be504ce2.svg);
 	position: absolute;
 	left: 25px;
 	top: 50%;
@@ -41687,7 +41687,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	max-width: 310px
 }
 .hero4 .hero-wapper .hero-content .category:after {
-	content: url(/_next/static/media/category.2d6fc23f.svg)
+	content: url(/static/_next/static/media/category.2d6fc23f.svg)
 }
 @media (max-width:767px) {
 	.hero4 .hero-wapper .hero-content .category {
@@ -42379,7 +42379,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .home4-feature-area .job-listing-card .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -42526,7 +42526,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transform: scale(1.05)
 }
 .home4-feedback-area {
-	background-image: url(/_next/static/media/home4-feedback-bg.65cdea51.png);
+	background-image: url(/static/_next/static/media/home4-feedback-bg.65cdea51.png);
 	background-color: #f8f8f8;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -42597,7 +42597,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	position: relative
 }
 .home4-feedback-area .home4-feedback-slider2 .swiper-slide-active .author-img:before {
-	content: url(/_next/static/media/home4-feedback-u-ban.9f8e6139.svg);
+	content: url(/static/_next/static/media/home4-feedback-u-ban.9f8e6139.svg);
 	position: absolute;
 	top: -5px;
 	left: 53%;
@@ -42705,7 +42705,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	width: 18px
 }
 .home4-top-recruitersa-area .recruters-card .company-area .name-location .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -42936,7 +42936,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	position: relative
 }
 .hero5 .hero-left .category:after, .hero5 .hero-left .job-title:after {
-	content: url(/_next/static/media/job4.a80935a8.svg);
+	content: url(/static/_next/static/media/job4.a80935a8.svg);
 	position: absolute;
 	left: 25px;
 	top: 50%;
@@ -42958,7 +42958,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	max-width: 310px
 }
 .hero5 .hero-left .category:after {
-	content: url(/_next/static/media/category4.5dd099c5.svg)
+	content: url(/static/_next/static/media/category4.5dd099c5.svg)
 }
 @media (max-width:767px) {
 	.hero5 .hero-left .category {
@@ -43199,7 +43199,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	}
 }
 .hero6 .hero-wapper {
-	background-image: linear-gradient(hsla(0, 0%, 9%, .8), hsla(0, 0%, 9%, .8)), url(/_next/static/media/home6-banner-bg.a92b4c90.png);
+	background-image: linear-gradient(hsla(0, 0%, 9%, .8), hsla(0, 0%, 9%, .8)), url(/static/_next/static/media/home6-banner-bg.a92b4c90.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat;
@@ -43292,7 +43292,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	position: relative
 }
 .hero6 .hero-wapper .hero-content .job-title:after, .hero6 .hero-wapper .hero-content .location:after {
-	content: url(/_next/static/media/search-icon2.d72434a4.svg);
+	content: url(/static/_next/static/media/search-icon2.d72434a4.svg);
 	position: absolute;
 	left: 6px;
 	top: 50%;
@@ -43310,7 +43310,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	max-width: 310px
 }
 .hero6 .hero-wapper .hero-content .location:after {
-	content: url(/_next/static/media/category.2d6fc23f.svg)
+	content: url(/static/_next/static/media/category.2d6fc23f.svg)
 }
 @media (max-width:767px) {
 	.hero6 .hero-wapper .hero-content .location {
@@ -43561,7 +43561,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	left: unset
 }
 .home6-category-area .slick-prev:after {
-	content: url(/_next/static/media/slick-prev1.f6d561f2.svg)
+	content: url(/static/_next/static/media/slick-prev1.f6d561f2.svg)
 }
 .home6-category-area .slick-prev:before {
 	display: none;
@@ -43573,7 +43573,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	top: -105px
 }
 .home6-category-area .slick-next:after {
-	content: url(/_next/static/media/slick-next1.cf1aedfe.svg)
+	content: url(/static/_next/static/media/slick-next1.cf1aedfe.svg)
 }
 .home6-category-area .slick-next:before {
 	display: none;
@@ -43652,7 +43652,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 }
 .home6-trending-job-area {
 	background: #030f11;
-	background-image: url(/_next/static/media/home6-trending-jobs-bg.0b2b9a4c.png);
+	background-image: url(/static/_next/static/media/home6-trending-jobs-bg.0b2b9a4c.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat;
@@ -43966,7 +43966,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 }
 .home6-customer-feedback-area {
 	background-color: #030f11;
-	background-image: url(/_next/static/media/home6-feedback-bg.45d60ef0.png);
+	background-image: url(/static/_next/static/media/home6-feedback-bg.45d60ef0.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat;
@@ -44198,7 +44198,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 }
 .home6-top-recruiters {
 	background-color: #030f11;
-	background-image: url(/_next/static/media/home6-top-recruters-bg.b42fc173.png);
+	background-image: url(/static/_next/static/media/home6-top-recruters-bg.b42fc173.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat;
@@ -44212,7 +44212,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	left: unset
 }
 .home6-top-recruiters .slick-prev:after {
-	content: url(/_next/static/media/slick-prev1.f6d561f2.svg)
+	content: url(/static/_next/static/media/slick-prev1.f6d561f2.svg)
 }
 .home6-top-recruiters .slick-prev:before {
 	display: none;
@@ -44224,7 +44224,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	top: -105px
 }
 .home6-top-recruiters .slick-next:after {
-	content: url(/_next/static/media/slick-next1.cf1aedfe.svg)
+	content: url(/static/_next/static/media/slick-next1.cf1aedfe.svg)
 }
 .home6-top-recruiters .slick-next:before {
 	display: none;
@@ -44349,7 +44349,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: initial
 }
 .home6-top-recruiters .recruters-card .job-details-vacancies .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 2px;
@@ -44561,14 +44561,14 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	margin-left: 15px
 }
 .recent-article-wrap2 .recent-article-content .explore-btn a span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -28px;
 	top: 1px;
 	transition: .35s
 }
 .recent-article-wrap2 .recent-article-content .explore-btn a:hover span:after {
-	content: url(/_next/static/media/apply-arrow.aedb133a.svg);
+	content: url(/static/_next/static/media/apply-arrow.aedb133a.svg);
 	position: relative;
 	left: -26px;
 	top: 1px;
@@ -46535,7 +46535,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	margin-left: 10px
 }
 .home5-trending-job-area .feature-card5 .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow5.99b9ea5d.svg);
+	content: url(/static/_next/static/media/apply-arrow5.99b9ea5d.svg);
 	top: 1.5px
 }
 .home5-trending-job-area .feature-card5:hover .apply-btn {
@@ -46610,7 +46610,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 }
 .home5-top-recruiters-area {
 	background: #f2f2f2;
-	background-image: url(/_next/static/media/home5-top-recruiters-bg.0a9b1bf0.png);
+	background-image: url(/static/_next/static/media/home5-top-recruiters-bg.0a9b1bf0.png);
 	background-size: cover;
 	background-position: 50%;
 	background-repeat: no-repeat;
@@ -46628,7 +46628,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	visibility: hidden
 }
 .home5-top-recruiters-area .slick-prev:after {
-	content: url(/_next/static/media/home5-slick-prev.800375a1.svg)
+	content: url(/static/_next/static/media/home5-slick-prev.800375a1.svg)
 }
 .home5-top-recruiters-area .slick-next {
 	position: absolute;
@@ -46640,7 +46640,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	visibility: hidden
 }
 .home5-top-recruiters-area .slick-next:after {
-	content: url(/_next/static/media/home5-slick-next.fbeebd84.svg)
+	content: url(/static/_next/static/media/home5-slick-next.fbeebd84.svg)
 }
 .home5-top-recruiters-area .slick-arrow {
 	opacity: .5;
@@ -46719,7 +46719,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: initial
 }
 .home5-top-recruiters-area .recruters-card .company-area .apply-btn a span:after {
-	content: url(/_next/static/media/apply-arrow5.99b9ea5d.svg);
+	content: url(/static/_next/static/media/apply-arrow5.99b9ea5d.svg);
 	top: 1.5px
 }
 .home5-top-recruiters-area .recruters-card:hover .apply-btn {
@@ -46753,7 +46753,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	align-items: center
 }
 .home5-clients-feedback-area {
-	background-image: url(/_next/static/media/home5-clients-feedback-bg.79df3ca0.png);
+	background-image: url(/static/_next/static/media/home5-clients-feedback-bg.79df3ca0.png);
 	background-position: 50%;
 	background-repeat: no-repeat;
 	background-size: cover;
