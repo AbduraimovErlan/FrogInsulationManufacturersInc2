@@ -240,6 +240,8 @@ class EmployeeRegistrationView(FormView):
 
 
 
+
+
 #
 # class EmployeeRegistrationView(FormView):
 #     template_name = 'templates_for_office/register.html'
