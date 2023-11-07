@@ -10,7 +10,8 @@ from .views import (
     AccountsReceivableDeleteView, AccountsPayableDeleteView,
     PresidentLoginView, OperationalManagerLoginView, AccountsReceivableManagerLoginView,
     AccountsReceivableLoginView, AccountsPayableLoginView,
-    AllEmployeesListView, EmployeeRegistrationView, BaseLoginView
+    AllEmployeesListView, EmployeeRegistrationView, BaseLoginView,
+
 )
 
 app_name = 'MainOffice'
@@ -66,5 +67,6 @@ urlpatterns = [
     path('all_employees/', AllEmployeesListView.as_view(), name='all_employees_list'),
     path('register/', EmployeeRegistrationView.as_view(), name='register_employee'),
     path('login/', BaseLoginView.as_view(), name='login_employee'),
+
 ]
 
