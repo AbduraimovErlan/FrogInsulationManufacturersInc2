@@ -33,7 +33,7 @@
 										children: "Latest Job List:"
 									})
 								}), (0, a.jsx)("div", {
-									className: "job-post.html-btn",
+									className: "create_order.html-btn",
 									children: (0, a.jsx)(t(), {
 										legacyBehavior: !0,
 										href: "/job-post",

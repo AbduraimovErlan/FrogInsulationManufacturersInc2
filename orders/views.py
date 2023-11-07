@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
-from orders.forms import OrderForm, OrderItemForm
+from orders.forms import OrderForm, OrderItemForm, OrderItemFormSize
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
 from MainWepSite.models import Product, ProductSize, Size
 from django.contrib import messages
@@ -306,23 +306,6 @@ class OperatorOrderListView(BaseOrderListView):
         return context
 
 
-from django.urls import reverse
-@login_required
-def operator_create_order(request):
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            order = form.save()
-            # Создание нового ключа сессии для этого заказа
-            request.session[f'order_skus_{order.id}'] = []
-            messages.success(request, "Заказ успешно создан!")
-            return redirect(reverse('orders:new_order_call_add_product', kwargs={'order_id': order.id}))
-    else:
-        form = OrderForm()
-
-    return render(request, 'templates_for_orders/create_order.html', {'form': form})
-
-
 
 
 
@@ -470,6 +453,119 @@ def update_based_on_size_call(request, package_type, product_number, size_sku, s
 
 
 
+
+
+
+
+
+from django.urls import reverse
+@login_required
+def operator_create_order(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save()
+            # Создание нового ключа сессии для этого заказа
+            request.session[f'order_skus_{order.id}'] = []
+            messages.success(request, "Заказ успешно создан!")
+            return redirect(reverse('orders:product_list_order', kwargs={'order_id': order.id}))
+    else:
+        form = OrderForm()
+
+    return render(request, 'templates_for_orders/create_order.html', {'form': form})
+
+
+
+
+
+
+from django.shortcuts import get_object_or_404, render, redirect
+from django.views.generic import ListView, DetailView
+from django.urls import reverse
+
+# Список продуктов
+class ProductListView(ListView):
+    model = Product
+    template_name = 'templates_for_orders/product_list_order.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Допустим, order_id приходит из URL, вы должны убедиться, что он захватывается в URLconf.
+        context['order_id'] = self.kwargs.get('order_id')
+        return context
+
+# Представление деталей продукта с упаковкой "boxed"
+class ProductDetailViewBoxed(DetailView):
+    model = Product
+    template_name = 'templates_for_orders/product_detail_order_boxed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+        context['product'] = product
+        context['sizes'] = product.sizes.all()
+        context['colors'] = product.colors.all()
+        context['product_sizes'] = ProductSize.objects.filter(product=product, package_type='bx')
+
+        # Add order_id to the context
+        order_id = self.kwargs.get('order_id')  # Assume that order_id is passed as a URL parameter
+        context['order_id'] = order_id
+
+        return context
+
+
+# Представление деталей продукта с упаковкой "single"
+class ProductDetailViewSingle(DetailView):
+    model = Product
+    template_name = 'templates_for_orders/product_detail_order_single.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs.get('slug'))
+        context['product'] = product
+        context['sizes'] = product.sizes.all()
+        context['colors'] = product.colors.all()
+        context['product_sizes'] = ProductSize.objects.filter(product=product, package_type='each')
+
+        # Add order_id to the context
+        order_id = self.kwargs.get('order_id')  # Assume that order_id is passed as a URL parameter
+        context['order_id'] = order_id
+
+        return context
+
+
+
+# views.py
+
+def add_product_to_order(request, product_id, size_id, order_id):
+    product = get_object_or_404(Product, pk=product_id)
+    product_size = get_object_or_404(ProductSize, pk=size_id)
+    order = get_object_or_404(Order, pk=order_id)
+
+    if request.method == 'POST':
+        form = OrderItemFormSize(request.POST)
+        if form.is_valid():
+            quantity = form.cleaned_data.get('quantity')
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                product_size=product_size,
+                quantity=quantity,
+                price_at_time_of_purchase=product_size.size_price
+            )
+            messages.success(request, "Продукт успешно добавлен к заказу!")
+
+            return redirect(reverse('orders:order_detail', kwargs={'order_id': order.id}))
+
+    else:
+        form = OrderItemFormSize(initial={'product_size': product_size.id})
+
+    return render(request, 'templates_for_orders/add_product_to_order.html', {
+        'form': form,
+        'product': product,
+        'product_size': product_size,
+        'order': order
+    })
 
 
 

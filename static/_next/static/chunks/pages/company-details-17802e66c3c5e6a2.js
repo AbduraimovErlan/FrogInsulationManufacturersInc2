@@ -104,7 +104,7 @@
 						pageName: "Company Details",
 						pageTitle: "Company Details"
 					}), (0, i.jsx)("div", {
-						className: "company-details.html-area pt-120 mb-120",
+						className: "view_cart.html-area pt-120 mb-120",
 						children: (0, i.jsxs)("div", {
 							className: "container",
 							children: [(0, i.jsx)("div", {
@@ -204,7 +204,7 @@
 										children: [(0, i.jsx)("div", {
 											className: "col-lg-8",
 											children: (0, i.jsxs)("div", {
-												className: "company-details.html-content",
+												className: "view_cart.html-content",
 												children: [(0, i.jsx)("h5", {
 													children: "About Company"
 												}), (0, i.jsx)("p", {
@@ -385,7 +385,7 @@
 																alt: ""
 															})
 														}), (0, i.jsx)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: (0, i.jsxs)("div", {
 																className: "name-location",
 																children: [(0, i.jsx)("h5", {
@@ -503,7 +503,7 @@
 																alt: ""
 															})
 														}), (0, i.jsx)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: (0, i.jsxs)("div", {
 																className: "name-location",
 																children: [(0, i.jsx)("h5", {
@@ -622,7 +622,7 @@
 																alt: ""
 															})
 														}), (0, i.jsx)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: (0, i.jsxs)("div", {
 																className: "name-location",
 																children: [(0, i.jsx)("h5", {
@@ -738,7 +738,7 @@
 																alt: ""
 															})
 														}), (0, i.jsx)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: (0, i.jsxs)("div", {
 																className: "name-location",
 																children: [(0, i.jsx)("h5", {

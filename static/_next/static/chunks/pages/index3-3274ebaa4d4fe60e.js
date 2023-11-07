@@ -1096,7 +1096,7 @@
 									children: (0, a.jsxs)("div", {
 										className: "top-company-card",
 										children: [(0, a.jsxs)("div", {
-											className: "company-details.html",
+											className: "view_cart.html",
 											children: [(0, a.jsxs)("div", {
 												className: "name-location",
 												children: [(0, a.jsx)("h5", {
@@ -1120,7 +1120,7 @@
 												})
 											})]
 										}), (0, a.jsxs)("div", {
-											className: "job-details.html-vacancies",
+											className: "product_detail.html-vacancies",
 											children: [(0, a.jsx)("div", {
 												className: "vacancies",
 												children: (0, a.jsxs)("p", {
@@ -1150,7 +1150,7 @@
 									children: (0, a.jsxs)("div", {
 										className: "top-company-card",
 										children: [(0, a.jsxs)("div", {
-											className: "company-details.html",
+											className: "view_cart.html",
 											children: [(0, a.jsxs)("div", {
 												className: "name-location",
 												children: [(0, a.jsx)("h5", {
@@ -1174,7 +1174,7 @@
 												})
 											})]
 										}), (0, a.jsxs)("div", {
-											className: "job-details.html-vacancies",
+											className: "product_detail.html-vacancies",
 											children: [(0, a.jsx)("div", {
 												className: "vacancies",
 												children: (0, a.jsxs)("p", {
@@ -1204,7 +1204,7 @@
 									children: (0, a.jsxs)("div", {
 										className: "top-company-card",
 										children: [(0, a.jsxs)("div", {
-											className: "company-details.html",
+											className: "view_cart.html",
 											children: [(0, a.jsxs)("div", {
 												className: "name-location",
 												children: [(0, a.jsx)("h5", {
@@ -1228,7 +1228,7 @@
 												})
 											})]
 										}), (0, a.jsxs)("div", {
-											className: "job-details.html-vacancies",
+											className: "product_detail.html-vacancies",
 											children: [(0, a.jsx)("div", {
 												className: "vacancies",
 												children: (0, a.jsxs)("p", {
@@ -1258,7 +1258,7 @@
 									children: (0, a.jsxs)("div", {
 										className: "top-company-card",
 										children: [(0, a.jsxs)("div", {
-											className: "company-details.html",
+											className: "view_cart.html",
 											children: [(0, a.jsxs)("div", {
 												className: "name-location",
 												children: [(0, a.jsx)("h5", {
@@ -1282,7 +1282,7 @@
 												})
 											})]
 										}), (0, a.jsxs)("div", {
-											className: "job-details.html-vacancies",
+											className: "product_detail.html-vacancies",
 											children: [(0, a.jsx)("div", {
 												className: "vacancies",
 												children: (0, a.jsxs)("p", {
@@ -1312,7 +1312,7 @@
 									children: (0, a.jsxs)("div", {
 										className: "top-company-card",
 										children: [(0, a.jsxs)("div", {
-											className: "company-details.html",
+											className: "view_cart.html",
 											children: [(0, a.jsxs)("div", {
 												className: "name-location",
 												children: [(0, a.jsx)("h5", {
@@ -1336,7 +1336,7 @@
 												})
 											})]
 										}), (0, a.jsxs)("div", {
-											className: "job-details.html-vacancies",
+											className: "product_detail.html-vacancies",
 											children: [(0, a.jsx)("div", {
 												className: "vacancies",
 												children: (0, a.jsxs)("p", {
@@ -1366,7 +1366,7 @@
 									children: (0, a.jsxs)("div", {
 										className: "top-company-card",
 										children: [(0, a.jsxs)("div", {
-											className: "company-details.html",
+											className: "view_cart.html",
 											children: [(0, a.jsxs)("div", {
 												className: "name-location",
 												children: [(0, a.jsx)("h5", {
@@ -1390,7 +1390,7 @@
 												})
 											})]
 										}), (0, a.jsxs)("div", {
-											className: "job-details.html-vacancies",
+											className: "product_detail.html-vacancies",
 											children: [(0, a.jsx)("div", {
 												className: "vacancies",
 												children: (0, a.jsxs)("p", {
@@ -1548,7 +1548,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -1663,7 +1663,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -1776,7 +1776,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -1894,7 +1894,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2009,7 +2009,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2129,7 +2129,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2253,7 +2253,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2368,7 +2368,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2483,7 +2483,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2603,7 +2603,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2718,7 +2718,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2838,7 +2838,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -2962,7 +2962,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3077,7 +3077,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3192,7 +3192,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3312,7 +3312,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3427,7 +3427,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3547,7 +3547,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3671,7 +3671,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3784,7 +3784,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -3897,7 +3897,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -4015,7 +4015,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -4128,7 +4128,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {
@@ -4246,7 +4246,7 @@
 																		alt: ""
 																	})
 																}), (0, a.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, a.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, a.jsx)("h5", {

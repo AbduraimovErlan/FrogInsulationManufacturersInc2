@@ -82,6 +82,17 @@ class OrderItemForm(forms.ModelForm):
 
 
 
+from django import forms
+
+class OrderItemFormSize(forms.Form):
+    quantity = forms.IntegerField(
+        min_value=1,
+        label='Количество',
+        initial=1
+    )
+
+
+
 
 
 

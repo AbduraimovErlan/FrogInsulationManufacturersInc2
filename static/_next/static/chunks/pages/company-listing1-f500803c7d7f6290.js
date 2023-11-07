@@ -818,7 +818,7 @@
 																}), (0, c.jsxs)("div", {
 																	className: "company-content",
 																	children: [(0, c.jsxs)("div", {
-																		className: "company-details.html",
+																		className: "view_cart.html",
 																		children: [(0, c.jsxs)("div", {
 																			className: "name-location",
 																			children: [(0, c.jsx)("h5", {
@@ -842,7 +842,7 @@
 																			})
 																		})]
 																	}), (0, c.jsxs)("div", {
-																		className: "job-details.html-vacancies",
+																		className: "product_detail.html-vacancies",
 																		children: [(0, c.jsx)("div", {
 																			className: "vacancies",
 																			children: (0, c.jsxs)("p", {
@@ -894,7 +894,7 @@
 																		alt: ""
 																	})
 																}), (0, c.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, c.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, c.jsx)("h5", {
@@ -916,7 +916,7 @@
 																	})
 																})]
 															}), (0, c.jsxs)("div", {
-																className: "job-details.html-vacancies",
+																className: "product_detail.html-vacancies",
 																children: [(0, c.jsx)("div", {
 																	className: "vacancies",
 																	children: (0, c.jsxs)("p", {

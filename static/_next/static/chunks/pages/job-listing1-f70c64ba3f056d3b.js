@@ -874,7 +874,7 @@
 																	alt: ""
 																})
 															}), (0, l.jsx)("div", {
-																className: "company-details.html",
+																className: "view_cart.html",
 																children: (0, l.jsxs)("div", {
 																	className: "name-location",
 																	children: [(0, l.jsx)("h5", {
@@ -989,7 +989,7 @@
 																	alt: ""
 																})
 															}), (0, l.jsx)("div", {
-																className: "company-details.html",
+																className: "view_cart.html",
 																children: (0, l.jsxs)("div", {
 																	className: "name-location",
 																	children: [(0, l.jsx)("h5", {
@@ -1104,7 +1104,7 @@
 																	alt: ""
 																})
 															}), (0, l.jsx)("div", {
-																className: "company-details.html",
+																className: "view_cart.html",
 																children: (0, l.jsxs)("div", {
 																	className: "name-location",
 																	children: [(0, l.jsx)("h5", {
@@ -1224,7 +1224,7 @@
 																	alt: ""
 																})
 															}), (0, l.jsx)("div", {
-																className: "company-details.html",
+																className: "view_cart.html",
 																children: (0, l.jsxs)("div", {
 																	className: "name-location",
 																	children: [(0, l.jsx)("h5", {
@@ -1339,7 +1339,7 @@
 																	alt: ""
 																})
 															}), (0, l.jsx)("div", {
-																className: "company-details.html",
+																className: "view_cart.html",
 																children: (0, l.jsxs)("div", {
 																	className: "name-location",
 																	children: [(0, l.jsx)("h5", {
@@ -1459,7 +1459,7 @@
 																	alt: ""
 																})
 															}), (0, l.jsx)("div", {
-																className: "company-details.html",
+																className: "view_cart.html",
 																children: (0, l.jsxs)("div", {
 																	className: "name-location",
 																	children: [(0, l.jsx)("h5", {
@@ -1614,7 +1614,7 @@
 																		alt: ""
 																	})
 																}), (0, l.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, l.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, l.jsx)("h5", {
@@ -1713,7 +1713,7 @@
 																		alt: ""
 																	})
 																}), (0, l.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, l.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, l.jsx)("h5", {
@@ -1809,7 +1809,7 @@
 																		alt: ""
 																	})
 																}), (0, l.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, l.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, l.jsx)("h5", {
@@ -1905,7 +1905,7 @@
 																		alt: ""
 																	})
 																}), (0, l.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, l.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, l.jsx)("h5", {
@@ -2001,7 +2001,7 @@
 																		alt: ""
 																	})
 																}), (0, l.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, l.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, l.jsx)("h5", {
@@ -2100,7 +2100,7 @@
 																		alt: ""
 																	})
 																}), (0, l.jsx)("div", {
-																	className: "company-details.html",
+																	className: "view_cart.html",
 																	children: (0, l.jsxs)("div", {
 																		className: "name-location",
 																		children: [(0, l.jsx)("h5", {

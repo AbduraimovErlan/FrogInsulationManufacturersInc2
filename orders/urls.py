@@ -4,6 +4,7 @@ from . import views
 from .views import CustomerOrderDetailView, OperatorOrderDetailView, BaseOrderListView, OperatorOrderListView, \
     CanceledOrderListView, DriverOrderDetailView, driver_order_list
 from . import converters
+from .views import ProductListView, ProductDetailViewBoxed, ProductDetailViewSingle
 
 register_converter(converters.BoolConverter, 'bool')
 
@@ -28,8 +29,7 @@ urlpatterns = [
 
     path('edit_order_address/<int:order_id>/<str:source>/', views.edit_order_address, name='edit_order_address'),
 
-    path('new_order_call/<int:order_id>/add_product/', views.NewOrderCallView.as_view(),
-         name='new_order_call_add_product'),
+
 
     path('edit_order_call_add_product/<int:order_id>/<str:source>/', views.EditOrderCallView.as_view(), name='edit_order_call_add_product'),
 
@@ -80,6 +80,21 @@ urlpatterns = [
 
 
 
+# path('products_order_call/<int:order_id>/add_product/', ProductListView.as_view(), name='product_list_order'),
+#     path('product/<slug:slug>/boxed/<int:order_id>/', views.ProductDetailViewBoxed.as_view(),
+#          name='product_detail_boxed'),
+#     path('product/<slug:slug>/single/<int:order_id>/', views.ProductDetailViewSingle.as_view(), name='product_detail_single'),
+#     path('add-product-to-order/<int:product_id>/<int:size_id>/<int:order_id>/', views.add_product_to_order, name='add_product_to_order'),
+
+
+    path('products_order/<int:order_id>/', ProductListView.as_view(), name='product_list_order'),
+    path('products_order/<slug:slug>/boxed/<int:order_id>/', ProductDetailViewBoxed.as_view(),
+         name='product_detail_boxed'),
+
+    path('products_order/<slug:slug>/single/<int:order_id>/', ProductDetailViewSingle.as_view(),
+         name='product_detail_single'),
+
+    path('add_product/<int:product_id>/<int:size_id>/<int:order_id>/', views.add_product_to_order,
+         name='add_product_to_order'),
 
 ]
-

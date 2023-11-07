@@ -9,6 +9,8 @@ urlpatterns = [
 
     # path('api/get_product_by_sku/<str:sku>/', views.get_product_by_sku, name='get_product_by_sku'),
 
+
+
 path('update_based_on_package/<int:product_id>/<str:package_type>/', views.update_based_on_package, name='update_based_on_package'),
 path('update_based_on_product_number/<int:product_id>/<str:product_number>/<str:package_type>/', views.update_based_on_product_number, name='update_based_on_product_number'),
 path('update_based_on_sku/<int:product_id>/<str:size_sku>/', views.update_based_on_sku, name='update_based_on_sku'),

@@ -76,8 +76,8 @@ class Product(models.Model):
     stock_quantity = models.IntegerField(null=True)
     main_image = models.ImageField(upload_to='products/main_images/', null=True,
                                    blank=True)  # Главное изображение продукта
-    sizes = models.ManyToManyField(Size, through='ProductSize', blank=True, null=True)
-    colors = models.ManyToManyField(Color, blank=True, null=True)  # Отношение многие ко многим с цветами
+    sizes = models.ManyToManyField(Size, through='ProductSize', blank=True)
+    colors = models.ManyToManyField(Color, blank=True)  # Отношение многие ко многим с цветами
 
     def save(self, *args, **kwargs):
         if not self.slug:

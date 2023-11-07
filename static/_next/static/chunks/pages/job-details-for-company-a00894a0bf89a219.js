@@ -25,7 +25,7 @@
 								children: (0, l.jsxs)("div", {
 									className: "col-lg-12",
 									children: [(0, l.jsxs)("div", {
-										className: "job-details.html-and-counter-area mb-70",
+										className: "product_detail.html-and-counter-area mb-70",
 										children: [(0, l.jsxs)("div", {
 											className: "job-title-and-action-btn-area mb-40",
 											children: [(0, l.jsxs)("div", {
@@ -356,7 +356,7 @@
 															children: [(0, l.jsx)("div", {
 																className: "col-lg-8",
 																children: (0, l.jsxs)("div", {
-																	className: "job-details.html-content",
+																	className: "product_detail.html-content",
 																	children: [(0, l.jsxs)("div", {
 																		className: "job-list-content",
 																		children: [(0, l.jsxs)("div", {
@@ -368,7 +368,7 @@
 																					alt: ""
 																				})
 																			}), (0, l.jsx)("div", {
-																				className: "company-details.html",
+																				className: "view_cart.html",
 																				children: (0, l.jsxs)("div", {
 																					className: "name-location",
 																					children: [(0, l.jsx)("h5", {
@@ -499,7 +499,7 @@
 															}), (0, l.jsx)("div", {
 																className: "col-lg-4",
 																children: (0, l.jsxs)("div", {
-																	className: "job-details.html-sidebar",
+																	className: "product_detail.html-sidebar",
 																	children: [(0, l.jsx)("div", {
 																		className: "save-apply-btn d-flex justify-content-end mb-50",
 																		children: (0, l.jsxs)("ul", {

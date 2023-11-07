@@ -177,7 +177,7 @@
 																alt: ""
 															})
 														}), (0, l.jsxs)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: [(0, l.jsxs)("div", {
 																className: "top",
 																children: [(0, l.jsx)("h6", {
@@ -249,7 +249,7 @@
 																alt: ""
 															})
 														}), (0, l.jsxs)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: [(0, l.jsxs)("div", {
 																className: "top",
 																children: [(0, l.jsx)("h6", {
@@ -321,7 +321,7 @@
 																alt: ""
 															})
 														}), (0, l.jsxs)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: [(0, l.jsxs)("div", {
 																className: "top",
 																children: [(0, l.jsx)("h6", {
@@ -393,7 +393,7 @@
 																alt: ""
 															})
 														}), (0, l.jsxs)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: [(0, l.jsxs)("div", {
 																className: "top",
 																children: [(0, l.jsx)("h6", {
@@ -465,7 +465,7 @@
 																alt: ""
 															})
 														}), (0, l.jsxs)("div", {
-															className: "company-details.html",
+															className: "view_cart.html",
 															children: [(0, l.jsxs)("div", {
 																className: "top",
 																children: [(0, l.jsx)("h6", {
