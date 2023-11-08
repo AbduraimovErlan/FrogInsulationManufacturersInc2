@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-url = 'https://caketheme.com/html/ruper/shop-details.html'
+url = 'https://www.buyinsulationproductstore.com'
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/118.0',
