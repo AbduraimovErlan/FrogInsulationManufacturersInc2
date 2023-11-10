@@ -183,4 +183,4 @@ class CompanyRepresentative(models.Model):
 class Transaction(models.Model):  # Просто пример, у вас может быть другое название
     client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='Client')
     representative = models.ForeignKey(CompanyRepresentative, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Company Representative')
-    # ... Ваши другие поля ...
+

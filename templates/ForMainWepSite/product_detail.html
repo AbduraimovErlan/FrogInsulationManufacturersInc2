@@ -527,19 +527,25 @@
                 </div>
             </div>
         </div>
-    <!-- Подключение стилей Swiper -->
+
+
+
+
+        {% if product %}
+
+
+            	<div class="blog-standard-area pt-120 mb-2">
+		<div class="container">
+			<div class="row g-lg-4 gy-5 justify-content-center">
+				<div class="col-lg-8">
+					<div class="row g-lg-4 gy-5 justify-content-center">
+						<div class="col-md-12 mb-30">
+							<div class="recent-article-wrap">
+								<div class="recent-article-img">
+									                                                                <!-- Подключение стилей Swiper -->
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
 
-<!-- Подключение скриптов Swiper -->
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-    <!-- Подключение CSS для Slick Slider -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.8.1/slick.css"/>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.8.1/slick-theme.css"/>
-
-<!-- Подключение jQuery и JS для Slick Slider -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.slick/1.8.1/slick.min.js"></script>
 
 <div class="product-gallery">
     <!-- Основное изображение -->
@@ -570,105 +576,117 @@
 .product-gallery {
     display: flex;
     flex-direction: row-reverse;
-    justify-content: start; /* Элементы прижаты к началу */
+    justify-content: start;
     align-items: flex-start;
-    max-width: 540px; /* Можете уменьшить это значение, если необходимо */
-    margin: auto; /* Автоматические отступы для центрирования галереи */
+    max-width: 950px;
+    margin: auto;
     background: #fff;
-    padding: 10px; /* Уменьшенный отступ внутри галереи */
+    padding: 20px; /* Увеличен отступ внутри галереи */
     border-radius: 8px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
+
 .main-image-container {
     position: relative;
-    width: 420px; /* Фиксированная ширина */
-    height: 420px; /* Фиксированная высота */
-    margin-right: 10px; /* Отступ справа */
+    width: 100%; /* Изменено на 100% */
+    height: 460px;
+    margin-right: 20px; /* Увеличен отступ справа */
     border: 2px solid #ddd;
     border-radius: 4px;
-    overflow: hidden; /* Обрезать изображение, выходящее за границы */
+    overflow: hidden;
 }
 
 #main-image {
     width: 100%;
     height: 100%;
-    background-size: contain; /* Изображение будет полностью помещаться внутри контейнера */
-    background-repeat: no-repeat; /* Не повторять изображение */
-    background-position: center; /* Центрировать изображение */
-    object-fit: contain; /* Сохранять пропорции изображения */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
+
 
 #next-image-btn {
     position: absolute;
     top: 50%;
-    right: 10px; /* Отступ справа внутри контейнера, не выходя за его пределы */
+    right: 20px;
     transform: translateY(-50%);
-    background-color: rgba(0,0,0,0.6); /* Полупрозрачный черный для контраста */
+    background-color: rgba(0,0,0,0.6);
     color: white;
     border: none;
     cursor: pointer;
-    padding: 3px 4px;
+    padding: 6px 8px;
     font-size: 15px;
     border-radius: 0 3px 3px 0;
-    z-index: 10; /* Убедимся, что кнопка будет поверх изображения */
+    z-index: 10;
 }
 
 #prev-image-btn {
     position: absolute;
     top: 50%;
-    left: 10px; /* Изменено на left */
+    left: 20px;
     transform: translateY(-50%);
-    background-color: rgba(0,0,0,0.6); /* Полупрозрачный черный для контраста */
+    background-color: rgba(0,0,0,0.6);
     color: white;
     border: none;
     cursor: pointer;
-    padding: 3px 4px;
+    padding: 6px 8px;
     font-size: 15px;
     border-radius: 4px 0 0 4px;
-    z-index: 10; /* Убедимся, что кнопка будет поверх изображения */
+    z-index: 10;
 }
-
-
 
 .thumbnails {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Уменьшенное расстояние между миниатюрами */
-    padding: 5px; /* Уменьшенный отступ внутри блока миниатюр */
+    gap: 20px; /* Увеличен отступ между миниатюрами */
+    padding: 20px; /* Увеличен внутренний отступ */
+    max-height: 440px;
+    overflow-y: auto;
 }
 
 .thumbnail-item {
-    width: 60px; /* Ширина миниатюр */
-    height: 60px; /* Высота миниатюр */
+    width: 80px;
+    height: 60px;
     background-size: cover;
     background-position: center;
     border-radius: 4px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.3s ease-in-out;
     border: 1px solid #ddd;
     overflow: hidden;
 }
 
 .thumbnail-item:hover {
-    transform: translateY(-5px);
+    transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    opacity: 1;
 }
 
-</style>
 
+
+
+
+
+
+</style>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
 $(document).ready(function() {
+
     // Инициализация Swiper для миниатюр
-    var swiper = new Swiper('.thumbnails', {
-        direction: 'vertical',
-        loop: true,
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-        },
-        slidesPerView: 'auto',
-        freeMode: true,
-        mousewheel: true,
-    });
+var swiper = new Swiper('.thumbnails', {
+    direction: 'vertical',
+      loop: true,
+      slidesPerView: 6,  // Устанавливаем количество видимых слайдов
+      spaceBetween: 1,  // Устанавливаем пространство между слайдами в пикселях
+      speed: 5000,  // Устанавливаем скорость анимации в 5000 миллисекунд
+      autoplay: {
+          delay: 2500,
+          disableOnInteraction: false,
+      },
+  });
+
+
+
 
     // Получение URL-адресов миниатюр из Swiper слайдов
     var thumbnails = $('.swiper-slide .thumbnail-item').map(function() {
@@ -684,6 +702,7 @@ $(document).ready(function() {
         $('#main-image').attr('src', newSrc);
         currentImageIndex = thumbnails.indexOf(newSrc);
         swiper.slideToLoop(currentImageIndex); // Переключение к активному слайду в Swiper
+        isAutoplayEnabled = true; // Включаем автопрокрутку после выбора миниатюры
     });
 
     // Обработчик клика для кнопки "Следующее изображение"
@@ -692,54 +711,67 @@ $(document).ready(function() {
         $('#main-image').attr('src', thumbnails[currentImageIndex]);
         swiper.slideToLoop(currentImageIndex); // Синхронизация с Swiper
     });
+
+    // Обработчик клика для кнопки "Предыдущее изображение"
     $('#prev-image-btn').click(function() {
-    currentImageIndex = (currentImageIndex - 1 + thumbnails.length) % thumbnails.length;
-    $('#main-image').attr('src', thumbnails[currentImageIndex]);
-    swiper.slideToLoop(currentImageIndex); // Синхронизация с Swiper
+        currentImageIndex = (currentImageIndex - 1 + thumbnails.length) % thumbnails.length;
+        $('#main-image').attr('src', thumbnails[currentImageIndex]);
+        swiper.slideToLoop(currentImageIndex); // Синхронизация с Swiper
+    });
+
+    // Запуск автопрокрутки миниатюр с задержкой после выбора миниатюры
+    setTimeout(function () {
+        if (isAutoplayEnabled) {
+            swiper.autoplay.start();
+        }
+    }, autoplayDelay);
 });
 
-});
+
 </script>
+									<div class="publish-area d-xl-none d-flex">
+										<a href="/blog-right-sidebar"><span>02</span>March</a>
+									</div>
+								</div>
+								<div class="recent-article-content">
+									<div class="recent-article-meta">
+										<div class="publish-area">
+											<a href="/blog-right-sidebar"><span>02</span>March</a>
+										</div>
+										<ul>
+											<li>
+												<a href="/blog-right-sidebar"><img alt="" src="assets/images/icon/comment.svg">03 Comments</a>
+											</li>
+											<li>
+												<a href="/blog-right-sidebar"><img alt="" src="assets/images/icon/user.svg">Mr. Jack Frank</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
 
+					</div>
+				</div>
+            	<div class="col-lg-4">
 
-
-
-        {% if product %}
-
-            <div class="recent-article-img">
-
-
-
-            </div>
-
-
-
-
-
-
-
-
-            <div class="job-post-area pt-120 mb-120">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-wrapper">
-
-                                <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
+				<form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">
                                     {% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="section-title2">
-                                                <h3>Доступные размеры:</h3>
-                                            </div>
-                                        </div>
+							<div class="row">
 
-                                        <div class="col-md-6">
+                            <div class="col-lg-12">
+                                <div class="section-title2">
+                                     <br>
+                                <br>
+                                    <br>
+                                    <h3>Доступные размеры:</h3>
+                                </div>
+                            </div>
+                                <div class="col-md-6">
+
                                             <div class="form-inner mb-25">
                                                 <label for="packageType">Packaging:</label>
                                                 <div class="input-area">
-                                                    <img alt="" src="{% static 'assets/images/icon/category-2.svg' %}">
-
                                                     <select id="packageType" name="packageType">
                                                         {% for package_type in unique_package_types %}
                                                             <option value="{{ package_type }}">{{ package_type }}</option>
@@ -748,11 +780,10 @@ $(document).ready(function() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                <div class="col-md-6">
                                             <div class="form-inner mb-25">
                                                 <label for="zeston">Zeston: #</label>
                                                 <div class="input-area">
-                                                    <img alt="" src="{% static 'assets/images/icon/category-2.svg' %}">
                                                     <select id="zeston" name="zeston">
                                                         {% for size in product_sizes %}
                                                             <option data-package-type="{{ size.package_type }}"
@@ -762,11 +793,10 @@ $(document).ready(function() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                <div class="col-md-6">
                                             <div class="form-inner mb-25">
                                                 <label for="size_sku">Size SKU:</label>
                                                 <div class="input-area">
-                                                    <img alt="" src="{% static 'assets/images/icon/category-2.svg' %}">
                                                     <select id="size_sku" name="size_sku">
                                                         {% for size in product_sizes %}
                                                             <option data-package-type="{{ size.package_type }}"
@@ -776,11 +806,10 @@ $(document).ready(function() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                <div class="col-md-6">
                                             <div class="form-inner mb-25">
                                                 <label for="size_desc">Size Description:</label>
                                                 <div class="input-area">
-                                                    <img alt="" src="{% static 'assets/images/icon/category-2.svg' %}">
                                                     <select id="size_desc" name="size_desc">
                                                         {% for size in product_sizes %}
                                                             <option data-package-type="{{ size.package_type }}"
@@ -796,14 +825,11 @@ $(document).ready(function() {
                                             <div class="form-inner mb-25">
                                                 <label>Quantity:</label>
                                                 <div class="input-area">
-                                                    <img alt="" src="{% static 'assets/images/icon/category-2.svg' %}">
                                                     <input type="number" name="quantity" value="1">
                                                 </div>
                                             </div>
                                         </div>
-
-
-                                        <script>
+                             <script>
                                             $(document).ready(function () {
                                                 // Инициализация Select2
                                                 function initSelect2() {
@@ -901,25 +927,32 @@ $(document).ready(function() {
                                             });
 
                                         </script>
-
-                                        <div class="col-md-12">
+                            <div class="col-md-12">
                                             <div class="form-inner">
                                                 <button class="primry-btn-2 lg-btn w-unset" type="submit">Post Now
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+
+							</div>
+						</form>
+			</div>
+
+			</div>
+		</div>
+	</div>
 
 
 
 
-            <div class="job-details-pages pt-120 mb-120">
+
+
+
+
+
+
+            <div class="job-details-pages pt-2 mb-120">
                 <div class="container">
                     <div class="row g-lg-4 gy-5">
                         <div class="col-lg-8">
@@ -939,6 +972,8 @@ $(document).ready(function() {
                                             </div>
                                         </div>
                                     </div>
+
+
                                     <div class="job-discription">
                                         <ul class="one">
                                             <li>
@@ -961,8 +996,11 @@ $(document).ready(function() {
                                             </li>
                                         </ul>
                                     </div>
+
                                 </div>
+
                                 <p><span>Job Description:</span> {{ product.description }}</p><br>
+
                                 <p><span>Job Responsibility:</span> Collaborating with cross-functional teams: UI/UX
                                     designers often work closely with other teams, including product management,
                                     engineering, and marketing, to ensure that the user interface is aligned with
@@ -1024,9 +1062,6 @@ $(document).ready(function() {
                         <a class="save-btn" href="#">Save Job<!-- --> <span><i
                                 class="bi bi-bookmark-fill"></i></span></a>
                     </li>
-                    <li>
-                        <a class="primry-btn-2 lg-btn" href="#">Apply Position</a>
-                    </li>
                 </ul>
             </div>
             <div class="job-summary-area mb-50">
@@ -1086,7 +1121,7 @@ $(document).ready(function() {
                 <div class="title">
                     <h6><img alt="" src="{% static 'assets/images/icon/email-2.svg' %}">Email Now</h6>
                 </div>
-                <p>Send your resume at <a href="#">info@example.com</a></p>
+                <p>Send your mail at <a href="mailto:yuni@froginsulation.com">yuni@froginsulation.com</a></p>
             </div>
             <div class="location-area">
                 <h6>Get Location:</h6>
@@ -1325,239 +1360,21 @@ $(document).ready(function() {
         </div>
     </div>
 
-
-
-
-	<div class="col-lg-12">
-		<div class="related-jobs">
-			<div class="section-title mb-40">
-				<h3>Related Jobs:</h3>
-				<div class="swiper-btn1 d-flex align-items-center">
-					<div class="left-btn prev-4"><img alt="" src="{% static 'assets/images/icon/explore-elliose.svg' %}"></div>
-					<div class="right-btn next-4"><img alt="" src="{% static 'assets/images/icon/explore-elliose.svg' %}"></div>
-				</div>
-			</div>
-			<div class="swiper swiper-initialized swiper-horizontal swiper-pointer-events related-job-slider swiper-backface-hidden">
-				<div class="swiper-wrapper" style="transition-duration: 0ms; transform: translate3d(-2901px, 0px, 0px);">
-					<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="0" style="width: 453.5px; margin-right: 30px;">
-						<div class="feature-card">
-							<div class="company-area">
-								<div class="logo"><img alt="" src="{% static 'assets/images/bg/company-logo/company-01.png' %}"></div>
-								<div class="company-details">
-									<div class="name-location">
-										<h5><a href="/job-details">React JS Developer</a></h5>
-										<p><a href="/company-details">Elite Hangstroman</a></p>
-									</div>
-									<div class="bookmark">
-										<i class="bi bi-bookmark"></i>
-									</div>
-								</div>
-							</div>
-							<div class="job-discription">
-								<ul>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Salary:</span> $80-$110 / <span class="time">Per month</span></p>
-									</li>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Deadline: 02 March, 2023</span></p>
-									</li>
-								</ul>
-							</div>
-							<div class="job-type-apply">
-								<div class="job-type">
-									<span class="full-time">Full Time</span>
-								</div>
-								<div class="apply-btn">
-									<a href="/job-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Apply Now</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="1" style="width: 453.5px; margin-right: 30px;">
-						<div class="feature-card">
-							<div class="company-area">
-								<div class="logo"><img alt="" src="{% static 'assets/images/bg/company-logo/company-02.png' %}"></div>
-								<div class="company-details">
-									<div class="name-location">
-										<h5><a href="/job-details">Assistant Laboratorist</a></h5>
-										<p><a href="/company-details">Norland Comapny</a></p>
-									</div>
-									<div class="bookmark">
-										<i class="bi bi-bookmark"></i>
-									</div>
-								</div>
-							</div>
-							<div class="job-discription">
-								<ul>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Salary:</span> $30-$40 / <span class="time">Per month</span></p>
-									</li>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Deadline: 02 March, 2023</span></p>
-									</li>
-								</ul>
-							</div>
-							<div class="job-type-apply">
-								<div class="job-type">
-									<span class="full-time">Full Time</span>
-								</div>
-								<div class="apply-btn">
-									<a href="/job-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Apply Now</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-prev" data-swiper-slide-index="2" style="width: 453.5px; margin-right: 30px;">
-						<div class="feature-card">
-							<div class="company-area">
-								<div class="logo"><img alt="" src="{% static 'assets/images/bg/company-logo/company-04.png' %}"></div>
-								<div class="company-details">
-									<div class="name-location">
-										<h5><a href="/job-details">UI/UX Designer</a></h5>
-										<p><a href="/company-details">Techman Digita</a></p>
-									</div>
-									<div class="bookmark">
-										<i class="bi bi-bookmark"></i>
-									</div>
-								</div>
-							</div>
-							<div class="job-discription">
-								<ul>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Salary:</span> $60-$70 / <span class="time">Per month</span></p>
-									</li>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Deadline: 02 March, 2023</span></p>
-									</li>
-								</ul>
-							</div>
-							<div class="job-type-apply">
-								<div class="job-type">
-									<span class="full-time">Full Time</span>
-								</div>
-								<div class="apply-btn">
-									<a href="/job-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Apply Now</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="swiper-slide swiper-slide-duplicate-active" data-swiper-slide-index="0" style="width: 453.5px; margin-right: 30px;">
-						<div class="feature-card">
-							<div class="company-area">
-								<div class="logo"><img alt="" src="{% static 'assets/images/bg/company-logo/company-01.png' %}"></div>
-								<div class="company-details">
-									<div class="name-location">
-										<h5><a href="/job-details">React JS Developer</a></h5>
-										<p><a href="/company-details">Elite Hangstroman</a></p>
-									</div>
-									<div class="bookmark">
-										<i class="bi bi-bookmark"></i>
-									</div>
-								</div>
-							</div>
-							<div class="job-discription">
-								<ul>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Salary:</span> $80-$110 / <span class="time">Per month</span></p>
-									</li>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Deadline: 02 March, 2023</span></p>
-									</li>
-								</ul>
-							</div>
-							<div class="job-type-apply">
-								<div class="job-type">
-									<span class="full-time">Full Time</span>
-								</div>
-								<div class="apply-btn">
-									<a href="/job-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Apply Now</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="feature-card">
-							<div class="company-area">
-								<div class="logo"><img alt="" src="{% static 'assets/images/bg/company-logo/company-02.png' %}"></div>
-								<div class="company-details">
-									<div class="name-location">
-										<h5><a href="/job-details">Assistant Laboratorist</a></h5>
-										<p><a href="/company-details">Norland Comapny</a></p>
-									</div>
-									<div class="bookmark">
-										<i class="bi bi-bookmark"></i>
-									</div>
-								</div>
-							</div>
-							<div class="job-discription">
-								<ul>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Salary:</span> $30-$40 / <span class="time">Per month</span></p>
-									</li>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Deadline: 02 March, 2023</span></p>
-									</li>
-								</ul>
-							</div>
-							<div class="job-type-apply">
-								<div class="job-type">
-									<span class="full-time">Full Time</span>
-								</div>
-								<div class="apply-btn">
-									<a href="/job-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Apply Now</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-prev" data-swiper-slide-index="2" style="width: 453.5px; margin-right: 30px;">
-						<div class="feature-card">
-							<div class="company-area">
-								<div class="logo"><img alt="" src="{% static 'assets/images/bg/company-logo/company-04.png' %}"></div>
-								<div class="company-details">
-									<div class="name-location">
-										<h5><a href="/job-details">UI/UX Designer</a></h5>
-										<p><a href="/company-details">Techman Digita</a></p>
-									</div>
-									<div class="bookmark">
-										<i class="bi bi-bookmark"></i>
-									</div>
-								</div>
-							</div>
-							<div class="job-discription">
-								<ul>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Salary:</span> $60-$70 / <span class="time">Per month</span></p>
-									</li>
-									<li>
-										<img alt="" src="{% static 'assets/images/icon/arrow2.svg' %}">
-										<p><span class="title">Deadline: 02 March, 2023</span></p>
-									</li>
-								</ul>
-							</div>
-							<div class="job-type-apply">
-								<div class="job-type">
-									<span class="full-time">Full Time</span>
-								</div>
-								<div class="apply-btn">
-									<a href="/job-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Apply Now</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
+    <!-- Подключение скриптов Swiper -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  var swiper = new Swiper('.swiper', {
+      direction: 'horizontal',
+      loop: true,
+      slidesPerView: 4,  // Устанавливаем количество видимых слайдов
+      spaceBetween: 5,  // Устанавливаем пространство между слайдами в пикселях
+      speed: 5000,  // Устанавливаем скорость анимации в 5000 миллисекунд
+      autoplay: {
+          delay: 2500,
+          disableOnInteraction: false,
+      },
+  });
+</script>
 
 
 
