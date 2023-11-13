@@ -261,8 +261,12 @@ def product_detail(request, slug):
 
 
 
+from django.shortcuts import get_object_or_404
+
 def update_based_on_package(request, product_id, package_type):
-    sizes_p = get_list_or_404(ProductSize, product_id=product_id, package_type=package_type)
+    sizes_p = ProductSize.objects.filter(product_id=product_id, package_type=package_type).distinct()
+
+
     sizes_data = [
         {
             "id": size.size.id,
@@ -276,8 +280,11 @@ def update_based_on_package(request, product_id, package_type):
     ]
     return JsonResponse(sizes_data, safe=False)
 
-def update_based_on_product_number(request, product_id, product_number, package_type):
-    sizes_n = ProductSize.objects.filter(product_id=product_id, product_number=product_number, package_type=package_type)
+
+
+
+def update_based_on_product_number(request, product_number,  product_id, packageType):
+    sizes_n = ProductSize.objects.filter(product_number=product_number, product_id=product_id, package_type=packageType)
     sizes_data = [
         {
             "id": size.size.id,
@@ -285,7 +292,8 @@ def update_based_on_product_number(request, product_id, product_number, package_
             "price": size.size_price,
             "sku": size.size_sku,
             "product_number": size.product_number,
-            "package_type": size.package_type
+            "package_type": size.package_type,
+            "image_url": size.size.image.url  # Добавьте URL главного изображения для размера
         }
         for size in sizes_n
     ]
@@ -300,7 +308,8 @@ def update_based_on_sku(request, product_id, size_sku):
             "price": size.size_price,
             "sku": size.size_sku,
             "product_number": size.product_number,
-            "package_type": size.package_type
+            "package_type": size.package_type,
+            "image_url": size.size.image.url  # Добавьте URL главного изображения для размера
         }
         for size in sizes_s
     ]
@@ -308,19 +317,20 @@ def update_based_on_sku(request, product_id, size_sku):
 
 
 def update_based_on_size(request, product_id, size_value):
-    sizes_v = ProductSize.objects.filter(product_id=product_id, size__value=size_value)
-    sizes_data = [
-        {
-            "id": size.size.id,
-            "value": size.size.value,
-            "price": size.size_price,
-            "sku": size.size_sku,
-            "product_number": size.product_number,
-            "package_type": size.package_type
-        }
-        for size in sizes_v
-    ]
-    return JsonResponse(sizes_data, safe=False)
+   sizes_v = ProductSize.objects.filter(product_id=product_id, size__value=size_value)
+   sizes_data = [
+      {
+         "id": size.size.id,
+         "value": size.size.value,
+         "price": size.size_price,
+         "sku": size.size_sku,
+         "product_number": size.product_number,
+         "package_type": size.package_type,
+         "image_url": size.size.image.url  # Добавьте URL главного изображения для размера
+      }
+      for size in sizes_v
+   ]
+   return JsonResponse(sizes_data, safe=False)
 
 
 

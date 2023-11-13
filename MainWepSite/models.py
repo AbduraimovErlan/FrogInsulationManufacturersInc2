@@ -48,6 +48,7 @@ class Brand(models.Model):
 
 class Size(models.Model):
     value = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='sizes/', null=True, blank=True)
 
     def __str__(self):
         return self.value
@@ -134,9 +135,11 @@ class ProductSize(models.Model):
     # Packaging options: Boxed or Single
     BX = 'bx'
     EACH = 'each'
+    ZERO = '-'
     PACKAGE_CHOICES = [
         (BX, 'bx'),
         (EACH, 'each'),
+        (ZERO, '-')
     ]
     package_type = models.CharField(max_length=10, choices=PACKAGE_CHOICES, default=EACH, null=True)
 
