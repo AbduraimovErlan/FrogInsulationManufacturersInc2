@@ -141,7 +141,7 @@ class ProductSize(models.Model):
         (EACH, 'each'),
         (ZERO, '-')
     ]
-    package_type = models.CharField(max_length=10, choices=PACKAGE_CHOICES, default=EACH, null=True)
+    package_type = models.CharField(max_length=10, choices=PACKAGE_CHOICES, default=ZERO, null=True)
 
 
     def __str__(self):
