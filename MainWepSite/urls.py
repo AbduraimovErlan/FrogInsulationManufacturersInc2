@@ -13,8 +13,8 @@ urlpatterns = [
 
 path('update_based_on_package/<int:product_id>/<str:package_type>/', views.update_based_on_package, name='update_based_on_package'),
 path('update_based_on_product_number/<int:product_id>/<zeston>/<str:package_type>/', views.update_based_on_product_number, name='update_based_on_product_number'),
-path('update_based_on_size/<int:product_id>/<size_value>/<package_type>/', views.update_based_on_size, name='update_based_on_size'),
 path('update_based_on_sku/<int:product_id>/<str:size_sku>/', views.update_based_on_sku, name='update_based_on_sku'),
+path('update_based_on_size_and_package/<int:product_id>/<size_desc>/<str:package_type>/', views.update_based_on_size_and_package, name='update_based_on_size_and_package'),
 
 
     path('category.html/<slug:slug>/', views.category_detail, name='category_detail'),

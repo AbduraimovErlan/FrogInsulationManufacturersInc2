@@ -873,13 +873,15 @@ var swiper = new Swiper('.thumbnails', {
 
 </script>
 									<div class="publish-area d-xl-none d-flex">
-										<a href="/blog-right-sidebar"><span>02</span>March</a>
+										<a href="/blog-right-sidebar"><span>03</span>March</a>
 									</div>
 								</div>
 								<div class="recent-article-content">
 									<div class="recent-article-meta">
 										<div class="publish-area">
-											<a href="/blog-right-sidebar"><span>02</span>March</a>
+										{% for size in product_sizes %}
+											<a href="/blog-right-sidebar"><span>{{ size.size_price }}</span>Cost$</a>
+                                        {% endfor %}
 										</div>
 										<ul>
 											<li>
@@ -942,7 +944,22 @@ var swiper = new Swiper('.thumbnails', {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                <div class="col-md-6">
+                                            <div class="form-inner mb-25">
+                                                <label for="size_sku">Size SKU:</label>
+                                                <div class="input-area">
+                                                    <select id="size_sku" name="size_sku" data-placeholder="Выберите продукт sku...">
+                                                    <option value=""></option>
+                                                        {% for size in product_sizes %}
+                                                            <option data-package-type="{{ size.package_type }}"
+                                                                    value="{{ size.size_sku }}">{{ size.size_sku }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                <span class="selected-mark">✔</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                <div class="col-md-6">
                                             <div class="form-inner mb-25">
                                                 <label for="size_desc">Size Description:</label>
                                                 <div class="input-area">
@@ -959,22 +976,6 @@ var swiper = new Swiper('.thumbnails', {
                                                 </div>
                                             </div>
                                         </div>
-                                <div class="col-md-6">
-                                            <div class="form-inner mb-25">
-                                                <label for="size_sku">Size SKU:</label>
-                                                <div class="input-area">
-                                                    <select id="size_sku" name="size_sku" data-placeholder="Выберите продукт sku...">
-                                                    <option value=""></option>
-                                                        {% for size in product_sizes %}
-                                                            <option data-package-type="{{ size.package_type }}"
-                                                                    value="{{ size.size_sku }}">{{ size.size_sku }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                <span class="selected-mark">✔</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div class="col-md-6">
                                             <div class="form-inner mb-25">
                                                 <label>Quantity:</label>
@@ -1064,7 +1065,7 @@ var swiper = new Swiper('.thumbnails', {
 
                                                 // Функция для обновления списка Size Description на основе полученных данных
                                                 function updateSizeDescSelect(data) {
-                                                    let options = data.length > 2 ? ['<option value="">-</option>'] : [];
+                                                    let options = data.length > 1 ? ['<option value="">-</option>'] : [];
                                                     options = options.concat(data.map(item => `<option value="${item.value}">${item.value}</option>`));
 
                                                     $('#size_desc').empty().append(options.join('')).trigger('change').trigger('select2:updated');
@@ -1074,10 +1075,6 @@ var swiper = new Swiper('.thumbnails', {
                                                 }
                                                                                                 function filterData(data, zeston, packageType) {
                                                     return data.filter(item => item.product_number === zeston && item.package_type === packageType);
-                                                }
-
-                                                                                                function filterDataDesc(data, size_desc, packageType) {
-                                                    return data.filter(item => item.value === size_desc && item.package_type === packageType);
                                                 }
 
 
@@ -1120,34 +1117,7 @@ var swiper = new Swiper('.thumbnails', {
                                                 });
 
 
-
-
-
-
-                                                $('#size_desc').on('select2:select', function () {
-    let selectedSizeValue = $('#size_desc').val();
-    let selectedPackageType = $('#packageType').val();
-
-    fetch(`/update_based_on_size/${productId}/${selectedSizeValue}/${selectedPackageType}/`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Handle the response data
-            updateMainImage(data[0].image_url);
-            updateZestonSelect(data);
-            updateSizeSkuSelect(data);
-            updateSizeDescSelect(data);
-            updatePackageTypeSelect(data);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-});
-
-
-                                                         $('#size_sku').on('select2:select', function () {
+                                                $('#size_sku').on('select2:select', function () {
                                                     fetch(`/update_based_on_sku/${productId}/${$(this).val()}/`)
                                                         .then(response => response.json())
                                                         .then(data => {
@@ -1160,6 +1130,27 @@ var swiper = new Swiper('.thumbnails', {
                                                         })
                                                         .catch(error => console.error('Error fetching data:', error));
                                                 });
+
+                                                    $('#size_desc, #packageType').on('select2:select', function () {
+                                                        let selectedSizeDesc = $('#size_desc').val();
+                                                        let selectedPackageType = $('#packageType').val();
+
+                                                        if (selectedSizeDesc && selectedPackageType) {
+                                                            fetch(`/update_based_on_size_and_package/${productId}/${selectedSizeDesc}/${selectedPackageType}/`)
+                                                                .then(response => response.json())
+                                                                .then(data => {
+                                                                    updateZestonSelect(data);
+                                                                    updateSizeSkuSelect(data);
+                                                                    updateSizeDescSelect(data);
+                                                                    updatePackageTypeSelect(data);
+                                                                    if (data.length > 0 && data[0].image_url) {
+                                                                        updateMainImage(data[0].image_url);
+                                                                    }
+                                                                })
+                                                                .catch(error => console.error('Error fetching data:', error));
+                                                        }
+                                                    });
+
 
 function updateSelectionIndicator(selectElementId) {
     let selectElement = $(`#${selectElementId}`);

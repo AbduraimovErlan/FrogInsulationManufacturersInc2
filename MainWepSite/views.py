@@ -300,33 +300,6 @@ def update_based_on_product_number(request, product_id, zeston,  package_type):
     ]
     return JsonResponse(sizes_data, safe=False)
 
-
-
-
-from django.http import JsonResponse
-
-def update_based_on_size(request, product_id, size_value, package_type):
-    try:
-        sizes_v = ProductSize.objects.filter(product_id=product_id, size__value=size_value, package_type=package_type)
-        sizes_data = [
-            {
-                "id": size.size.id,
-                "value": size.size.value,
-                "price": size.size_price,
-                "sku": size.size_sku,
-                "product_number": size.product_number,
-                "package_type": size.package_type,
-                "image_url": size.size.image.url if size.size.image else None  # Ensure there's an image before accessing its URL
-            }
-            for size in sizes_v
-        ]
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-
-    return JsonResponse(sizes_data, safe=False)
-
-
-
 def update_based_on_sku(request, product_id, size_sku):
     sizes_s = ProductSize.objects.filter(product_id=product_id, size_sku=size_sku)
     sizes_data = [
@@ -341,6 +314,28 @@ def update_based_on_sku(request, product_id, size_sku):
         }
         for size in sizes_s
     ]
+    return JsonResponse(sizes_data, safe=False)
+
+
+def update_based_on_size_and_package(request, product_id, size_desc, package_type):
+    try:
+        sizes = ProductSize.objects.filter(product_id=product_id, size__value=size_desc, package_type=package_type)
+        sizes_data = [
+            {
+                "id": size.size.id,
+                "value": size.size.value,
+                "price": size.size_price,
+                "sku": size.size_sku,
+                "product_number": size.product_number,
+                "package_type": size.package_type,
+                "image_url": size.size.image.url  # Добавьте URL главного изображения для размера
+            }
+            for size in sizes
+        ]
+
+    except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
     return JsonResponse(sizes_data, safe=False)
 
 
