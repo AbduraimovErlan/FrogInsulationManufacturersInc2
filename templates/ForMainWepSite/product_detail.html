@@ -670,10 +670,16 @@
         {% endfor %}
 
         {% for size in product_sizes %}
-   <div class="swiper-slide">
-      <img class="thumbnail-item" id="size_image_{{ size.size.id }}" src="{{ size.size.image.url }}" alt="Size Image">
-   </div>
+    <div class="swiper-slide">
+        {% if size.size.image %}
+            <img class="thumbnail-item" id="size_image_{{ size.size.id }}" src="{{ size.size.image.url }}" alt="Size Image">
+        {% else %}
+            <!-- Display a placeholder image or alternative content if the image does not exist -->
+            <img class="thumbnail-item" id="size_image_{{ size.size.id }}" src="{% static 'assets/images/placeholder-image.png' %}" alt="Placeholder Image">
+        {% endif %}
+    </div>
 {% endfor %}
+
 
 
     </div>
@@ -1013,9 +1019,18 @@ var swiper = new Swiper('.thumbnails', {
                                                 const productId = {{ product.id }};
                                                     // Функция для обновления главного изображения при выборе нового значения Size
 
-                                                function updateMainImage(newImageUrl) {
-                                                    $('#main-image').attr('src', newImageUrl);
+                                                function updateZestonVisibility(data) {
+                                                    console.log("updateZestonVisibility called", data);
+                                                    const hasVisibleZeston = data.some(item => item.product_number != null && item.product_number !== '');
+                                                    console.log("Has visible Zeston:", hasVisibleZeston);
+
+                                                    if (hasVisibleZeston) {
+                                                        $('#zeston').closest('.form-group').show();
+                                                    } else {
+                                                        $('#zeston').closest('.form-group').hide();
+                                                    }
                                                 }
+
 
 
 
@@ -1104,16 +1119,18 @@ var swiper = new Swiper('.thumbnails', {
                                                     let selectedZeston = $('#zeston').val();
                                                     let selectedPackageType = $('#packageType').val();
 
-                                                    fetch(`/update_based_on_product_number/${productId}/${selectedZeston}/${selectedPackageType}/`)
-                                                        .then(response => response.json())
-                                                        .then(data => {
-                                                            let filteredData = filterData(data, selectedZeston, selectedPackageType);
-                                                            updateZestonSelect(filteredData, selectedZeston);
-                                                            updatePackageTypeSelect(filteredData, selectedPackageType);
-                                                            updateSizeSkuSelect(filteredData);
-                                                            updateSizeDescSelect(filteredData);
-                                                        })
-                                                        .catch(error => console.error('Error fetching data:', error));
+                                                    if (selectedZeston) {
+                                                        fetch(`/update_based_on_product_number/${productId}/${selectedZeston}/${selectedPackageType}/`)
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                let filteredData = filterData(data, selectedZeston, selectedPackageType);
+                                                                updateZestonSelect(filteredData, selectedZeston);
+                                                                updatePackageTypeSelect(filteredData, selectedPackageType);
+                                                                updateSizeSkuSelect(filteredData);
+                                                                updateSizeDescSelect(filteredData);
+                                                                })
+                                                            .catch(error => console.error('Error fetching data:', error));
+                                                    }
                                                 });
 
 

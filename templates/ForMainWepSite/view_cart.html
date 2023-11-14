@@ -503,7 +503,7 @@
                                                         {% endif %}</p>
 												</li>
 												<li>
-													<p><span class="title">Номер продукта:</span>{{ item.product_number }}</p>
+													<p><span class="title">Номер продукта:</span>{% if item.product_number %}{{ item.product_number }}{% else %}-{% endif %}</p>
 												</li>
 
 											</ul>

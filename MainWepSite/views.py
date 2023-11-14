@@ -91,40 +91,45 @@ def view_cart(request, size=None):
 
 
 
-
 def _add_product_to_session_cart(request, product_id, quantity, selected_package_type, selected_zeston, selected_sku, selected_size_desc):
     cart = request.session.get('cart', {})
 
-    # Попытка получить продукт по ID
     try:
         product = Product.objects.get(id=product_id)
     except Product.DoesNotExist:
         raise ValueError(f"Product with ID {product_id} does not exist.")
 
-    # Попытка получить конкретный размер продукта на основе предоставленных параметров
     try:
-        product_size = ProductSize.objects.get(product=product, package_type=selected_package_type,
-                                               product_number=selected_zeston, size_sku=selected_sku,
-                                               size__value=selected_size_desc)
+        # Формируем запрос с учетом возможного отсутствия selected_zeston
+        product_size_query = ProductSize.objects.filter(
+            product=product,
+            package_type=selected_package_type,
+            size_sku=selected_sku,
+            size__value=selected_size_desc
+        )
+        if selected_zeston:
+            product_size_query = product_size_query.filter(product_number=selected_zeston)
+
+        product_size = product_size_query.get()
         price = product_size.size_price
     except ProductSize.DoesNotExist:
-        raise ValueError(f"Combination of product ID {product_id}, package type {selected_package_type}, zeston {selected_zeston}, size sku {selected_sku}, and size description {selected_size_desc} does not exist.")
+        raise ValueError("Combination of provided parameters does not exist.")
+    except ProductSize.MultipleObjectsReturned:
+        raise ValueError("Multiple product sizes found for the provided parameters.")
 
     # Обновление или добавление продукта в корзину
     cart_data = {
         'product_id': product_id,
-        'quantity': cart.get(selected_sku, {}).get('quantity', 0) + quantity,  # обновление количества, если продукт уже в корзине
+        'quantity': cart.get(selected_sku, {}).get('quantity', 0) + quantity,
         'price': str(price),
         'sku': selected_sku,
-        'product_number': product_size.product_number,  # добавлено
+        'product_number': product_size.product_number,  # Всегда добавляем product_number, если он доступен
         'package_type': selected_package_type,
         'zeston': selected_zeston,
         'size_desc': selected_size_desc
     }
     cart[selected_sku] = cart_data
 
-
-    # Сохранение обновленной корзины в сессии
     request.session['cart'] = cart
 
 
@@ -132,6 +137,8 @@ def _add_product_to_session_cart(request, product_id, quantity, selected_package
 
 
 
+
+# Add product to cart
 # Add product to cart
 def add_to_cart(request, product_id):
     if request.method == "POST":
@@ -141,18 +148,30 @@ def add_to_cart(request, product_id):
             selected_size_desc = request.POST.get('size_desc')
             selected_package_type = request.POST.get('packageType')
             selected_sku = request.POST.get('size_sku')
-            selected_zeston = request.POST.get('zeston')
+            selected_zeston = request.POST.get('zeston') or None  # Установите None, если zeston пустой
 
-            # Проверим, существует ли сочетание
-            product_size = ProductSize.objects.get(product=product, package_type=selected_package_type, product_number=selected_zeston, size_sku=selected_sku, size__value=selected_size_desc)
+            # Формируем запрос с учетом возможного отсутствия selected_zeston
+            product_size_query = ProductSize.objects.filter(
+                product=product,
+                package_type=selected_package_type,
+                size_sku=selected_sku,
+                size__value=selected_size_desc
+            )
 
+            if selected_zeston:
+                product_size_query = product_size_query.filter(product_number=selected_zeston)
+
+            product_size = product_size_query.get()
 
             _add_product_to_session_cart(request, product.id, quantity, selected_package_type, selected_zeston,
                                          selected_sku, selected_size_desc)
             return redirect('MainWepSite:view_cart')
 
         except ProductSize.MultipleObjectsReturned:
-            messages.error(request, "Multiple matching product sizes found. Please contact.html support.")
+            messages.error(request, "Multiple matching product sizes found. Please contact support.")
+            return redirect('MainWepSite:view_cart')
+        except ProductSize.DoesNotExist:
+            messages.error(request, "Selected product size or SKU combination does not exist.")
             return redirect('MainWepSite:view_cart')
         except ValueError as e:
             messages.error(request, str(e))
@@ -160,13 +179,9 @@ def add_to_cart(request, product_id):
         except Product.DoesNotExist:
             messages.error(request, "Product not found.")
             return redirect('MainWepSite:index')
-        except ProductSize.DoesNotExist:
-            messages.error(request, "Selected product size or SKU combination does not exist.")
-            return redirect('MainWepSite:view_cart')
     else:
         messages.warning(request, "Invalid request type.")
         return redirect('MainWepSite:view_cart')
-
 
 def remove_from_cart(request, sku):
     cart = request.session.get('cart', {})
@@ -294,7 +309,7 @@ def update_based_on_product_number(request, product_id, zeston,  package_type):
             "sku": size.size_sku,
             "product_number": size.product_number,
             "package_type": size.package_type,
-            "image_url": size.size.image.url  # Добавьте URL главного изображения для размера
+            "image_url": size.size.image.url if size.size.image else None
         }
         for size in sizes_n
     ]
@@ -310,7 +325,7 @@ def update_based_on_sku(request, product_id, size_sku):
             "sku": size.size_sku,
             "product_number": size.product_number,
             "package_type": size.package_type,
-            "image_url": size.size.image.url  # Добавьте URL главного изображения для размера
+            "image_url": size.size.image.url if size.size.image else None
         }
         for size in sizes_s
     ]
@@ -328,7 +343,8 @@ def update_based_on_size_and_package(request, product_id, size_desc, package_typ
                 "sku": size.size_sku,
                 "product_number": size.product_number,
                 "package_type": size.package_type,
-                "image_url": size.size.image.url  # Добавьте URL главного изображения для размера
+
+                "image_url": size.size.image.url if size.size.image else None
             }
             for size in sizes
         ]
