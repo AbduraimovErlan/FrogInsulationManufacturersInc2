@@ -843,15 +843,11 @@ var swiper = new Swiper('.thumbnails', {
     // Начальное состояние счетчика изображений
     var currentImageIndex = 0;
 
-    // Обработчик клика для миниатюр, с учетом Swiper
+    // Обработчик клика для миниатюр
     $('.swiper-slide .thumbnail-item').click(function() {
-   var sizeId = $(this).attr('id').replace('size_image_', ''); // Получаем ID размера
-   var newSizeSrc = $('#size_image_' + sizeId).attr('src'); // Получаем URL изображения размера
-   $('#main-image').attr('src', newSizeSrc);
-   currentImageIndex = thumbnails.indexOf(newSizeSrc);
-   swiper.slideToLoop(currentImageIndex); // Переключение к активному слайду в Swiper
-   isAutoplayEnabled = true; // Включаем автопрокрутку после выбора миниатюры
-});
+        var clickedImageSrc = $(this).attr('src'); // Получаем URL изображения
+        $('#main-image').attr('src', clickedImageSrc); // Обновляем главное изображение
+    });
 
 
     // Обработчик клика для кнопки "Следующее изображение"
@@ -885,9 +881,9 @@ var swiper = new Swiper('.thumbnails', {
 								<div class="recent-article-content">
 									<div class="recent-article-meta">
 										<div class="publish-area">
-										{% for size in product_sizes %}
-											<a href="/blog-right-sidebar"><span>{{ size.size_price }}</span>Cost$</a>
-                                        {% endfor %}
+
+											            <a href="/blog-right-sidebar"><span id="price">{{ initial_price }}</span>Cost</a>
+
 										</div>
 										<ul>
 											<li>
@@ -925,11 +921,11 @@ var swiper = new Swiper('.thumbnails', {
                                                 <div class="input-area">
 
                                                     <select id="packageType" name="packageType" data-placeholder="Выберите тип упаковки...">
-    <option value=""></option> <!-- Пустая опция -->
-    {% for package_type in unique_package_types %}
-        <option value="{{ package_type }}">{{ package_type }}</option>
-    {% endfor %}
-</select>
+                                                        <option value=""></option> <!-- Пустая опция -->
+                                                        {% for package_type in unique_package_types %}
+                                                            <option value="{{ package_type }}">{{ package_type }}</option>
+                                                        {% endfor %}
+                                                    </select>
 
                                                 <span class="selected-mark">✔</span>
                                                 </div>
@@ -992,14 +988,14 @@ var swiper = new Swiper('.thumbnails', {
                                         </div>
                                 <style>
                                     .selected-mark {
-    display: none;
-    color: green;
-    margin-left: 5px;
-}
+                                        display: none;
+                                        color: green;
+                                        margin-left: 5px;
+                                    }
 
-.selected-mark.visible {
-    display: inline;
-}
+                                    .selected-mark.visible {
+                                        display: inline;
+                                    }
 
                                 </style>
                              <script>
@@ -1030,6 +1026,16 @@ var swiper = new Swiper('.thumbnails', {
                                                         $('#zeston').closest('.form-group').hide();
                                                     }
                                                 }
+
+                                                function updatePrice(price) {
+                                                    $('#price').text(price + ' $'); // Предполагая, что у вашего элемента цены есть id="price"
+                                                }
+
+                                                function updateMainImage(imageUrl) {
+                                                    $('#main-image').attr('src', imageUrl);
+                                                }
+
+
 
 
 
@@ -1128,10 +1134,21 @@ var swiper = new Swiper('.thumbnails', {
                                                                 updatePackageTypeSelect(filteredData, selectedPackageType);
                                                                 updateSizeSkuSelect(filteredData);
                                                                 updateSizeDescSelect(filteredData);
-                                                                })
+
+                                                                if (data.length > 0) {
+                                                                    if (data[0].image_url) {
+                                                                        updateMainImage(data[0].image_url);
+                                                                    }
+                                                                    if (data[0].price) {
+                                                                        updatePrice(data[0].price);
+                                                                    }
+                                                                }
+                                                            })
                                                             .catch(error => console.error('Error fetching data:', error));
                                                     }
                                                 });
+
+
 
 
                                                 $('#size_sku').on('select2:select', function () {
@@ -1148,39 +1165,47 @@ var swiper = new Swiper('.thumbnails', {
                                                         .catch(error => console.error('Error fetching data:', error));
                                                 });
 
-                                                    $('#size_desc, #packageType').on('select2:select', function () {
-                                                        let selectedSizeDesc = $('#size_desc').val();
-                                                        let selectedPackageType = $('#packageType').val();
+                                                $('#size_desc, #packageType').on('select2:select', function () {
+                                                    let selectedSizeDesc = $('#size_desc').val();
+                                                    let selectedPackageType = $('#packageType').val();
 
-                                                        if (selectedSizeDesc && selectedPackageType) {
-                                                            fetch(`/update_based_on_size_and_package/${productId}/${selectedSizeDesc}/${selectedPackageType}/`)
-                                                                .then(response => response.json())
-                                                                .then(data => {
-                                                                    updateZestonSelect(data);
-                                                                    updateSizeSkuSelect(data);
-                                                                    updateSizeDescSelect(data);
-                                                                    updatePackageTypeSelect(data);
-                                                                    if (data.length > 0 && data[0].image_url) {
+                                                    if (selectedSizeDesc && selectedPackageType) {
+                                                        fetch(`/update_based_on_size_and_package/${productId}/${selectedSizeDesc}/${selectedPackageType}/`)
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                updateZestonSelect(data);
+                                                                updateSizeSkuSelect(data);
+                                                                updateSizeDescSelect(data);
+                                                                updatePackageTypeSelect(data);
+                                                                if (data.length > 0) {
+                                                                    if (data[0].image_url) {
                                                                         updateMainImage(data[0].image_url);
                                                                     }
-                                                                })
-                                                                .catch(error => console.error('Error fetching data:', error));
+                                                                    if (data[0].price) {
+                                                                        updatePrice(data[0].price);
+                                                                    }
+                                                                }
+                                                            })
+                                                            .catch(error => console.error('Error fetching data:', error));
+                                                    }
+                                                });
+
+
+
+
+
+                                                        function updateSelectionIndicator(selectElementId) {
+                                                            let selectElement = $(`#${selectElementId}`);
+                                                            let optionsCount = selectElement.children('option').length;
+                                                            let indicator = selectElement.siblings('.selected-mark');
+
+                                                            // Показываем индикатор только если остается ровно один вариант для выбора
+                                                            if (optionsCount === 1) {
+                                                                indicator.addClass('visible');
+                                                            } else {
+                                                                indicator.removeClass('visible');
+                                                            }
                                                         }
-                                                    });
-
-
-function updateSelectionIndicator(selectElementId) {
-    let selectElement = $(`#${selectElementId}`);
-    let optionsCount = selectElement.children('option').length;
-    let indicator = selectElement.siblings('.selected-mark');
-
-    // Показываем индикатор только если остается ровно один вариант для выбора
-    if (optionsCount === 1) {
-        indicator.addClass('visible');
-    } else {
-        indicator.removeClass('visible');
-    }
-}
 
 
 
