@@ -86,62 +86,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-        <div class="mb-3">
-
-        </div>
-
-
-
-
-
-
-
     <div id="__next">
 		<header class="header-area style-2">
 			<div class="header-main-logo d-lg-block d-none">
@@ -185,8 +129,8 @@
 									</li>
 								</ul>
 							</li>
-							<li class="">
-								<a class="drop-down" href="#">Find Jobs</a><i class="bi bi-plus dropdown-icon"></i>
+							<li class="active">
+								<a class="drop-down" href="#">Product list</a><i class="bi bi-plus dropdown-icon"></i>
 								<ul class="sub-menu">
 									<li>
 										<a class="" href="/category">Job Category</a>
@@ -199,14 +143,14 @@
 									</li>
 								</ul>
 							</li>
-							<li class="menu-item-has-children active">
+							<li class="menu-item-has-children">
 								<a class="drop-down" href="#">Pages</a><i class="bi bi-plus dropdown-icon"></i>
 								<ul class="sub-menu">
 									<li>
 										<a class="" href="/candidates-dashboard/dashboard">Candidate Dashboard</a>
 									</li>
 									<li>
-										<a class="active" href="/job-post">Post A Jobs</a>
+										<a class="" href="/job-post">Post A Jobs</a>
 									</li>
 									<li>
 										<a class="" href="/pricing-plan">Pricing Plan</a>
@@ -415,27 +359,83 @@
 			</div>
 		</header>
 
+<div>
+<link rel="stylesheet" type="text/css" href="{% static 'detail/css/banner_inner.css' %}">
+<svg class="wave-divider" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none">
+    <defs>
+        <path id="gentle-wave"
+            d="M-160 44c30 0
+            58-18 88-18s
+            58 18 88 18
+            58-18 88-18
+            58 18 88 18
+            v44h-352z" />
+    </defs>
+   <g class="wave-parallax1"><use xlink:href="#gentle-wave" x="50" y="3" fill="#98FF98" /></g>
+    <g class="wave-parallax2"><use xlink:href="#gentle-wave" x="50" y="0" fill="#2E8B57" /></g>
+    <g class="wave-parallax3"><use xlink:href="#gentle-wave" x="50" y="9" fill="#32CD32" /></g>
+    <g class="wave-parallax4"><use xlink:href="#gentle-wave" x="50" y="6" fill="#008000" /></g>
+</svg>
+
+ <div class="banner-content text-center">
+     <br>
+                            <h1>Add Address</h1><span></span>
+     <br>
+                        </div>
+<svg class="wave-divider dark-bg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none">
+    <g class="wave-parallax1"><use xlink:href="#gentle-wave" x="50" y="3" fill="#008000" /></g>
+    <g class="wave-parallax2"><use xlink:href="#gentle-wave" x="50" y="0" fill="#008000" /></g>
+    <g class="wave-parallax3"><use xlink:href="#gentle-wave" x="50" y="9" fill="#32CD32" /></g>
+    <g class="wave-parallax4"><use xlink:href="#gentle-wave" x="50" y="6" fill="#32CD32" /></g>
+</svg>
 
 
-		<div class="inner-banner">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="banner-content text-center">
-							<h1>Add adress</h1><span></span>
-							<nav aria-label="breadcrumb">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item">
-										<a href="/">Home</a>
-									</li>
-									<li class="breadcrumb-item active">frog®</li>
-								</ol>
-							</nav>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+</div>
+    <link rel="stylesheet" type="text/css" href="{% static 'detail/css/step_shipping.css' %}">
+    <div class="container">
+        <br>
+        <div class="stepwizard col-md-offset-3">
+            <div class="stepwizard-row setup-panel">
+                <div class="stepwizard-step">
+                    <a href="{% url 'MainWepSite:view_cart' %}" type="button" class="btn active-number btn-circle">1</a>
+                    <p>add to cart</p>
+                </div>
+                <div class="stepwizard-step">
+                    <a href="{% url 'orders:create_order' %}"type="button" class="btn active-number btn-circle" disabled="disabled">2</a>
+                    <p class="active-text">add address</p>
+                </div>
+                <div class="stepwizard-step">
+                    <a href="#step-3" type="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                    <p>make payment</p>
+                </div>
+                <div class="stepwizard-step">
+                    <a href="#step-4" type="button" class="btn btn-default btn-circle" disabled="disabled">4</a>
+                    <p>completed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+    // Сохранение позиции прокрутки
+document.querySelectorAll('.stepwizard-step a').forEach(link => {
+    link.addEventListener('click', () => {
+        localStorage.setItem('scrollPosition', window.scrollY || document.documentElement.scrollTop);
+    });
+});
+
+// Восстановление позиции прокрутки
+document.addEventListener('DOMContentLoaded', (event) => {
+    const savedScrollPosition = localStorage.getItem('scrollPosition');
+    if (savedScrollPosition) {
+        window.scrollTo(0, parseInt(savedScrollPosition));
+        localStorage.removeItem('scrollPosition'); // Очистить после использования
+    }
+});
+
+    </script>
+
+
 
 
 		<div class="job-post-area pt-120 mb-120">
