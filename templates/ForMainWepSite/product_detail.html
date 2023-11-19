@@ -2,187 +2,6 @@
 
 
 {% block content %}
-    {#    {% if product %}#}
-    {#        <div class="my-5"></div>#}
-    {##}
-    {#        <div class="product-detail container">#}
-    {#            <div class="row">#}
-    {#                <div class="col-md-6">#}
-    {#                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" width="500" height="500" class="product-image">#}
-    {#                    <!-- Дополнительные изображения -->#}
-    {#                    {% for img in additional_images %}#}
-    {#                        <img src="{{ img.image.url }}" alt="{{ img.description }}" width="100" height="100">#}
-    {#                    {% endfor %}#}
-    {#                </div>#}
-    {#                <div class="col-md-6">#}
-    {#                    <div class="product-info">#}
-    {#                        <h1>{{ product.name }}</h1>#}
-    {#                        <p>brand: {{ product.brand }}</p>#}
-    {##}
-    {##}
-    {#                        <p>SKU: {{ product.sku }}</p>#}
-    {##}
-    {#                        <p>Stock: {{ product.stock_quantity }}</p>#}
-    {##}
-    {##}
-    {##}
-    {#<h3>Доступные размеры:</h3>#}
-    {#        <form method="post" action="{% url 'MainWepSite:add_to_cart' product.id %}">#}
-    {#            {% csrf_token %}#}
-    {##}
-    {##}
-    {#            <label for="packageType">Packaging:</label>#}
-    {#<select id="packageType" name="packageType">#}
-    {#    {% for package_type in unique_package_types %}#}
-    {#        <option value="{{ package_type }}">{{ package_type }}</option>#}
-    {#    {% endfor %}#}
-    {#</select>#}
-    {#            <br>#}
-    {#        <label for="zeston">Zeston:    #</label>#}
-    {#            <select id="zeston" name="zeston">#}
-    {#                {% for size in product_sizes %}#}
-    {#                    <option data-package-type="{{ size.package_type }}" value="{{ size.size.value }}">{{ size.product_number }}</option>#}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {#            <br>#}
-    {##}
-    {##}
-    {##}
-    {#        <label for="size_sku">Size SKU:</label>#}
-    {#<select id="size_sku" name="size_sku">#}
-    {#    {% for size in product_sizes %}#}
-    {#        <option data-package-type="{{ size.package_type }}" value="{{ size.size_sku }}">{{ size.size_sku }}</option>#}
-    {#    {% endfor %}#}
-    {#</select>#}
-    {#            <br>#}
-    {##}
-    {##}
-    {#            <label for="size_desc">Size Description:</label>#}
-    {#            <select id="size_desc" name="size_desc">#}
-    {#                {% for size in product_sizes %}#}
-    {#                    <option data-package-type="{{ size.package_type }}" value="{{ size.size.value }}">{{ size.size.value }} (Price: {{ size.size_price }} $)</option>#}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {##}
-    {#            <br>#}
-    {#            <input type="number" name="quantity" value="1">#}
-    {#            <br>#}
-    {#            <button type="submit">Add to Cart</button>#}
-    {#        </form>#}
-    {#<script>#}
-    {#    $(document).ready(function() {#}
-    {#    // Инициализация Select2#}
-    {#    function initSelect2() {#}
-    {#        $('#packageType').select2();#}
-    {#        $('#zeston').select2();#}
-    {#        $('#size_desc').select2();#}
-    {#        $('#size_sku').select2();#}
-    {#    }#}
-    {##}
-    {#    initSelect2();#}
-    {##}
-    {#    const productId = {{ product.id }};#}
-    {##}
-    {#    // Функция для обновления списка packageType на основе полученных данных#}
-    {#    function updatePackageTypeSelect(data) {#}
-    {#        let options = data.map(item => `<option value="${item.package_type}">${item.package_type}</option>`);#}
-    {#        $('#packageType').empty().append(options.join('')).trigger('change').trigger('select2:updated');#}
-    {#        $('#selected_packageType_input').val($('#packageType').val());#}
-    {#    }#}
-    {##}
-    {##}
-    {#        // Функция для обновления списка Zeston на основе полученных данных#}
-    {#           function updateZestonSelect(data) {#}
-    {#        let options = data.map(item => `<option value="${item.product_number}">${item.product_number}</option>`);#}
-    {#        $('#zeston').empty().append(options.join('')).trigger('change').trigger('select2:updated');#}
-    {#        $('#selected_zeston_input').val($('#zeston').val());#}
-    {#    }#}
-    {##}
-    {##}
-    {#        // Функция для обновления списка Size SKU на основе полученных данных#}
-    {#        function updateSizeSkuSelect(data) {#}
-    {#        let options = data.map(item => `<option value="${item.sku}">${item.sku}</option>`);#}
-    {#        $('#size_sku').empty().append(options.join('')).trigger('change').trigger('select2:updated');#}
-    {#        $('#selected_size_sku_input').val($('#size_sku').val());#}
-    {#    }#}
-    {##}
-    {##}
-    {#        // Функция для обновления списка Size Description на основе полученных данных#}
-    {#        function updateSizeDescSelect(data) {#}
-    {#        let options = data.map(item => `<option value="${item.value}">${item.value}</option>`);#}
-    {#        $('#size_desc').empty().append(options.join('')).trigger('change').trigger('select2:updated');#}
-    {#        $('#selected_size_desc_input').val($('#size_desc').val());#}
-    {#    }#}
-    {##}
-    {##}
-    {##}
-    {##}
-    {#    // ... [Аналогичные изменения для других функций]#}
-    {##}
-    {#    // Если значение в списке packageType изменится, выполнится этот код#}
-    {#    $('#packageType').on('select2:select', function() {#}
-    {#        fetch(`/update_based_on_package/${productId}/${$(this).val()}/`)#}
-    {#            .then(response => response.json())#}
-    {#            .then(data => {#}
-    {#                updateZestonSelect(data);#}
-    {#                updateSizeSkuSelect(data);#}
-    {#                updateSizeDescSelect(data);#}
-    {#            })#}
-    {#            .catch(error => console.error('Error fetching data:', error));#}
-    {#    });#}
-    {##}
-    {#    $('#zeston').on('select2:select', function() {#}
-    {#        fetch(`/update_based_on_product_number/${productId}/${$(this).val()}/${$('#packageType').val()}/`)#}
-    {#            .then(response => response.json())#}
-    {#            .then(data => {#}
-    {#                updateSizeSkuSelect(data);#}
-    {#                updateSizeDescSelect(data);#}
-    {#            })#}
-    {#            .catch(error => console.error('Error fetching data:', error));#}
-    {#    });#}
-    {##}
-    {#    $('#size_sku').on('select2:select', function() {#}
-    {#        fetch(`/update_based_on_sku/${productId}/${$(this).val()}/`)#}
-    {#            .then(response => response.json())#}
-    {#            .then(data => {#}
-    {#                updateZestonSelect(data);#}
-    {#                updateSizeSkuSelect(data);#}
-    {#                updateSizeDescSelect(data);#}
-    {#                updatePackageTypeSelect(data);#}
-    {#            })#}
-    {#            .catch(error => console.error('Error fetching data:', error));#}
-    {#    });#}
-    {##}
-    {#    $('#size_desc').on('select2:select', function() {#}
-    {#        fetch(`/update_based_on_size/${productId}/${$(this).val()}/`)#}
-    {#            .then(response => response.json())#}
-    {#            .then(data => {#}
-    {#                updateZestonSelect(data);#}
-    {#                updateSizeSkuSelect(data);#}
-    {#                updateSizeDescSelect(data);#}
-    {#                updatePackageTypeSelect(data);#}
-    {#            })#}
-    {#            .catch(error => console.error('Error fetching data:', error));#}
-    {#    });#}
-    {##}
-    {##}
-    {##}
-    {##}
-    {#});#}
-    {##}
-    {#</script>#}
-    {##}
-    {##}
-    {#                    </div>#}
-    {#                </div>#}
-    {#                <div class="col-md-12 mt-4">#}
-    {#                    <p>{{ product.description }}</p>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    {% else %}#}
-    {#        <p>Изображение отсутствует</p>#}
-    {#    {% endif %}#}
 
 
 
@@ -254,26 +73,7 @@
 					<ul class="menu-list">
 						<li class="menu-item-has-children">
 							<a class="drop-down" href="#">Home</a><i class="bi bi-plus dropdown-icon"></i>
-							<ul class="sub-menu">
-								<li>
-									<a href="/">Home One</a>
-								</li>
-								<li>
-									<a href="/index2">Home Two</a>
-								</li>
-								<li>
-									<a href="/index3">Home Three</a>
-								</li>
-								<li>
-									<a href="/index4">Home Four</a>
-								</li>
-								<li>
-									<a href="/index5">Home Five</a>
-								</li>
-								<li>
-									<a href="/index6">Home Six</a>
-								</li>
-							</ul>
+
 						</li>
 						<li class="menu-item-has-children active">
 							<a class="drop-down" href="#">Product list</a><i class="bi bi-plus dropdown-icon"></i>
@@ -1131,8 +931,230 @@ var swiper = new Swiper('.thumbnails', {
                                             <div class="form-inner">
                                                 <button class="primry-btn-2 lg-btn w-unset" type="submit">Post Now
                                                 </button>
+                                                <button class="button" type="submit" data-href="{% url 'MainWepSite:view_cart' %}">
+    <span>Add to cart</span>
+    <div class="cart">
+        <svg viewBox="0 0 36 26">
+            <polyline points="1 2.5 6 2.5 10 18.5 25.5 18.5 28.5 7.5 7.5 7.5"></polyline>
+            <polyline points="15 13.5 17 15.5 22 10.5"></polyline>
+        </svg>
+    </div>
+</button>
                                             </div>
                                         </div>
+
+
+
+
+                                        <style>
+
+.button {
+    --background: rgba(1,229,110,0.65);
+    --text: #fff;
+    --cart: #fff;
+    --tick: var(--background);
+    position: relative;
+    border: none;
+    background: none;
+    padding: 8px 28px;
+    border-radius: 8px;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    overflow: hidden;
+    cursor: pointer;
+    text-align: center;
+    min-width: 144px;
+    color: var(--text);
+    background: var(--background);
+    transform: scale(var(--scale, 1));
+    transition: transform .4s cubic-bezier(.36, 1.01, .32, 1.27);
+    &:active {
+        --scale: .95;
+    }
+    span {
+        font-size: 14px;
+        font-weight: 500;
+        display: block;
+        position: relative;
+        padding-left: 24px;
+        margin-left: -8px;
+        line-height: 26px;
+        transform: translateY(var(--span-y, 0));
+        transition: transform .7s ease;
+        &:before,
+        &:after {
+            content: '';
+            width: var(--w, 2px);
+            height: var(--h, 14px);
+            border-radius: 1px;
+            position: absolute;
+            left: var(--l, 8px);
+            top: var(--t, 6px);
+            background: currentColor;
+            transform: scale(.75) rotate(var(--icon-r, 0deg)) translateY(var(--icon-y, 0));
+            transition: transform .65s ease .05s;
+        }
+        &:after {
+            --w: 14px;
+            --h: 2px;
+            --l: 2px;
+            --t: 12px;
+        }
+    }
+    .cart {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin: -13px 0 0 -18px;
+        transform-origin: 12px 23px;
+        transform: translateX(-120px) rotate(-18deg);
+        &:before,
+        &:after {
+            content: '';
+            position: absolute;
+        }
+        &:before {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            box-shadow: inset 0 0 0 2px var(--cart);
+            bottom: 0;
+            left: 9px;
+            filter: drop-shadow(11px 0 0 var(--cart));
+        }
+        &:after {
+            width: 16px;
+            height: 9px;
+            background: var(--cart);
+            left: 9px;
+            bottom: 7px;
+            transform-origin: 50% 100%;
+            transform: perspective(4px) rotateX(-6deg) scaleY(var(--fill, 0));
+            transition: transform 1.2s ease var(--fill-d);
+        }
+        svg {
+            z-index: 1;
+            width: 36px;
+            height: 26px;
+            display: block;
+            position: relative;
+            fill: none;
+            stroke: var(--cart);
+            stroke-width: 2px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            polyline {
+                &:last-child {
+                    stroke: var(--tick);
+                    stroke-dasharray: 10px;
+                    stroke-dashoffset: var(--offset, 10px);
+                    transition: stroke-dashoffset .4s ease var(--offset-d);
+                }
+            }
+        }
+    }
+    &.loading {
+    --scale: .95;
+    --span-y: -32px;
+    --icon-r: 180deg;
+    --fill: 1;
+    --fill-d: .8s; /* возможно, это тоже нужно будет уменьшить */
+    --offset: 0;
+    --offset-d: 1.73s; /* и это */
+    .cart {
+        animation: cart 2s linear forwards .2s; /* изменено с 3.4s на 2s */
+    }
+}
+
+}
+
+@keyframes cart {
+    12.5% {
+        transform: translateX(-60px) rotate(-18deg);
+    }
+    25%,
+    45%,
+    55%,
+    75% {
+        transform: none;
+    }
+    50% {
+        transform: scale(.9);
+    }
+    44%,
+    56% {
+        transform-origin: 12px 23px;
+    }
+    45%,
+    55% {
+        transform-origin: 50% 50%;
+    }
+    87.5% {
+        transform: translateX(70px) rotate(-18deg);
+    }
+    100% {
+        transform: translateX(140px) rotate(-18deg);
+    }
+}
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+* {
+    box-sizing: inherit;
+    &:before,
+    &:after {
+        box-sizing: inherit;
+    }
+}
+
+// Center & dribbble
+body {
+    min-height: 100vh;
+    display: flex;
+    font-family: 'Inter UI', 'Inter', Arial;
+    justify-content: center;
+    align-items: center;
+    background: #ECEFFC;
+    .dribbble {
+        position: fixed;
+        display: block;
+        right: 20px;
+        bottom: 20px;
+        img {
+            display: block;
+            height: 28px;
+        }
+    }
+
+
+
+
+</style>
+
+<script >
+document.querySelectorAll('.button').forEach(button => button.addEventListener('click', e => {
+    e.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+    if(!button.classList.contains('loading')) {
+        button.classList.add('loading');
+
+        setTimeout(() => {
+            button.classList.remove('loading');
+
+            // Получаем URL из data-href атрибута и перенаправляем пользователя
+            const url = button.getAttribute('data-href');
+            if (url) {
+                window.location.href = url;
+            }
+        }, 2200);
+    }
+}));
+
+</script>
 
 
 							</div>
@@ -1339,242 +1361,120 @@ var swiper = new Swiper('.thumbnails', {
             <p>Изображение отсутствует</p>
         {% endif %}
 
-    <div class="col-lg-12 mb-100">
-        <div class="company-gallery">
-            <div class="title">
-                <h5>Company Gallery Viewsss</h5>
-            </div>
-            <div class="swiper swiper-initialized swiper-horizontal swiper-pointer-events company-gallery-slider">
-                <div class="swiper-wrapper"
-                     style="transition-duration: 1500ms; transform: translate3d(-2317.5px, 0px, 0px);">
-                    <div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="0"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-01.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="1"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-02.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="2"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-03.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-prev"
-                         data-swiper-slide-index="3" style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-04.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active"
-                         data-swiper-slide-index="4" style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-05.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate-next" data-swiper-slide-index="0"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-01.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide" data-swiper-slide-index="1" style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-02.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide" data-swiper-slide-index="2" style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-03.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-prev" data-swiper-slide-index="3"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-04.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-active" data-swiper-slide-index="4"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-05.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate swiper-slide-next" data-swiper-slide-index="0"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-01.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="1"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-02.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="2"
-                         style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-03.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-prev"
-                         data-swiper-slide-index="3" style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-04.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active"
-                         data-swiper-slide-index="4" style="width: 227.5px; margin-right: 30px;">
-                        <div class="gallery2-img" data-fancybox="gallery">
-                            <div class="gallery-wrap">
-                                <img alt="" class="img-fluid"
-                                     src="{% static 'assets/images/bg/company-gallery-sm-05.png' %}">
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="items-content text-center"><img alt=""
-                                                                                src="{% static 'assets/images/icon/eye.svg' %}"
-                                                                                style="cursor:pointer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
+
+
+
+<div class="col-lg-12 mb-100">
+		<div class="company-gallery">
+			<div class="title">
+				<h5>Your Recently Views</h5>
+				<br>
+			</div>
+			<div class="swiper swiper-initialized swiper-horizontal">
+				<div class="swiper-wrapper">
+				<div class="swiper-container recent-views-swiper">
+    <div class="swiper-wrapper">
+        {% for product in recent_views %}
+            <div class="swiper-slide recent-view-slide">
+                <a href="{{ product.detail_url }}">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image }}" alt="" class="recent-view-image">
+                    {% else %}
+                        <img src="{% static 'assets/images/placeholder-image.png' %}" alt="Default Image" class="recent-view-placeholder">
+                    {% endif %}
+                    <p class="recent-view-name">{{ product.name }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="swiper-button-prev custom-swiper-prev"></div>
+    <div class="swiper-button-next custom-swiper-next"></div>
+</div>
+<style>
+
+.recent-views-swiper {
+    width: 100%;
+    height: 200px; /* Вы можете изменить это в соответствии с вашими потребностями */
+}
+
+.recent-view-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.recent-view-image, .recent-view-placeholder {
+    width: 350px; /* Размер изображения */
+    height: auto;
+}
+
+.recent-view-name {
+    color: #0b0b0b;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.custom-swiper-prev, .custom-swiper-next {
+    background-color: #fff; /* Фон кнопок */
+    border-radius: 50%; /* Круглые кнопки */
+    width: 30px; /* Ширина кнопок */
+    height: 30px; /* Высота кнопок */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black; /* Цвет иконки */
+    opacity: 0.8; /* Прозрачность кнопок */
+}
+
+.custom-swiper-prev:hover, .custom-swiper-next:hover {
+    opacity: 1; /* Прозрачность при наведении */
+}
+
+
+
+</style>
     <!-- Подключение скриптов Swiper -->
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
-  var swiper = new Swiper('.swiper', {
-      direction: 'horizontal',
+    var recentViewsSwiper = new Swiper('.recent-views-swiper', {
+        direction: 'horizontal',
       loop: true,
-      slidesPerView: 4,  // Устанавливаем количество видимых слайдов
+      slidesPerView: 2,  // Устанавливаем количество видимых слайдов
       spaceBetween: 5,  // Устанавливаем пространство между слайдами в пикселях
       speed: 5000,  // Устанавливаем скорость анимации в 5000 миллисекунд
       autoplay: {
           delay: 2500,
           disableOnInteraction: false,
       },
-  });
+      navigation: {
+          nextEl: '.custom-swiper-next',
+          prevEl: '.custom-swiper-prev',
+        },
+    });
+
+
+
 </script>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

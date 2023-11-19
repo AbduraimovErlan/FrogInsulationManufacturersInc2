@@ -27,6 +27,8 @@ path('update_based_on_size_and_package/<int:product_id>/<size_desc>/<str:package
     path('update_cart_quantity/(?P<sku>[\w-]+)/\\Z', views.update_cart_quantity, name='update_cart_quantity'),
     path('clear_cart/', views.clear_cart, name='clear_cart'),
 
+    path('recent-views/', views.recent_views, name='recent-views'),  # URL для недавно просмотренных продуктов
+
 
 ]
 

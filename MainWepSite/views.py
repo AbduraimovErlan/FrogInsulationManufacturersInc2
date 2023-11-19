@@ -1,6 +1,8 @@
 from _decimal import Decimal
 from django.contrib import messages
-from .models import Product, Category, Brand, ProductSize, Size
+from django.contrib.auth.decorators import login_required
+
+from .models import Product, Category, Brand, ProductSize, Size, ProductViewLog
 from .models import ProductImage  # Импортируйте ваши модели
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
@@ -8,39 +10,112 @@ from MainWepSite.models import Product, CartItem
 from .models import ProductSize
 from django.shortcuts import get_list_or_404
 from django.http import JsonResponse
+from django.core.paginator import Paginator
+from django.db.models import Case, When, Value
+
+
+def get_top_products(limit=12, name_length=20):
+    # Сортируем продукты так, чтобы те, у которых display_order равен 0, шли в конце
+    top_products = Product.objects.annotate(
+        sort_order=Case(
+            When(display_order=0, then=Value(9999)),
+            default='display_order'
+        )
+    ).order_by('sort_order')[:limit]
+
+    # Собираем детали продуктов
+    top_products_details = []
+    for product in top_products:
+        # Проверяем, есть ли изображение у продукта
+        if product.main_image:
+            name = product.name
+            if len(name) > name_length:
+                name = name[:name_length] + '...'  # Обрезаем и добавляем многоточие
+
+            top_products_details.append({
+                'name': name,
+                'main_image': product.main_image.url,
+                'sales_count': product.sales_count,
+                'rating': product.rating,
+                'detail_url': f'/product/{product.slug}/'
+            })
+
+    return top_products_details
+
+
+
+
+
+
+
+
+
+def get_top_selling_products(limit=6, name_length=25):
+    top_products = Product.objects.order_by('-sales_count')[:limit]
+    top_products_details = []
+
+    for product in top_products:
+        name = product.name
+        if len(name) > name_length:
+            name = name[:name_length] + '...'  # Обрезаем и добавляем многоточие
+
+        top_products_details.append({
+            'name': name,
+            'main_image': product.main_image.url if product.main_image else None,
+            'sales_count': product.sales_count,
+            'rating': product.rating,
+            'detail_url': f'/product/{product.slug}/'
+        })
+
+    return top_products_details
+
 
 
 # Главная страница
+# Главная страница
+from django.db.models import Prefetch
+
 def index(request):
     search_query = request.GET.get('search', '')
+    category_slug = request.GET.get('category', None)
+    brand_slug = request.GET.get('brand', None)
+    filter_category = request.GET.get('filter_category', '0')
+    filter_brand = request.GET.get('filter_brand', '0')
+
+    # Фильтрация и поиск
+    products = Product.objects.all()
     if search_query:
-        products = Product.objects.filter(name__icontains=search_query)
-    else:
-        products = Product.objects.all()
+        products = products.filter(name__icontains=search_query)
+    if filter_category == '1' and category_slug:
+        products = products.filter(category__slug=category_slug)
+    if filter_brand == '1' and brand_slug:
+        products = products.filter(brand__slug=brand_slug)
+
+    # Подготовка запроса для получения данных ProductSize
+    product_size_prefetch = Prefetch('productsize_set', queryset=ProductSize.objects.all(), to_attr='sizes_info')
+    products = products.prefetch_related(product_size_prefetch)
+
+    # Пагинация
+    paginator = Paginator(products, 5)  # Показывать по 5 продуктов на странице
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     categories = Category.objects.all()
     brands = Brand.objects.all()
 
-    # Фильтрация
-    category_slug = request.GET.get('category.html', None)
-    brand_slug = request.GET.get('brand', None)
-    filter_category = request.GET.get('filter_category', '0')  # по умолчанию '0'
-    filter_brand = request.GET.get('filter_brand', '0')  # по умолчанию '0'
-
-    if filter_category == '1' and category_slug:
-        products = products.filter(category__slug=category_slug)
-
-    if filter_brand == '1' and brand_slug:
-        products = products.filter(brand__slug=brand_slug)
-
-    print(f"filter_category = {filter_category}, category_slug = {category_slug}")
-    print(f"filter_brand = {filter_brand}, brand_slug = {brand_slug}")
+    top_selling_products = get_top_selling_products()
+    top_products = get_top_products()
 
     return render(request, 'ForMainWepSite/index.html', {
-        'products': products,
+        'page_obj': page_obj,
         'categories': categories,
         'brands': brands,
+        'top_selling_products': top_selling_products,
+        'top_products': top_products,
     })
+
+
+
 
 
 def view_cart(request, size=None):
@@ -252,24 +327,95 @@ def clear_cart(request):
 
 
 
+from django.utils import timezone
+
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
-    main_image = product.main_image  # Получение главного изображения напрямую из продукта
-    additional_images = product.images.all()  # Это дополнительные изображения
-    product_sizes = ProductSize.objects.filter(product=product)  # Получаем все размеры для данного продукта
-
+    main_image = product.main_image
+    additional_images = product.images.all()
+    product_sizes = ProductSize.objects.filter(product=product)
     unique_package_types = ProductSize.objects.filter(product=product).values_list('package_type', flat=True).distinct()
+
+    # Запись просмотра продукта
+    if request.user.is_authenticated:
+        ProductViewLog.objects.update_or_create(
+            user=request.user,
+            product=product,
+            defaults={'timestamp': timezone.now()}
+        )
+        # Получение недавних просмотров
+        recent_views = get_recent_views_with_details(request.user, limit=10)
+    else:
+        recent_views = []
 
     context = {
         'product': product,
         'main_image': main_image,
         'additional_images': additional_images,
-        'product_sizes': product_sizes,  # Добавляем размеры продукта в контекст
-        'unique_package_types': unique_package_types
-
+        'product_sizes': product_sizes,
+        'unique_package_types': unique_package_types,
+        'recent_views': recent_views
     }
 
     return render(request, 'ForMainWepSite/product_detail.html', context)
+
+
+def get_recent_views_with_details(user, limit=10):
+    recent_views = ProductViewLog.objects.filter(user=user).order_by('-timestamp')
+
+    # Фильтрация уникальных продуктов с использованием Python
+    unique_products = set()
+    unique_views = []
+    for view in recent_views:
+        if view.product.id not in unique_products:
+            unique_products.add(view.product.id)
+            unique_views.append(view)
+            if len(unique_views) >= limit:
+                break
+
+    products_details = [{
+        'name': view.product.name,
+        'main_image': view.product.main_image.url if view.product.main_image else None,
+        'detail_url': f'/product/{view.product.slug}/'
+    } for view in unique_views]
+    return products_details
+
+
+def recent_views(request):
+    user = request.user
+    print("Current user:", user)  # Для отладки
+    if user.is_authenticated:
+        recent_views = get_recent_views_with_details(user, limit=10)
+        print("Recent views:", recent_views)  # Для отладки
+        return render(request, 'ForMainWepSite/recent_views.html', {'recent_views': recent_views})
+    else:
+        return render(request, 'ForMainWepSite/recent_views.html', {'recent_views': []})
+
+
+
+def recommend_products_based_on_views(user):
+    viewed_products = ProductViewLog.objects.filter(user=user).values_list('product', flat=True)
+
+    viewed_categories = Product.objects.filter(id__in=viewed_products).values_list('category', flat=True)
+
+    recommended_products = Product.objects.filter(category__in=viewed_categories).exclude(id__in=viewed_products)[:10]
+
+    recommended_products_details = [{
+        'name': product.name,
+        'main_image': product.main_image.url if product.main_image else None,
+        'detail_url': f'/product/{product.slug}/'
+    } for product in recommended_products]
+
+
+    return recommended_products_details
+
+
+
+
+
+
+
+
 
 
 
@@ -382,8 +528,6 @@ def brand_detail(request, slug):
     brand = get_object_or_404(Brand, slug=slug)
     products = Product.objects.filter(brand=brand)
     return render(request, 'ForMainWepSite/brand_detail.html', {'brand': brand, 'products': products})
-
-
 
 
 

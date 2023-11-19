@@ -5958,7 +5958,9 @@ progress {
 	max-width: 100%;
 	height: auto
 }
+
 .img-thumbnail {
+
 	padding: .25rem;
 	background-color: #fff;
 	border: 1px solid #dee2e6;
@@ -5973,7 +5975,7 @@ progress {
 }
 .figure-caption {
 	font-size: .875em;
-	color: #6c757d
+
 }
 .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
 	width: 100%;
@@ -35766,7 +35768,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	border-color: rgba(1, 229, 110, 0.38)
 }
 .job-listing-card2 {
-	background: #fff;
+	background: #f8f8f8;
 	border: 1px solid #eee;
 	border-radius: 5px;
 	padding: 15px;
@@ -39518,7 +39520,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	border-color: var(--primary-color1)
 }
 .swiper-btn-2 .swiper-next:hover i, .swiper-btn-2 .swiper-prev:hover i {
-	color: var(--white)
+	color: #f8f8f8
 }
 .category-card3 {
 	position: relative;
@@ -39547,7 +39549,6 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	padding: 2px 15px
 }
 .category-card3 .category-content {
-	background-color: rgba(0, 0, 0, .6);
 	border-radius: 5px;
 	padding: 18px 18px 30px 30px;
 	position: absolute;

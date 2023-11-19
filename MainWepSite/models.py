@@ -32,6 +32,7 @@ class Brand(models.Model):
     meta_description = models.TextField(blank=True, null=True)
     meta_keywords = models.TextField(blank=True, null=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
+    image = models.ImageField(upload_to='brands/', null=True, blank=True)  # Добавлено поле для изображения
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -79,6 +80,7 @@ class Product(models.Model):
                                    blank=True)  # Главное изображение продукта
     sizes = models.ManyToManyField(Size, through='ProductSize', blank=True)
     colors = models.ManyToManyField(Color, blank=True)  # Отношение многие ко многим с цветами
+    display_order = models.IntegerField(default=0, blank=True)  # Новое поле для порядка отображения
 
     def save(self, *args, **kwargs):
         if not self.slug:

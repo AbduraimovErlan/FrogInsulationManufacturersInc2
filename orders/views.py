@@ -13,6 +13,10 @@ from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Not
 from MainWepSite.models import Product, ProductSize, Size
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
+from MainWepSite.views import get_recent_views_with_details, recommend_products_based_on_views
+
+# Теперь вы можете использовать get_recent_views_with_details здесь
+
 
 
 def create_order(request):
@@ -104,9 +108,18 @@ class CustomerOrderDetailView(BaseOrderDetailView):
         context['additional_info'] = self.order.additional_info
         context['total_amount'] = self.order.get_total_amount()
 
+        if self.request.user.is_authenticated:
+            recent_views = get_recent_views_with_details(self.request.user, limit=10)
+            # Получение рекомендаций на основе просмотров
+            recommended_products = recommend_products_based_on_views(self.request.user)
+        else:
+            recent_views = []
+            recommended_products = []
+
+        context['recent_views'] = recent_views
+        context['recommended_products'] = recommended_products
 
         return context
-
 
 
 class OperatorOrderDetailView(BaseOrderDetailView):
