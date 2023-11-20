@@ -11,7 +11,7 @@ urlpatterns = [
     path('', include('MainOffice.urls', namespace='MainOffice')),
     path('', include('Warehouse1.urls', namespace='Warehouse1')),
     path("select2/", include("django_select2.urls")),
-    # path('users/', include('custom_users.urls', namespace='custom_users')),  # подключаем urls приложения
+    path('', include('custom_users.urls', namespace='custom_users')),  # подключаем urls приложения
     # Можно добавить другие приложения по аналогии
 ]
 if settings.DEBUG:

@@ -1,66 +1,35 @@
 from django import forms
-from django.core.exceptions import ValidationError
-from .models import Client, CompanyRepresentative, ClientLevel
+from django.contrib.auth.forms import UserCreationForm
+from .models import Client
 
-class ClientForm(forms.ModelForm):
-    company_password = forms.CharField(widget=forms.PasswordInput(), required=False, label='Пароль компании')
-    confirm_company_password = forms.CharField(widget=forms.PasswordInput(), required=False, label='Подтвердите пароль компании')
-
+class ClientRegistrationForm(UserCreationForm):
     class Meta:
         model = Client
-        fields = [
-            'username', 'first_name', 'last_name', 'email', 'phone_number', 'age',
-            'gender', 'address', 'referrer', 'referral_program_active',
-            'points_system_active', 'manual_level_set', 'is_company', 'company_password_hash',
-            'current_level'
-        ]
+        fields = ['username', 'email', 'customer_phone', 'customer_name', 'avatar', 'age', 'gender', 'password1', 'password2']
+
+class ClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = ['username', 'customer_name', 'customer_email', 'customer_phone', 'age', 'gender', 'avatar']
         widgets = {
-            'company_password_hash': forms.PasswordInput(attrs={'readonly': True}),  # This should be readonly as we don't want direct editing
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'customer_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'customer_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'customer_phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control-file'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(ClientForm, self).__init__(*args, **kwargs)
-        optional_fields = ['points_system_active', 'manual_level_set']
-        for field_name in optional_fields:
-            self.fields[field_name].required = False
-
-        # If manual level setting is false, make the current_level field readonly
-        if not self.instance.manual_level_set:
-            self.fields['current_level'].widget.attrs['readonly'] = True
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("company_password")
-        confirm_password = cleaned_data.get("confirm_company_password")
-
-        if cleaned_data.get("is_company"):
-            if not password or not confirm_password:
-                raise ValidationError("Пароль компании и подтверждение пароля обязательны для компаний.")
-            if password != confirm_password:
-                raise ValidationError("Пароли компании не совпадают.")
-
-        return cleaned_data
+    def clean_customer_email(self):
+        email = self.cleaned_data.get('customer_email')
+        if email and Client.objects.filter(customer_email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('A client with this email already exists.')
+        return email
 
     def save(self, commit=True):
-        instance = super().save(commit=False)
-        password = self.cleaned_data.get("company_password")
-        if password:
-            instance.set_company_password(password)
+        client = super().save(commit=False)
         if commit:
-            instance.save()
-        return instance
+            client.save()
+        return client
 
-
-
-class CompanyRepresentativeForm(forms.ModelForm):
-    class Meta:
-        model = CompanyRepresentative
-        fields = ['client', 'name', 'phone_number', 'email', 'representative_password_hash']
-        widgets = {
-            'representative_password_hash': forms.PasswordInput(),
-        }
-
-class ClientLevelForm(forms.ModelForm):
-    class Meta:
-        model = ClientLevel
-        fields = ['name', 'required_points']

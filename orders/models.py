@@ -44,6 +44,7 @@ class Order(models.Model):
     is_loaded = models.BooleanField(default=False, null=True)
     sent_at = models.DateTimeField(null=True, blank=True)
     truck_fully_loaded = models.BooleanField(default=False, null=True)
+    company_name = models.CharField(max_length=100, verbose_name='Company Name', blank=True, null=True)
 
     def send_for_loading(self):
         self.sent_for_loading_at = timezone.now()

@@ -120,8 +120,8 @@
                     <div class="register-tab">
                         <nav>
                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                <button aria-controls="nav-home" aria-selected="true" class="nav-link" data-bs-target="#nav-home" data-bs-toggle="tab" id="nav-home-tab" role="tab" type="button" ><a href="{% url 'MainOffice:register_employee' %}">Office</a></button>
-                                <button aria-controls="nav-profile" aria-selected="false" class="nav-link active" data-bs-target="#nav-profile" data-bs-toggle="tab" id="nav-profile-tab" role="tab" type="button"><a href="{% url 'Warehouse1:warehouse_register' %}">Warehouse</a></button>
+                                <button aria-controls="nav-home" aria-selected="true" class="nav-link active" data-bs-target="#nav-home" data-bs-toggle="tab" id="nav-home-tab" role="tab" type="button" ><a href="{% url 'MainOffice:register_employee' %}">Office</a></button>
+                                <button aria-controls="nav-profile" aria-selected="false" class="nav-link" data-bs-target="#nav-profile" data-bs-toggle="tab" id="nav-profile-tab" role="tab" type="button"><a href="{% url 'Warehouse1:warehouse_register' %}">Warehouse</a></button>
                             </div>
                         </nav>
                         <div class="tab-content" id="nav-tabContent">
@@ -151,6 +151,8 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
 
 
                                         <div class="col-md-6">
@@ -260,6 +262,7 @@
 
 
 
+
 	</div>
 	<script id="__NEXT_DATA__" type="application/json">
 	{"props":{"pageProps":{}},"page":"/login","query":{},"buildId":"Eiwaci7in8GR_e4MnKVBk","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
@@ -273,17 +276,11 @@
 	</script>
 	<script src="{% static '/_next/static/chunks/4875-abff460424e3af31.js' %}">
 	</script>
-    <script src="{% static '/_next/static/chunks/pages/job-listing1-f70c64ba3f056d3b.js' %}">
-	</script>
 	<script src="{% static '/_next/static/chunks/8863-fb3955eb4b42b806.js' %}">
 	</script>
 	<script src="{% static '/_next/static/chunks/8960-8ab2b793893d1b59.js' %}">
 	</script>
 	<script src="{% static '/_next/static/chunks/512-807b1b9847f0c759.js' %}">
-	</script>
-	<script src="{% static '/_next/static/chunks/pages/job-post-fe8550bd211e7fde.js' %}">
-	</script>
-	<script src="{% static '/_next/static/chunks/pages/pricing-plan-d0e99283b9eccf36.js' %}">
 	</script>
 	<script src="{% static '/_next/static/chunks/4532-630634613f9fb88b.js' %}">
 	</script>
@@ -291,30 +288,21 @@
 	</script>
 
 
+
+
+
+
+
+
+    <div class="registration-form">
+        <h2>Регистрация</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <a href="{% url 'MainOffice:login_employee' %}">Уже зарегистрированы? Войти</a>
+    </div>
+
+
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
