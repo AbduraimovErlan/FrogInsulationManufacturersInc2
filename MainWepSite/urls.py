@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from MainWepSite.views import BlogPostListView, blog_post_detail, BlogPostCreateView, BlogPostUpdateView, \
+    BlogPostDeleteView, CommentListView, CommentDeleteView
 
 app_name = 'MainWepSite'  # только если вы используете пространство имен
 
@@ -28,6 +30,17 @@ path('update_based_on_size_and_package/<int:product_id>/<size_desc>/<str:package
     path('clear_cart/', views.clear_cart, name='clear_cart'),
 
     path('recent-views/', views.recent_views, name='recent-views'),  # URL для недавно просмотренных продуктов
+
+    path('blog/', BlogPostListView.as_view(), name='post_list'),
+    path('blog/category/<slug:category_slug>/', BlogPostListView.as_view(), name='post_list_by_category'),
+    path('blog/<slug:slug>/', blog_post_detail, name='blog_detail'),
+    path('blog_new/', BlogPostCreateView.as_view(), name='blog_new'),
+    path('blog/<int:pk>/edit/', BlogPostUpdateView.as_view(), name='blog_edit'),
+    path('blog/<int:pk>/delete/', BlogPostDeleteView.as_view(), name='blog_delete'),
+
+    path('blog_comments/<slug:slug>/', CommentListView.as_view(), name='comment_list'),
+    path('comment/delete/<int:pk>/', CommentDeleteView.as_view(), name='comment_delete'),
+
 
 
 ]

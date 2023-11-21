@@ -5,6 +5,7 @@ from django.utils.text import slugify
 import random
 import string
 
+from custom_users.models import Client
 from orders.models import Order
 
 
@@ -221,26 +222,66 @@ class ProductPurchaseLog(models.Model):
 
 
 
-class BlogPost(models.Model):
-    title = models.CharField(max_length=200)
+from django.utils.text import slugify
+from django.db.utils import IntegrityError
+
+import time
+import random
+
+def create_unique_slug(instance, new_slug=None):
+    slug = slugify(instance.title) if new_slug is None else new_slug
+    qs = BlogPost.objects.filter(slug=slug)
+    if qs.exists():
+        new_slug = f"{slug}-{int(time.time())}-{random.randint(1, 1000)}"
+        return create_unique_slug(instance, new_slug=new_slug)
+    return slug
+
+
+class BlogPostCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True)
-    main_image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    published = models.BooleanField(default=False)
-    category = models.ForeignKey(Category, related_name='blog_posts', on_delete=models.SET_NULL, null=True, blank=True)
-    tags = models.ManyToManyField('Tag', blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+
+
+
+class BlogPost(models.Model):
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    main_image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    published = models.BooleanField(default=False)
+    tags = models.ManyToManyField('Tag', blank=True)
+    b_category = models.ForeignKey(BlogPostCategory, related_name='blog_posts', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = create_unique_slug(self)
+        super().save(*args, **kwargs)
+
+
 
     def __str__(self):
         return self.title
 
+
+class BlogPostImage(models.Model):
+    post = models.ForeignKey(BlogPost, related_name='images', on_delete=models.CASCADE)
+    small_image = models.ImageField(upload_to='blog_images/small_images/')
+
+    def __str__(self):
+        return f"Image for {self.post.title}"
 
 
 class Tag(models.Model):
@@ -257,11 +298,12 @@ class Tag(models.Model):
 
 class BlogComment(models.Model):
     post = models.ForeignKey(BlogPost, related_name='comments', on_delete=models.CASCADE)
-    author = models.CharField(max_length=100)
+    author = models.ForeignKey(Client, on_delete=models.CASCADE)  # Linking to Client model
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.author} on {self.post.title}"
+        return f"Comment by {self.author.customer_name} on {self.post.title}"
+
 
 

@@ -1,8 +1,8 @@
 import re
 
 # Укажите путь к исходному файлу и целевому файлу
-source_file_path = '/Users/macbookpro/PycharmProjects/FrogInsulationManufacturersInc2/old_item'
-target_file_path = '/Users/macbookpro/PycharmProjects/FrogInsulationManufacturersInc2/item_python'
+source_file_path = '/parser/old_item'
+target_file_path = '/parser/item_python'
 
 
 def process_content(content):
