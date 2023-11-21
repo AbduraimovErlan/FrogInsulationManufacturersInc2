@@ -21,3 +21,23 @@ class Client(User):
 
     def __str__(self):
         return self.username
+
+
+from django.db import models
+
+class DeliveryAddress(models.Model):
+    company_name = models.CharField(max_length=100, verbose_name='Company Name', blank=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='delivery_addresses')
+    address_line1 = models.CharField(max_length=100, verbose_name='Address Line 1')
+    address_line2 = models.CharField(max_length=100, verbose_name='Address Line 2', blank=True)
+    city = models.CharField(max_length=100, verbose_name='City')
+    state = models.CharField(max_length=100, verbose_name='State')
+    country = models.CharField(max_length=100, verbose_name='Country')
+    postal_code = models.CharField(max_length=20, verbose_name='Postal Code')
+    additional_info = models.TextField(verbose_name='Additional Information', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.address_line1}, {self.city}, {self.state}, {self.postal_code}"
+
