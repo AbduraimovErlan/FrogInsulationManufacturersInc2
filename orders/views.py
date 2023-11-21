@@ -17,13 +17,146 @@ from MainWepSite.views import get_recent_views_with_details, recommend_products_
 
 # Теперь вы можете использовать get_recent_views_with_details здесь
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import OrderForm
+from orders.models import Order, OrderItem
+from MainWepSite.models import Product, ProductSize
+from decimal import Decimal
+#
+# def calculate_tax(total_price):
+#     # New York City sales tax rate of 8.875%
+#     tax_rate = 0.08875
+#     return total_price * tax_rate
+#
+#
+#
+# def calculate_shipping():
+#     # Free shipping
+#     return Decimal('0.00')
+#
+#
+#
+# @login_required
+# def checkout(request):
+#     cart = request.session.get('cart', {})
+#     total_price = calculate_total_price(cart)  # Расчет общей стоимости товаров
+#     tax = calculate_tax(total_price)  # Расчет налога
+#     shipping_cost = calculate_shipping()  # Расчет стоимости доставки
+#     final_price = total_price + tax + shipping_cost
+#
+#     if request.method == 'POST':
+#         form = PaymentForm(request.POST)
+#         if form.is_valid():
+#             # Обработка платежа (интеграция с платежным шлюзом)
+#             payment_successful = process_payment(form, final_price)
+#             if payment_successful:
+#                 # Создание заказа
+#                 order = create_order(request.user, cart, total_price, tax, shipping_cost)
+#                 # Очистка корзины
+#                 request.session['cart'] = {}
+#                 # Перенаправление на страницу подтверждения
+#                 return redirect('order_confirmation', order_id=order.id)
+#             else:
+#                 messages.error(request, "Ошибка оплаты")
+#     else:
+#         form = PaymentForm()
+#
+#     context = {
+#         'form': form,
+#         'total_price': total_price,
+#         'tax': tax,
+#         'shipping_cost': shipping_cost,
+#         'final_price': final_price
+#     }
+#     return render(request, 'checkout.html', context)
+#
+# def create_order(user, cart, total_price, tax, shipping_cost):
+#     # Создание объекта заказа
+#     order = Order.objects.create(
+#         client=user,
+#         total_price=total_price,
+#         tax=tax,
+#         shipping_cost=shipping_cost
+#     )
+#     # Добавление товаров в заказ
+#     for item in cart:
+#         OrderItem.objects.create(
+#             order=order,
+#             product=item['product'],
+#             quantity=item['quantity'],
+#             price=item['price']
+#         )
+#     return order
+
+
+# @login_required
+# def create_order_with_client_info(request):
+#     client = request.user.client  # Предполагается, что у пользователя есть связанный объект Client
+#
+#     if request.method == 'POST':
+#         form = OrderForm(request.POST, instance=client)
+#         if form.is_valid():
+#             order = form.save(commit=False)
+#             order.client = client
+#             order.save()
+#
+#             # Обработка элементов корзины и создание OrderItem
+#             cart = request.session.get('cart', {})
+#             total_price = Decimal(0)
+#
+#             for sku, item_data in cart.items():
+#                 try:
+#                     product_id = item_data['product_id']
+#                     product = Product.objects.get(id=product_id)
+#                     product_size = ProductSize.objects.get(product=product,
+#                                                            size_sku=sku)  # Получаем размер продукта по SKU
+#                     price_at_time_of_purchase = Decimal(item_data['price'])
+#                     quantity = item_data['quantity']
+#                     total_price += price_at_time_of_purchase * quantity
+#
+#                     order_item = OrderItem(
+#                         order=order,
+#                         product=product,
+#                         product_size=product_size,  # Указываем размер продукта
+#                         quantity=quantity,
+#                         price_at_time_of_purchase=price_at_time_of_purchase,
+#                         order_sku=sku,
+#                     )
+#                     order_item.save()
+#
+#                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
+#                     messages.warning(request, str(e))
+#                     del cart[sku]
+#
+#             request.session['cart'] = {}
+#
+#             return redirect('orders:customer_order_detail', order_id=order.id)
+#     else:
+#         # Создаем форму с предзаполненными данными клиента
+#         form = OrderForm(instance=client)
+#
+#     return render(request, 'templates_for_orders/create_order.html', {'form': form})
+#
+
+
+
 
 
 def create_order(request):
+    client = None
+    if hasattr(request.user, 'client'):
+        client = request.user.client
+
     if request.method == 'POST':
-        form = OrderForm(request.POST)
+        form = OrderForm(request.POST, user=request.user)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if client:
+                order.client = client
+            else:
+                order.client = request.user
+            order.save()
 
             cart = request.session.get('cart', {})
             total_price = Decimal(0)
@@ -54,8 +187,10 @@ def create_order(request):
             request.session['cart'] = {}
             return redirect('orders:customer_order_detail', order_id=order.id)
 
+
     else:
-        form = OrderForm()
+
+        form = OrderForm(user=request.user, initial={'client': client})
 
     return render(request, 'templates_for_orders/create_order.html', {'form': form})
 

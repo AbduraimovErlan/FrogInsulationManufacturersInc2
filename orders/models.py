@@ -5,6 +5,7 @@ from django.utils import timezone
 from Warehouse1.models import WarehouseSupervisor, WarehouseWorker, Driver, WarehouseWorkerDriver
 from MainOffice.models import President, OperationalManager, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable, MainOfficeEmployee
+from custom_users.models import Client
 
 
 class OrderStatus(models.TextChoices):
@@ -17,6 +18,7 @@ class OrderStatus(models.TextChoices):
     CANCELED = 'Canceled', 'Canceled'
 
 class Order(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=20, choices=OrderStatus.choices, default=OrderStatus.RECEIVED)
     president = models.ForeignKey(President, null=True, blank=True, on_delete=models.SET_NULL)
     operational_manager = models.ForeignKey(OperationalManager, null=True, blank=True, on_delete=models.SET_NULL)
@@ -44,7 +46,6 @@ class Order(models.Model):
     is_loaded = models.BooleanField(default=False, null=True)
     sent_at = models.DateTimeField(null=True, blank=True)
     truck_fully_loaded = models.BooleanField(default=False, null=True)
-    company_name = models.CharField(max_length=100, verbose_name='Company Name', blank=True, null=True)
 
     def send_for_loading(self):
         self.sent_for_loading_at = timezone.now()

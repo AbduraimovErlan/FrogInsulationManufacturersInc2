@@ -1,3 +1,7 @@
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from MainWepSite.models import BlogPost
+from MainWepSite.forms import BlogPostForm  # Make sure you have a BlogPostForm in forms.py
 from _decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -5,13 +9,18 @@ from django.contrib.auth.decorators import login_required
 from .models import Product, Category, Brand, ProductSize, Size, ProductViewLog
 from .models import ProductImage  # Импортируйте ваши модели
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Count
 from MainWepSite.models import Product, CartItem
 from .models import ProductSize
 from django.shortcuts import get_list_or_404
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.db.models import Case, When, Value
+from django.shortcuts import render, get_object_or_404, redirect
+from MainWepSite.models import BlogPost, BlogComment
+from MainWepSite.forms import BlogCommentForm
+from django.views.generic import ListView
+from .models import BlogPost
 
 
 def get_top_products(limit=12, name_length=20):
@@ -553,7 +562,120 @@ def brand_detail(request, slug):
 
 
 
+class BlogPostListView(ListView):
+    model = BlogPost
+    template_name = 'ForMainWepSite/blog/blog_list.html'  # Specify your template here
+    context_object_name = 'posts'
+    paginate_by = 12 # Optional: if you want pagination
+    ordering = ['-created_at']  # Order by creation date, newest first
 
+    def get_queryset(self):
+        # Annotate each post with the number of comments
+        return BlogPost.objects.annotate(comment_count=Count('comments'))
+
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import BlogPost
+from .forms import BlogCommentForm
+
+def blog_post_detail(request, slug):
+    post = get_object_or_404(BlogPost, slug=slug)
+
+    # Get previous and next posts
+    previous_post = BlogPost.objects.filter(created_at__lt=post.created_at).order_by('-created_at').first()
+    next_post = BlogPost.objects.filter(created_at__gt=post.created_at).order_by('created_at').first()
+
+    latest_comments = post.comments.order_by('-created_at')[:3]
+
+    if request.method == 'POST':
+        comment_form = BlogCommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.post = post  # Ensure the post is set here
+            if hasattr(request.user, 'client'):
+                comment.author = request.user.client
+            else:
+                # Handle the case where the user is not a Client
+                # For example, redirect to an error page or show a message
+                # return redirect('some_error_page')  # Replace with your error handling
+                pass
+            comment.save()
+            return redirect('MainWepSite:blog_detail', slug=post.slug)
+    else:
+        comment_form = BlogCommentForm()
+
+    return render(request, 'ForMainWepSite/blog/blog_detail.html', {
+        'post': post,
+        'latest_comments': latest_comments,
+        'comment_form': comment_form,
+        'previous_post': previous_post,
+        'next_post': next_post,
+    })
+
+
+
+
+
+
+
+class BlogPostCreateView(CreateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'ForMainWepSite/blog/blog_form.html'
+    success_url = reverse_lazy('MainWepSite:blog_list')
+class BlogPostUpdateView(UpdateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'ForMainWepSite/blog/blog_form.html'
+    success_url = reverse_lazy('MainWepSite:blog_list')
+class BlogPostDeleteView(DeleteView):
+    model = BlogPost
+    template_name = 'ForMainWepSite/blog/blog_confirm_delete.html'
+    success_url = reverse_lazy('MainWepSite:blog_list')
+
+
+
+from django.views.generic import ListView
+from .models import BlogComment, BlogPost
+
+class CommentListView(ListView):
+    model = BlogComment
+    template_name = 'ForMainWepSite/blog/comment_list.html'
+    context_object_name = 'comments'
+
+    def get_queryset(self):
+        # Get the slug from the URL
+        slug = self.kwargs.get('slug')
+        # Find the blog post
+        post = BlogPost.objects.get(slug=slug)
+        # Return comments related to the post
+        return BlogComment.objects.filter(post=post).order_by('-created_at')
+
+
+
+
+
+from django.views.generic import DeleteView
+from .models import BlogComment
+
+from django.urls import reverse_lazy
+
+class CommentDeleteView(DeleteView):
+    model = BlogComment
+    template_name = 'ForMainWepSite/blog/comment_confirm_delete.html'
+
+
+
+    def get_success_url(self):
+        post = self.object.post
+        return reverse_lazy('MainWepSite:blog_detail', kwargs={'slug': post.slug})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post_slug'] = self.object.post.slug  # Assuming `post` is the related blog post
+        return context
 
 
 

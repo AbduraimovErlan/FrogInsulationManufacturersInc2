@@ -5,6 +5,7 @@ from django.utils.text import slugify
 import random
 import string
 
+from custom_users.models import Client
 from orders.models import Order
 
 
@@ -221,12 +222,27 @@ class ProductPurchaseLog(models.Model):
 
 
 
+from django.utils.text import slugify
+from django.db.utils import IntegrityError
+
+def create_unique_slug(instance, new_slug=None):
+    if new_slug is not None:
+        slug = new_slug
+    else:
+        slug = slugify(instance.title)
+    qs = BlogPost.objects.filter(slug=slug)
+    if qs.exists():
+        new_slug = f"{slug}-{qs.count()}"
+        return create_unique_slug(instance, new_slug=new_slug)
+    return slug
+
+
 class BlogPost(models.Model):
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, blank=True)
-    main_image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
     content = models.TextField()
+    main_image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published = models.BooleanField(default=False)
@@ -235,12 +251,21 @@ class BlogPost(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = create_unique_slug(self)
         super().save(*args, **kwargs)
+
+
 
     def __str__(self):
         return self.title
 
+
+class BlogPostImage(models.Model):
+    post = models.ForeignKey(BlogPost, related_name='images', on_delete=models.CASCADE)
+    small_image = models.ImageField(upload_to='blog_images/small_images/')
+
+    def __str__(self):
+        return f"Image for {self.post.title}"
 
 
 class Tag(models.Model):
@@ -257,11 +282,12 @@ class Tag(models.Model):
 
 class BlogComment(models.Model):
     post = models.ForeignKey(BlogPost, related_name='comments', on_delete=models.CASCADE)
-    author = models.CharField(max_length=100)
+    author = models.ForeignKey(Client, on_delete=models.CASCADE)  # Linking to Client model
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.author} on {self.post.title}"
+        return f"Comment by {self.author.customer_name} on {self.post.title}"
+
 
 

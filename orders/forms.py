@@ -1,16 +1,21 @@
 from django import forms
+
+from custom_users.models import Client, DeliveryAddress
 from .models import OrderItem, Order
 from MainWepSite.models import Product, ProductSize, Size
 
 
 class OrderForm(forms.ModelForm):
+    delivery_address = forms.ModelChoiceField(queryset=DeliveryAddress.objects.none(), required=False)
     class Meta:
         model = Order
         fields = [
+            'client',  # Добавьте это поле
             'customer_name', 'customer_email', 'customer_phone',
             'address_line1', 'address_line2', 'city', 'state', 'country',
             'postal_code', 'additional_info'
         ]
+
         widgets = {
             'customer_name': forms.TextInput(attrs={'class': 'form-control'}),
             'customer_email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -25,6 +30,11 @@ class OrderForm(forms.ModelForm):
         }
 
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(OrderForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['delivery_address'].queryset = user.client.delivery_addresses.all()
 
 
 class OrderItemForm(forms.ModelForm):
