@@ -39233,6 +39233,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	align-items: center
 }
 
+
 .hero-wapper {
 	padding: 70px 0 70px 8%
 }
@@ -39364,11 +39365,14 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	align-items: center;
 	margin-bottom: 65px
 }
-@media (max-width:576p.hero-wapper .hero-content .suggest-tag {
+@media (max-width:576px) {
+	.hero-wapper .hero-content .suggest-tag {
 		flex-wrap: wrap;
 		gap: 10px;
 		justify-content: center
-	}.hero-wapper .hero-content .suggest-tag h6 {
+	}
+}
+.hero-wapper .hero-content .suggest-tag h6 {
 	font-family: var(--font-exo2);
 	font-weight: 600;
 	font-size: 1rem;
@@ -39377,10 +39381,14 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: flex;
 	align-items: center;
 	margin-right: 15px;
-	white-space: nowra.hero-wapper .hero-content .suggest-tag h6 i {
+	white-space: nowrap
+}
+.hero-wapper .hero-content .suggest-tag h6 i {
 	font-size: 14px;
 	margin-right: 3px;
-	color: var(--primary-color.hero-wapper .hero-content .suggest-tag ul {
+	color: var(--primary-color1)
+}
+.hero-wapper .hero-content .suggest-tag ul {
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -39389,38 +39397,54 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	gap: 12px;
 	flex-wrap: wrap
 }
-@media (max-width:576p.hero-wapper .hero-content .suggest-tag ul {
+@media (max-width:576px) {
+	.hero-wapper .hero-content .suggest-tag ul {
 		justify-content: center
-	}.hero-wapper .hero-content .suggest-tag ul li {
-	line-height:.hero-wapper .hero-content .suggest-tag ul li a {
+	}
+}
+.hero-wapper .hero-content .suggest-tag ul li {
+	line-height: 1
+}
+.hero3 .hero-wapper .hero-content .suggest-tag ul li a {
 	font-family: var(--font-work-sans);
 	font-weight: 400;
 	font-size: .875rem;
 	color: #797979;
 	transition: .35s;
-	line-height:.hero-wapper .hero-content .suggest-tag ul li a:hover {
+	line-height: 1
+}
+.hero-wapper .hero-content .suggest-tag ul li a:hover {
 	color: var(--primary-color1)
 }
-@media (min-width:1400px) and (max-width:1599p.hero-wapper .hero-content .suggest-tag ul li a {
+@media (min-width:1400px) and (max-width:1599px) {
+	.hero-wapper .hero-content .suggest-tag ul li a {
 		font-size: .75rem
 	}
 }
-@media (max-width:1399p.hero-wapper .hero-content .suggest-tag ul li a {
+@media (max-width:1399px) {
+	.hero-wapper .hero-content .suggest-tag ul li a {
 		font-size: .75rem
-	}.hero-wapper .hero-content .user-area {
+	}
+}
+.hero-wapper .hero-content .user-area {
 	display: flex;
 	align-items: center
 }
-@media (max-width:576p.hero-wapper .hero-content .user-area {
+@media (max-width:576px) {
+	.hero-wapper .hero-content .user-area {
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 10px
-	}.hero-wapper .hero-content .user-area ul {
+	}
+}
+.hero-wapper .hero-content .user-area ul {
 	padding: 0;
 	list-style: none;
 	display: flex;
 	align-items: center;
-	margin: 0 20px 0.hero-wapper .hero-content .user-area ul li {
+	margin: 0 20px 0 0
+}
+.hero-wapper .hero-content .user-area ul li {
 	height: 46px;
 	width: 46px;
 	display: flex;
@@ -39466,6 +39490,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	color: var(--title-color1);
 	margin-bottom: 0
 }
+
 .swiper-btn-2 {
 	display: flex;
 	align-items: center;
