@@ -39232,36 +39232,31 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	justify-content: center;
 	align-items: center
 }
-.hero3 {
-	background-image: url(/static/_next/static/media/hero3-bg.31eecca2.png);
-	background-size: cover;
-	background-position: 50%;
-	background-repeat: no-repeat
-}
-.hero3 .hero-wapper {
+
+.hero-wapper {
 	padding: 70px 0 70px 8%
 }
 @media (max-width:1399px) {
-	.hero3 .hero-wapper {
+	.hero-wapper {
 		padding: 70px 0 70px 5%
 	}
 }
 @media (max-width:1199px) {
-	.hero3 .hero-wapper {
+	.hero-wapper {
 		padding: 70px 0 70px 3%
 	}
 }
 @media (max-width:991px) {
-	.hero3 .hero-wapper .hero-content {
+	.hero-wapper .hero-content {
 		padding: 50px 0
 	}
 }
 @media (max-width:576px) {
-	.hero3 .hero-wapper .hero-content {
+	.hero-wapper .hero-content {
 		text-align: center
 	}
 }
-.hero3 .hero-wapper .hero-content h1 {
+.hero-wapper .hero-content h1 {
 	font-size: 4.375rem;
 	font-weight: 700;
 	color: var(--title-color1);
@@ -39270,40 +39265,40 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	margin-bottom: 20px
 }
 @media (max-width:767px) {
-	.hero3 .hero-wapper .hero-content h1 {
+	.hero-wapper .hero-content h1 {
 		font-size: 4rem
 	}
 }
 @media (max-width:576px) {
-	.hero3 .hero-wapper .hero-content h1 {
+	.hero-wapper .hero-content h1 {
 		font-size: 3.2rem
 	}
 }
-.hero3 .hero-wapper .hero-content h1 span {
+.hero-wapper .hero-content h1 span {
 	color: var(--primary-color1)
 }
-.hero3 .hero-wapper .hero-content p {
+.hero-wapper .hero-content p {
 	font-family: var(--font-work-sans);
 	font-weight: 400;
 	font-size: 1.25rem;
 	color: #797979;
 	margin-bottom: 50px
 }
-.hero3 .hero-wapper .hero-content p span {
+.hero-wapper .hero-content p span {
 	font-weight: 500
 }
-.hero3 .hero-wapper .hero-content .job-search-area {
+.hero-wapper .hero-content .job-search-area {
 	background: #fff;
 	border-radius: 5px;
 	max-width: 750px;
 	margin-bottom: 30px
 }
 @media (max-width:991px) {
-	.hero3 .hero-wapper .hero-content .job-search-area {
+	.hero-wapper .hero-content .job-search-area {
 		max-width: unset
 	}
 }
-.hero3 .hero-wapper .hero-content .job-search-area form {
+.hero-wapper .hero-content .job-search-area form {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -39311,12 +39306,12 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	gap: 20px
 }
 @media (max-width:767px) {
-	.hero3 .hero-wapper .hero-content .job-search-area form {
+	.hero-wapper .hero-content .job-search-area form {
 		flex-wrap: wrap;
 		justify-content: center
 	}
 }
-.hero3 .hero-wapper .hero-content .job-search-area form .form-inner.job-title {
+.hero-wapper .hero-content .job-search-area form .form-inner.job-title {
 	position: relative;
 	width: 100%;
 	height: 60px;
@@ -39325,10 +39320,10 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	align-items: center;
 	padding: 0 25px
 }
-.hero3 .hero-wapper .hero-content .job-search-area form .form-inner.job-title img {
+.hero-wapper .hero-content .job-search-area form .form-inner.job-title img {
 	margin-right: 20px
 }
-.hero3 .hero-wapper .hero-content .job-search-area form .form-inner.job-title:before {
+.hero-wapper .hero-content .job-search-area form .form-inner.job-title:before {
 	content: "";
 	width: 1px;
 	height: 22px;
@@ -39339,7 +39334,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	transform: translateY(-50%);
 	line-height: 1
 }
-.hero3 .hero-wapper .hero-content .job-search-area form .form-inner input {
+.hero-wapper .hero-content .job-search-area form .form-inner input {
 	background-color: transparent;
 	font-family: var(--font-work-sans);
 	font-weight: 400;
@@ -39350,33 +39345,30 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	line-height: 1;
 	width: 100%
 }
-.hero3 .hero-wapper .hero-content .job-search-area form .form-inner input::placeholder {
+.hero-wapper .hero-content .job-search-area form .form-inner input::placeholder {
 	font-family: var(--font-work-sans);
 	font-weight: 400;
 	font-size: .938rem;
 	line-height: 18px;
 	color: var(--title-color1)
 }
-.hero3 .hero-wapper .hero-content .job-search-area form .form-inner .primry-btn-2 {
+.hero-wapper .hero-content .job-search-area form .form-inner .primry-btn-2 {
 	height: 100%;
 	padding: 15px 30px
 }
-.hero3 .hero-wapper .hero-content .job-search-area form .form-inner .primry-btn-2 img {
+.hero-wapper .hero-content .job-search-area form .form-inner .primry-btn-2 img {
 	margin-right: 5px
 }
-.hero3 .hero-wapper .hero-content .suggest-tag {
+.hero-wapper .hero-content .suggest-tag {
 	display: flex;
 	align-items: center;
 	margin-bottom: 65px
 }
-@media (max-width:576px) {
-	.hero3 .hero-wapper .hero-content .suggest-tag {
+@media (max-width:576p.hero-wapper .hero-content .suggest-tag {
 		flex-wrap: wrap;
 		gap: 10px;
 		justify-content: center
-	}
-}
-.hero3 .hero-wapper .hero-content .suggest-tag h6 {
+	}.hero-wapper .hero-content .suggest-tag h6 {
 	font-family: var(--font-exo2);
 	font-weight: 600;
 	font-size: 1rem;
@@ -39385,14 +39377,10 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	display: flex;
 	align-items: center;
 	margin-right: 15px;
-	white-space: nowrap
-}
-.hero3 .hero-wapper .hero-content .suggest-tag h6 i {
+	white-space: nowra.hero-wapper .hero-content .suggest-tag h6 i {
 	font-size: 14px;
 	margin-right: 3px;
-	color: var(--primary-color1)
-}
-.hero3 .hero-wapper .hero-content .suggest-tag ul {
+	color: var(--primary-color.hero-wapper .hero-content .suggest-tag ul {
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -39401,54 +39389,38 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	gap: 12px;
 	flex-wrap: wrap
 }
-@media (max-width:576px) {
-	.hero3 .hero-wapper .hero-content .suggest-tag ul {
+@media (max-width:576p.hero-wapper .hero-content .suggest-tag ul {
 		justify-content: center
-	}
-}
-.hero3 .hero-wapper .hero-content .suggest-tag ul li {
-	line-height: 1
-}
-.hero3 .hero-wapper .hero-content .suggest-tag ul li a {
+	}.hero-wapper .hero-content .suggest-tag ul li {
+	line-height:.hero-wapper .hero-content .suggest-tag ul li a {
 	font-family: var(--font-work-sans);
 	font-weight: 400;
 	font-size: .875rem;
 	color: #797979;
 	transition: .35s;
-	line-height: 1
-}
-.hero3 .hero-wapper .hero-content .suggest-tag ul li a:hover {
+	line-height:.hero-wapper .hero-content .suggest-tag ul li a:hover {
 	color: var(--primary-color1)
 }
-@media (min-width:1400px) and (max-width:1599px) {
-	.hero3 .hero-wapper .hero-content .suggest-tag ul li a {
+@media (min-width:1400px) and (max-width:1599p.hero-wapper .hero-content .suggest-tag ul li a {
 		font-size: .75rem
 	}
 }
-@media (max-width:1399px) {
-	.hero3 .hero-wapper .hero-content .suggest-tag ul li a {
+@media (max-width:1399p.hero-wapper .hero-content .suggest-tag ul li a {
 		font-size: .75rem
-	}
-}
-.hero3 .hero-wapper .hero-content .user-area {
+	}.hero-wapper .hero-content .user-area {
 	display: flex;
 	align-items: center
 }
-@media (max-width:576px) {
-	.hero3 .hero-wapper .hero-content .user-area {
+@media (max-width:576p.hero-wapper .hero-content .user-area {
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 10px
-	}
-}
-.hero3 .hero-wapper .hero-content .user-area ul {
+	}.hero-wapper .hero-content .user-area ul {
 	padding: 0;
 	list-style: none;
 	display: flex;
 	align-items: center;
-	margin: 0 20px 0 0
-}
-.hero3 .hero-wapper .hero-content .user-area ul li {
+	margin: 0 20px 0.hero-wapper .hero-content .user-area ul li {
 	height: 46px;
 	width: 46px;
 	display: flex;
@@ -39459,16 +39431,16 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	border-radius: 50%;
 	margin-left: -15px
 }
-.hero3 .hero-wapper .hero-content .user-area ul li img {
+.hero-wapper .hero-content .user-area ul li img {
 	height: 40px;
 	width: 40px;
 	border-radius: 50%
 }
-.hero3 .hero-wapper .hero-content .user-area ul li .total-user {
+.hero-wapper .hero-content .user-area ul li .total-user {
 	text-align: center;
 	line-height: 1
 }
-.hero3 .hero-wapper .hero-content .user-area ul li .total-user h6 {
+.hero-wapper .hero-content .user-area ul li .total-user h6 {
 	margin-bottom: 0;
 	font-size: 16px;
 	font-weight: 800;
@@ -39476,7 +39448,7 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	font-family: var(--font-work-sans);
 	color: var(--primary-color1)
 }
-.hero3 .hero-wapper .hero-content .user-area ul li .total-user span {
+.hero-wapper .hero-content .user-area ul li .total-user span {
 	font-size: 11px;
 	font-weight: 500;
 	font-family: var(--font-work-sans);
@@ -39484,10 +39456,10 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	line-height: 1;
 	display: inline-block
 }
-.hero3 .hero-wapper .hero-content .user-area ul li:first-child {
+.hero-wapper .hero-content .user-area ul li:first-child {
 	margin-left: 0
 }
-.hero3 .hero-wapper .hero-content .user-area p {
+.hero-wapper .hero-content .user-area p {
 	font-family: var(--font-work-sans);
 	font-weight: 500;
 	font-size: 1rem;
