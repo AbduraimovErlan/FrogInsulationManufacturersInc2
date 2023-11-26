@@ -326,96 +326,142 @@
 		</div>
 	</div>
 			</div>
+
 		</header>
 
+<style>
+  /* Ваши стили для анимации */
+  .hero-content, .user-area {
+    transform: scale(1.2); /* Начальный масштаб (увеличение на 20%) */
+    transition: transform 0.3s; /* Длительность анимации и свойства, которые вы хотите анимировать */
+  }
+
+  .hero-content.animated, .user-area.animated {
+    transform: scale(1); /* Масштаб после анимации (возвращение к нормальному размеру) */
+  }
+
+  .hero-img img {
+    transform: translateY(20px) scale(1); /* Начальный масштаб и смещение фото вниз на 20px по вертикали */
+    transition: transform 0.3s; /* Длительность анимации и свойства, которые вы хотите анимировать */
+  }
+
+  .hero-img.animated img {
+    transform: translateY(0) scale(1.2); /* Масштаб после анимации (увеличение на 20%) и смещение вверх на 0px */
+  }
+
+  /* Новые стили для анимации абзаца и списка пользователей */
+  .animated-p {
+    opacity: 0; /* Начальная непрозрачность */
+    transform: translateY(20px); /* Начальное смещение вниз на 20px по вертикали */
+    transition: opacity 0.3s, transform 0.3s; /* Длительность анимации и свойства, которые вы хотите анимировать */
+  }
+
+  .animated-ul {
+    opacity: 0; /* Начальная непрозрачность */
+    transform: translateY(20px); /* Начальное смещение вниз на 20px по вертикали */
+    transition: opacity 0.3s, transform 0.3s; /* Длительность анимации и свойства, которые вы хотите анимировать */
+  }
+
+  .animated-p.show, .animated-ul.show {
+    opacity: 1; /* После анимации элементы полностью видимы */
+    transform: translateY(0); /* После анимации элементы не смещены */
+  }
+</style>
+
+<div class="hero-wapper">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-content animate__animated animate__fadeInUp">
+          <h1>Frog® <span>Insulation Manufacturers Inc.</span></h1>
+          <!-- Анимированный абзац -->
+          <p class="animated-p">2400 Peoples are daily search in this portal, &nbsp;<span>100</span> user added job portal!</p>
+
+          <div class="user-area animate__animated animate__fadeInUp">
+            <!-- Анимированный список пользователей -->
+            <ul class="animated-ul">
+              <li><img alt="" src="{% static 'assets/images/bg/user31.png' %}"></li>
+              <li><img alt="" src="{% static 'assets/images/bg/user32.png' %}"></li>
+              <li><img alt="" src="{% static 'assets/images/bg/user33.png' %}"></li>
+              <li><img alt="" src="{% static 'assets/images/bg/user34.png' %}"></li>
+              <li><img alt="" src="{% static 'assets/images/bg/user35.png' %}"></li>
+              <li>
+                <div class="total-user">
+                  <h6>21k</h6><span>Users</span>
+                </div>
+              </li>
+            </ul>
+            <p>To Much People Have Connected With Us!</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+      	<br>
+      	<br>
+      	<br>
+      	<br>
+        <div class="hero-img">
+          <img alt="" class="img-fluid" src="{% static 'detail/media/www.jm5.png' %}">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ваши скрипты здесь -->
+<script>
+  window.addEventListener('scroll', function() {
+    var heroContent = document.querySelector('.hero-content');
+    var userArea = document.querySelector('.user-area');
+    var heroImg = document.querySelector('.hero-img');
+    var scrollPosition = window.scrollY;
+    var triggerPosition = window.innerHeight / 3; // Измените на другое значение, если нужно изменить точку начала анимации
+
+    if (heroContent && userArea && heroImg) {
+      if (scrollPosition >= triggerPosition) {
+        heroContent.classList.add('animated');
+        userArea.classList.add('animated');
+      } else {
+        heroContent.classList.remove('animated');
+        userArea.classList.remove('animated');
+      }
+
+      if (scrollPosition >= triggerPosition / 2) {
+        heroImg.classList.add('animated');
+        // Активируем анимацию для абзаца и списка пользователей
+        document.querySelectorAll('.animated-p, .animated-ul').forEach(function(element) {
+          element.classList.add('show');
+        });
+      } else {
+        heroImg.classList.remove('animated');
+        // Деактивируем анимацию для абзаца и списка пользователей
+        document.querySelectorAll('.animated-p, .animated-ul').forEach(function(element) {
+          element.classList.remove('show');
+        });
+      }
+    }
+  });
+</script>
 
 
 
-			<div class="hero-wapper">
-				<div class="container-fluid">
-					<div class="row align-items-center">
-						<div class="col-lg-6">
-							<div class="hero-content">
-								<h1>Frog® <span>Insulation Manufacturers Inc.</span></h1>
-								<p><span>2400</span> Peoples are daily search in this portal, &nbsp;<span>100</span> user added job portal!</p>
-
-								<div class="suggest-tag">
-									<h6><i class="bi bi-bookmark-fill"></i>Suggested Tag:</h6>
-									<ul>
-										<li>
-											<a href="/job-listing1">Engineering,</a>
-										</li>
-										<li>
-											<a href="/job-listing1">Marketing,</a>
-										</li>
-										<li>
-											<a href="/job-listing1">UI/UX Design,</a>
-										</li>
-										<li>
-											<a href="/job-listing1">Data Analyst,</a>
-										</li>
-										<li>
-											<a href="/job-listing1">Programming</a>
-										</li>
-									</ul>
-								</div>
-								<div class="user-area">
-									<ul>
-										<li><img alt="" src="{% static 'assets/images/bg/user31.png' %}"></li>
-										<li><img alt="" src="{% static 'assets/images/bg/user32.png' %}"></li>
-										<li><img alt="" src="{% static 'assets/images/bg/user33.png' %}"></li>
-										<li><img alt="" src="{% static 'assets/images/bg/user34.png' %}"></li>
-										<li><img alt="" src="{% static 'assets/images/bg/user35.png' %}"></li>
-										<li>
-											<div class="total-user">
-												<h6>21k</h6><span>Users</span>
-											</div>
-										</li>
-									</ul>
-									<p>To Much People Have Connected With Us!</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="hero-img"><img alt="" class="img-fluid" src="{% static 'assets/images/bg/company-logo/manufacturers2.png' %}"></div>
-						</div>
-					</div>
-				</div>
-			</div>
 
 
 
 
 
 
-		<div class="home1-trusted-company two mt-120 mb-120">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="section-title">
+
+		<div class="home1-trusted-company two mt-2 mb-120">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-title">
 							<h5>Our Trusted Company</h5>
-						</div>
-						<div class="swiper swiper-initialized swiper-horizontal swiper-pointer-events trusted-company-slider">
-							<div class="swiper-wrapper" style="transition-duration: 0ms; transform: translate3d(-1985.5px, 0px, 0px);">
-								<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-01.svg' %}"></div>
-								</div>
-								<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-03.svg' %}"></div>
-								</div>
-								<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="2" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-02.svg' %}"></div>
-								</div>
-								<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-04.svg' %}"></div>
-								</div>
-								<div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-prev" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-05.svg' %}"></div>
-								</div>
-								<div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-06.svg' %}"></div>
-								</div>
-								<div class="swiper-slide swiper-slide-duplicate-next" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
+		</div>
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+								<div class="swiper-slide" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-01.svg' %}"></div>
 								</div>
 								<div class="swiper-slide" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
@@ -427,28 +473,46 @@
 								<div class="swiper-slide" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-04.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-prev" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-05.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-active" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-06.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-duplicate swiper-slide-next" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-01.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-03.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="2" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="2" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-02.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-04.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-prev" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-05.svg' %}"></div>
 								</div>
-								<div class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
+								<div class="swiper-slide" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
+									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-06.svg' %}"></div>
+								</div>
+								<div class="swiper-slide" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
+									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-01.svg' %}"></div>
+								</div>
+								<div class="swiper-slide" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
+									<div class="company"><img alt="" src="{% static 'assets/images/icon/trusted-company-03.svg' %}"></div>
+								</div>
+								<div class="swiper-slide" data-swiper-slide-index="2" style="width: 156.5px; margin-right: 24px;">
+									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-02.svg' %}"></div>
+								</div>
+								<div class="swiper-slide" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
+									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-04.svg' %}"></div>
+								</div>
+								<div class="swiper-slide" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
+									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-05.svg' %}"></div>
+								</div>
+								<div class="swiper-slide" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
 									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-06.svg' %}"></div>
 								</div>
 							</div>
@@ -459,9 +523,28 @@
 		</div>
 
 
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var mySwiper = new Swiper('.swiper-container', {
+      direction: 'horizontal',
+      loop: true,
+      slidesPerView: 6,
+      spaceBetween: 1,
+      speed: 5000,
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+      }
+    });
+  });
+</script>
+
+
 
 		<div class="home3-categor-area mb-120 top-products-section">
-            <div class="container">
+    <div class="container">
 				<div class="row mb-60">
 					<div class="col-12 d-flex flex-wrap align-items-end justify-content-md-between justify-content-start gap-3">
 						<div class="section-title1">
@@ -488,8 +571,7 @@
                             <div class="category-content top-product-content">
                                 <br>
                                 <br>
-                                <br>
-                                <br>
+
                             </div>
                         <h5>{{ product.name }}</h5>
                                 <p>Sales Count: <span>{{ product.sales_count }}</span></p></a>
@@ -543,8 +625,8 @@
 
 
         </style>
-        <!-- Подключение скриптов Swiper -->
-        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <!-- Подключение скриптов Swiper -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
         <script>
             var topProductsSwiper = new Swiper('.top-products-swiper', {
@@ -667,6 +749,8 @@
 
 </script>
 
+
+
 					  <div class="col-lg-12">
                                 <div class="tab-content" id="pills-tabContent">
                                     <div aria-labelledby="pills-home-tab" class="tab-pane fade show active"
@@ -784,13 +868,11 @@ function getPrice(product_id, size_value) {
 
                                             </div>
                                         {% endfor %}
-                                        <div class="apply-btn">
-
-                                                                <a href="{% url 'MainWepSite:view_cart' %}"><span><img alt=""
-                                                                                                  src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>See your cart</a>
-                                                            </div>
-
-                                           
+                                         <div class="apply-btn">
+                                        <a href="{% url 'MainWepSite:view_cart' %}"><span><img alt=""
+                                                                                                  src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>See your cart
+                                                                    </a>
+                                        </div>
 
 
                                         </div>
@@ -862,10 +944,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				</div>
 			</div>
+		</div>
 
 
-
-        <div class="home2-working-process mb-120">
+<div class="home2-working-process mb-120">
 		<div class="container">
 			<div class="row mb-60">
 				<div class="col-12 d-flex justify-content-center">
@@ -1335,51 +1417,85 @@ var mySwiper = new Swiper('.mySwiper', {
 				<div class="row mb-60">
 					<div class="col-12 d-flex justify-content-center gap-3">
 						<div class="section-title1 text-center">
-							<h2>Our Recent <span>Blog</span></h2>
+							<h2>Our Recent <span>Article</span></h2>
 							<p>To much valuable feed from our trusted users in world-wide.</p>
 						</div>
 					</div>
 				</div>
 				<div class="row g-4 gy-5 justify-content-center">
-				{% for post in recent_posts %}
 					<div class="col-lg-4 col-md-6">
 						<div class="recent-article-card3">
-							<div class="recent-image">
-							    {% if post.main_image %}
-                                    <img alt="" class="img-fluid" src="{{ post.main_image.url }}">
-                                {% else %}
-                                    <img class="img-fluid" src="{% static 'assets/images/placeholder-image.png' %}" alt="Placeholder Image">
-                                {% endif %}
-							</div>
+							<div class="article-img"><img alt="" class="img-fluid" src="{% static 'assets/images/blog/blog-img-31.png' %}"></div>
 							<div class="article-content">
 								<div class="article-category">
-									<a class="primry-btn-2" href="{% url 'MainWepSite:blog_detail' post.slug %}">{{ post.created_at|date:"d F Y" }}</a>
+									<a class="primry-btn-2" href="/blog-grid">Marketing</a>
 								</div>
-								<h4><a href="{% url 'MainWepSite:blog_detail' post.slug %}">{{ post.title }}</a></h4>
+								<h4><a href="/blog-details">How To Apply Your Dream Jobs In Digital Marketing, Easy Solution.</a></h4>
 								<div class="author-and-btn">
+									<div class="author-area">
+										<div class="author-img"><img alt="" src="{% static 'assets/images/blog/blog-author-31.png' %}"></div>
+										<div class="author-details">
+											<h6><a href="/blog-grid">Roland Khelcy</a></h6><span>Admin</span>
+										</div>
+									</div>
 									<div class="apply-btn">
-										<a href="{% url 'MainWepSite:blog_detail' post.slug %}"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>View Details</a>
+										<a href="/blog-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>View Details</a>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				{% endfor %}
-                </div>
+					<div class="col-lg-4 col-md-6">
+						<div class="recent-article-card3">
+							<div class="article-img"><img alt="" class="img-fluid" src="{% static 'assets/images/blog/blog-img-32.png' %}"></div>
+							<div class="article-content">
+								<div class="article-category">
+									<a class="primry-btn-2" href="/blog-grid">Design</a>
+								</div>
+								<h4><a href="/blog-details">To Be Continue Redesign &amp; Build Up Your Career Opportunity.</a></h4>
+								<div class="author-and-btn">
+									<div class="author-area">
+										<div class="author-img"><img alt="" src="{% static 'assets/images/blog/blog-author-32.png' %}"></div>
+										<div class="author-details">
+											<h6><a href="/blog-grid">Mrs. Rudhela Saley</a></h6><span>Admin</span>
+										</div>
+									</div>
+									<div class="apply-btn">
+										<a href="/blog-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>View Details</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-6">
+						<div class="recent-article-card3">
+							<div class="article-img"><img alt="" class="img-fluid" src="{% static 'assets/images/blog/blog-img-33.png' %}"></div>
+							<div class="article-content">
+								<div class="article-category">
+									<a class="primry-btn-2" href="/blog-grid">Technology</a>
+								</div>
+								<h4><a href="/blog-details">If You Are A talented People, Make Sure Your Technology Part.</a></h4>
+								<div class="author-and-btn">
+									<div class="author-area">
+										<div class="author-img"><img alt="" src="{% static 'assets/images/blog/blog-author-33.png' %}"></div>
+										<div class="author-details">
+											<h6><a href="/blog-grid">Martoniey Sekh</a></h6><span>Admin</span>
+										</div>
+									</div>
+									<div class="apply-btn">
+										<a href="/blog-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>View Details</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
+	</div>
 
 
-							<style>
-							 .recent-image .img-fluid {
-							    width: 419px;
-                                height: 251px;
-                                object-fit: cover;
-                                }
-</style>
-
-</div>
 	<script id="__NEXT_DATA__" type="application/json">
 	{"props":{"pageProps":{}},"page":"/index3","query":{},"buildId":"Eiwaci7in8GR_e4MnKVBk","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
 	</script>
