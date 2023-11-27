@@ -7,9 +7,12 @@ from MainWepSite.models import Product, ProductSize, Size
 
 class OrderForm(forms.ModelForm):
     delivery_address = forms.ModelChoiceField(queryset=DeliveryAddress.objects.none(), required=False)
+
     class Meta:
         model = Order
         fields = [
+            # другие поля...
+            'delivery_address',  # Убедитесь, что это поле здесь присутствует
             'client',  # Добавьте это поле
             'customer_name', 'customer_email', 'customer_phone',
             'address_line1', 'address_line2', 'city', 'state', 'country',
@@ -33,7 +36,7 @@ class OrderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(OrderForm, self).__init__(*args, **kwargs)
-        if user:
+        if user and hasattr(user, 'client'):
             self.fields['delivery_address'].queryset = user.client.delivery_addresses.all()
 
 

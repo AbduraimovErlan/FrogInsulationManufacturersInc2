@@ -1,5 +1,6 @@
 from _decimal import InvalidOperation
 
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic import ListView, View
@@ -8,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
+from custom_users.forms import DeliveryAddressForm
 from orders.forms import OrderForm, OrderItemForm, OrderItemFormSize
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
 from MainWepSite.models import Product, ProductSize, Size
@@ -156,6 +158,35 @@ def create_order(request):
                 order.client = client
             else:
                 order.client = request.user
+
+            # Получаем данные адреса из формы
+            address_line1 = form.cleaned_data.get('address_line1')
+            address_line2 = form.cleaned_data.get('address_line2')
+
+            # Проверка наличия такого адреса в базе
+            existing_address = DeliveryAddress.objects.filter(
+                Q(address_line1=address_line1),
+                Q(address_line2=address_line2),
+                Q(client=client)
+            ).first()
+
+            if not existing_address:
+                # Если адрес не найден, создаем новый
+                new_address = DeliveryAddress(
+                    client=client,
+                    address_line1=address_line1,
+                    address_line2=address_line2,
+                    city=form.cleaned_data.get('city'),
+                    state=form.cleaned_data.get('state'),
+                    country=form.cleaned_data.get('country'),
+                    postal_code=form.cleaned_data.get('postal_code')
+                )
+                new_address.save()
+                order.delivery_address = new_address
+            else:
+                # Если адрес найден, используем существующий
+                order.delivery_address = existing_address
+
             order.save()
 
             cart = request.session.get('cart', {})
@@ -193,6 +224,48 @@ def create_order(request):
         form = OrderForm(user=request.user, initial={'client': client})
 
     return render(request, 'templates_for_orders/create_order.html', {'form': form})
+
+
+# views.py
+
+from django.http import JsonResponse
+from custom_users.models import DeliveryAddress
+
+def get_address_details(request):
+    address_id = request.GET.get('address_id')
+    try:
+        address = DeliveryAddress.objects.get(id=address_id)
+        data = {
+            'line1': address.address_line1,
+            'line2': address.address_line2,
+            'city': address.city,
+            'state': address.state,
+            'country': address.country,
+            'postal_code': address.postal_code
+        }
+        return JsonResponse(data)
+    except DeliveryAddress.DoesNotExist:
+        return JsonResponse({'error': 'Address not found'}, status=404)
+
+
+
+from django.shortcuts import render, redirect
+from custom_users.forms import DeliveryAddressForm # Убедитесь, что у вас есть такая форма
+from django.contrib import messages
+
+def add_new_address(request):
+    if request.method == 'POST':
+        form = DeliveryAddressForm(request.POST)
+        if form.is_valid():
+            new_address = form.save(commit=False)
+            new_address.client = request.user.client # Предполагая, что у вас есть связь между клиентом и адресом
+            new_address.save()
+            messages.success(request, "New address added successfully.")
+            return redirect('create_order') # Или другой URL, куда вы хотите перенаправить пользователя
+    else:
+        form = DeliveryAddressForm()
+    return render(request, 'add_new_address.html', {'form': form})
+
 
 
 class BaseOrderDetailView(View):

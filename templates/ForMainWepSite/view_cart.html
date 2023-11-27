@@ -605,21 +605,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
                     <h2>Create Order</h2>
-    {% if user.is_authenticated %}
-        <p>Use your saved information for a quicker checkout:</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Order with Saved Details</button>
-        </form>
-    {% else %}
-        <p>New or not logged in? Fill in your details:</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Order as New/Guest</button>
-        </form>
-    {% endif %}
+{#    {% if user.is_authenticated %}#}
+{#        <p>Use your saved information for a quicker checkout:</p>#}
+{#        <form method="post">#}
+{#            {% csrf_token %}#}
+{#            {{ form.as_p }}#}
+{#            <button type="submit" class="btn-primary">Order with Saved Details</button>#}
+{#        </form>#}
+{#    {% else %}#}
+{#        <p>New or not logged in? Fill in your details:</p>#}
+{#        <form method="post">#}
+{#            {% csrf_token %}#}
+{#            {{ form.as_p }}#}
+{#            <button type="submit" class="btn-primary">Order as New/Guest</button>#}
+{#        </form>#}
+{#    {% endif %}#}
 					</div>
 				</div>
 			</div>

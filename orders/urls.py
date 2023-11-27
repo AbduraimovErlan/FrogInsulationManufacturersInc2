@@ -16,7 +16,12 @@ app_name = 'orders'  # только если вы используете про�
 
 urlpatterns = [
 
+
     path('create_order/', views.create_order, name='create_order'),
+    # path('get_client_data/', views.get_client_data, name='get_client_data'),
+    path('get-address-details/', views.get_address_details, name='get-address-details'),
+    path('add-address/', views.add_new_address, name='add_new_address'),
+
     path('order/<int:order_id>/', CustomerOrderDetailView.as_view(), name='customer_order_detail'),
     path('operator/order/<int:order_id>/', OperatorOrderDetailView.as_view(), name='operator_order_detail'),
 
