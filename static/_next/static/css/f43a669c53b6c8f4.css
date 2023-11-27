@@ -24792,7 +24792,7 @@ img.mfp-img {
 	--primary-dark: #000;
 	--title-color1: #061421;
 	--text-color1: #595959;
-	--white: #fff;
+	--white: #f8f8f8;
 	--font-exo2: "Exo 2", sans-serif;
 	--font-work-sans: "Work Sans", sans-serif
 }
@@ -37314,14 +37314,14 @@ header.style-7 .main-menu ul li.menu-item-has-children>i {
 	margin-bottom: 30px
 }
 .company-details-area .job-listing-card {
-	border: 1px solid #eee;
+	border: 1px solid #f8f8f8;
 	border-radius: 5px;
 	padding: 30px 25px;
 	background-color: var(--white);
 	transition: .35s
 }
 .company-details-area .job-listing-card.spcial-bg {
-	background: linear-gradient(90deg, #fff2e8, rgba(255, 242, 232, 0))
+	background: linear-gradient(90deg, #f8f8f8, rgba(255, 242, 232, 0))
 }
 @media (min-width:1400px) and (max-width:1599px) {
 	.company-details-area .job-listing-card {

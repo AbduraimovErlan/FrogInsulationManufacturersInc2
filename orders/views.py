@@ -193,6 +193,10 @@ def create_order(request):
                 # Если адрес найден, используем существующий
                 order.delivery_address = existing_address
 
+            tax_exemption_document = form.cleaned_data.get('tax_exemption_document', None)
+            if tax_exemption_document:
+                order.tax_exemption_document = tax_exemption_document
+
             order.save()
 
             cart = request.session.get('cart', {})
@@ -220,7 +224,8 @@ def create_order(request):
                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
                     messages.warning(request, str(e))
                     del cart[sku]
-            is_tax_exempt = order.delivery_address and order.delivery_address.tax_exemption_document and order.delivery_address.tax_exemption_document.file
+
+            is_tax_exempt = bool(tax_exemption_document)
 
             # Расчет налога
             tax = calculate_tax(total_price, is_tax_exempt)
@@ -233,8 +238,6 @@ def create_order(request):
 
             request.session['cart'] = {}
             return redirect('orders:customer_order_detail', order_id=order.id)
-
-
 
     else:
 
@@ -330,11 +333,9 @@ class CustomerOrderDetailView(BaseOrderDetailView):
         context['recent_views'] = recent_views
         context['recommended_products'] = recommended_products
 
-        is_tax_exempt = self.order.delivery_address and self.order.delivery_address.tax_exemption_document and self.order.delivery_address.tax_exemption_document.file
-
-        tax = calculate_tax(self.order.get_total_amount(), is_tax_exempt)
-        context['tax'] = tax
-        context['total_amount_with_tax'] = self.order.get_total_amount() + tax
+        is_tax_exempt = self.check_tax_exemption()
+        context['tax'] = calculate_tax(self.order.get_total_amount(), is_tax_exempt)
+        context['total_amount_with_tax'] = self.order.get_total_amount() + context['tax']
 
         print("Delivery Address:", self.order.delivery_address)
         print("Tax Exemption Document:",
@@ -344,6 +345,10 @@ class CustomerOrderDetailView(BaseOrderDetailView):
 
 
         return context
+
+    def check_tax_exemption(self):
+        # Проверка освобождения от налогов
+        return self.order.tax_exemption_document.file if self.order.tax_exemption_document else False
 
 
 

@@ -16,7 +16,7 @@ class OrderForm(forms.ModelForm):
             'client',  # Добавьте это поле
             'customer_name', 'customer_email', 'customer_phone',
             'address_line1', 'address_line2', 'city', 'state', 'country',
-            'postal_code', 'additional_info'
+            'postal_code', 'additional_info', 'tax_exemption_document'
         ]
 
         widgets = {
@@ -29,6 +29,7 @@ class OrderForm(forms.ModelForm):
             'state': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'tax_exemption_document': forms.FileInput(attrs={'class': 'form-control'}),
             'additional_info': forms.Textarea(attrs={'class': 'form-control'}),
         }
 

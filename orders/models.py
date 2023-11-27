@@ -41,6 +41,9 @@ class Order(models.Model):
     city = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
     country = models.CharField(max_length=100, blank=True, null=True)
+
+    tax_exemption_document = models.FileField(upload_to='tax_exemption_documents/', blank=True, null=True)
+
     postal_code = models.CharField(max_length=15, blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
 
