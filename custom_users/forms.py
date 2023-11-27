@@ -19,7 +19,7 @@ class DeliveryAddressForm(forms.ModelForm):
         fields = [
             'address_line1', 'address_line2', 'city',
             'state', 'country', 'postal_code', 'additional_info',
-            'company_name'
+            'company_name', 'tax_exemption_document'
         ]
         widgets = {
 

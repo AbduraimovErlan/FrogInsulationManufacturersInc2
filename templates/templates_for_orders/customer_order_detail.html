@@ -533,6 +533,13 @@
 			                    			</div>
                                                 {% endfor %}
                                         <h3>Общая сумма заказа: {{ total_amount }} $</h3>
+                                        <div class="order-tax-info">
+                                            <p>Налог: ${{ tax }}</p>
+                                        </div>
+
+                                        <div class="order-total-amount">
+                                            <p>Итоговая сумма с налогом: ${{ total_amount_with_tax }}</p>
+                                        </div>
 
 			                    		</div>
 			                    	</div>

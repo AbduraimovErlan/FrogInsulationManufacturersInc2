@@ -140,7 +140,13 @@ from decimal import Decimal
 #
 #     return render(request, 'templates_for_orders/create_order.html', {'form': form})
 #
+from decimal import Decimal
 
+def calculate_tax(total_price, is_tax_exempt):
+    if is_tax_exempt:
+        return Decimal('0.00')  # Нет налога, если есть документ об освобождении от налогов
+    tax_rate = Decimal('0.08875')  # Пример: Нью-Йоркский налоговый процент, преобразованный в Decimal
+    return total_price * tax_rate
 
 
 
@@ -151,7 +157,7 @@ def create_order(request):
         client = request.user.client
 
     if request.method == 'POST':
-        form = OrderForm(request.POST, user=request.user)
+        form = OrderForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             order = form.save(commit=False)
             if client:
@@ -191,7 +197,6 @@ def create_order(request):
 
             cart = request.session.get('cart', {})
             total_price = Decimal(0)
-
             for sku, item_data in cart.items():
                 try:
                     product_id = item_data['product_id']
@@ -209,14 +214,25 @@ def create_order(request):
                         price_at_time_of_purchase=price_at_time_of_purchase,
                         order_sku=sku,
                     )
+
                     order_item.save()
 
                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
                     messages.warning(request, str(e))
                     del cart[sku]
+            is_tax_exempt = bool(order.delivery_address and order.delivery_address.tax_exemption_document)
+
+            # Расчет налога
+            tax = calculate_tax(total_price, is_tax_exempt)
+            total_price_with_tax = total_price + tax
+
+            # Сохраняем итоговую сумму заказа
+            order.total_price = total_price_with_tax
+            order.save()
 
             request.session['cart'] = {}
             return redirect('orders:customer_order_detail', order_id=order.id)
+
 
 
     else:
@@ -241,7 +257,8 @@ def get_address_details(request):
             'city': address.city,
             'state': address.state,
             'country': address.country,
-            'postal_code': address.postal_code
+            'postal_code': address.postal_code,
+            'company_name': address.company_name,  # Убедитесь, что это поле возвращается
         }
         return JsonResponse(data)
     except DeliveryAddress.DoesNotExist:
@@ -249,22 +266,6 @@ def get_address_details(request):
 
 
 
-from django.shortcuts import render, redirect
-from custom_users.forms import DeliveryAddressForm # Убедитесь, что у вас есть такая форма
-from django.contrib import messages
-
-def add_new_address(request):
-    if request.method == 'POST':
-        form = DeliveryAddressForm(request.POST)
-        if form.is_valid():
-            new_address = form.save(commit=False)
-            new_address.client = request.user.client # Предполагая, что у вас есть связь между клиентом и адресом
-            new_address.save()
-            messages.success(request, "New address added successfully.")
-            return redirect('create_order') # Или другой URL, куда вы хотите перенаправить пользователя
-    else:
-        form = DeliveryAddressForm()
-    return render(request, 'add_new_address.html', {'form': form})
 
 
 
@@ -287,6 +288,7 @@ class CustomerOrderDetailView(BaseOrderDetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_items = OrderItem.objects.filter(order=self.order)
+
         items = []
 
         for item in order_items:
@@ -326,6 +328,11 @@ class CustomerOrderDetailView(BaseOrderDetailView):
 
         context['recent_views'] = recent_views
         context['recommended_products'] = recommended_products
+
+        is_tax_exempt = bool(self.order.delivery_address and self.order.delivery_address.tax_exemption_document)
+        tax = calculate_tax(self.order.get_total_amount(), is_tax_exempt)
+        context['tax'] = tax
+        context['total_amount_with_tax'] = self.order.get_total_amount() + tax
 
         return context
 
