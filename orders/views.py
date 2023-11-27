@@ -220,7 +220,7 @@ def create_order(request):
                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
                     messages.warning(request, str(e))
                     del cart[sku]
-            is_tax_exempt = bool(order.delivery_address and order.delivery_address.tax_exemption_document)
+            is_tax_exempt = order.delivery_address and order.delivery_address.tax_exemption_document and order.delivery_address.tax_exemption_document.file
 
             # Расчет налога
             tax = calculate_tax(total_price, is_tax_exempt)
@@ -229,6 +229,7 @@ def create_order(request):
             # Сохраняем итоговую сумму заказа
             order.total_price = total_price_with_tax
             order.save()
+
 
             request.session['cart'] = {}
             return redirect('orders:customer_order_detail', order_id=order.id)
@@ -329,12 +330,21 @@ class CustomerOrderDetailView(BaseOrderDetailView):
         context['recent_views'] = recent_views
         context['recommended_products'] = recommended_products
 
-        is_tax_exempt = bool(self.order.delivery_address and self.order.delivery_address.tax_exemption_document)
+        is_tax_exempt = self.order.delivery_address and self.order.delivery_address.tax_exemption_document and self.order.delivery_address.tax_exemption_document.file
+
         tax = calculate_tax(self.order.get_total_amount(), is_tax_exempt)
         context['tax'] = tax
         context['total_amount_with_tax'] = self.order.get_total_amount() + tax
 
+        print("Delivery Address:", self.order.delivery_address)
+        print("Tax Exemption Document:",
+              self.order.delivery_address.tax_exemption_document if self.order.delivery_address else "No Address")
+        print("File Exists:",
+              self.order.delivery_address.tax_exemption_document.file if self.order.delivery_address and self.order.delivery_address.tax_exemption_document else "No File")
+
+
         return context
+
 
 
 class OperatorOrderDetailView(BaseOrderDetailView):
@@ -371,6 +381,7 @@ class OperatorOrderDetailView(BaseOrderDetailView):
         context['postal_code'] = self.order.postal_code
         context['additional_info'] = self.order.additional_info
         context['total_amount'] = self.order.get_total_amount()
+
 
         return context
 

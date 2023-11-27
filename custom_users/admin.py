@@ -10,7 +10,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(DeliveryAddress)
 class DeliveryAddressAdmin(admin.ModelAdmin):
-    list_display = ('client', 'address_line1', 'city', 'state', 'postal_code', 'created_at', 'updated_at')
+    list_display = ('client', 'address_line1', 'city', 'state', 'postal_code',  'created_at', 'updated_at')
     search_fields = ('client__username', 'client__customer_name', 'address_line1', 'city', 'postal_code')
     list_filter = ('city', 'state', 'created_at')
     ordering = ('-created_at',)
