@@ -14,7 +14,7 @@ class OrderForm(forms.ModelForm):
             # другие поля...
             'delivery_address',  # Убедитесь, что это поле здесь присутствует
             'client',  # Добавьте это поле
-            'customer_name', 'customer_email', 'customer_phone',
+            'customer_name', 'customer_email', 'customer_phone', 'company_name',
             'address_line1', 'address_line2', 'city', 'state', 'country',
             'postal_code', 'additional_info', 'tax_exemption_document'
         ]
@@ -23,6 +23,7 @@ class OrderForm(forms.ModelForm):
             'customer_name': forms.TextInput(attrs={'class': 'form-control'}),
             'customer_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'customer_phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'company_name': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line1': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line2': forms.TextInput(attrs={'class': 'form-control'}),
             'city': forms.TextInput(attrs={'class': 'form-control'}),

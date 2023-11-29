@@ -451,7 +451,7 @@
 									<div class="company-details">
 										<div class="name-location">
 											<h5><a href="#">{{ order.customer_name }}</a></h5>
-											<p>Заказ #{{ order.id }}</p>
+											<p>Order ID #{{ order.id }}</p>
 										</div>
 									</div>
 								</div>
@@ -459,15 +459,15 @@
 									<ul class="one">
                                         <br>
 										<li>
-											<img alt="" src="{% static 'assets/images/icon/map-2.svg' %}">
-											<p><span class="title">Email клиента:</span> {{ order.customer_email }}</p>
+											<img alt="" src="{% static 'assets/images/icon/email-2.svg' %}">
+											<p><span class="title">Email: </span> {{ order.customer_email }}</p>
 										</li>
 									</ul>
 									<ul>
                                         <br>
 										<li>
-											<img alt="" src="{% static 'assets/images/icon/category-2.svg' %}">
-											<p><span class="title">Телефон клиента:</span> {{ order.customer_phone }}</p>
+											<img alt="" src="{% static '/assets/images/icon/phone-2.svg' %}">
+											<p><span class="title">Phone number: </span> {{ order.customer_phone }}</p>
 										</li>
 									</ul>
 								</div>
@@ -500,7 +500,7 @@
 			                    							<div class="job-discription">
 			                    								<ul>
 			                    									<li>
-			                    										<p><span class="title">Размер:</span>
+			                    										<p><span class="title">Size:</span>
                                                                             {% if item.size %}
                                                                                 {{ item.size }}
                                                                             {% else %}
@@ -508,19 +508,19 @@
                                                                             {% endif %}</p>
 			                    									</li>
 			                    									<li>
-			                    										<p><span class="title">Номер продукта:</span>{{ item.product_number }}</p>
+			                    										<p><span class="title">Zeston number: </span>{{ item.product_number }}</p>
 			                    									</li>
 
 			                    								</ul>
                                                                 <ul>
                                                                     <li>
-			                    										<p><span class="title">Тип упаковки:</span>{{ item.package_type }}</p>
+			                    										<p><span class="title">Unit of Measure: </span>{{ item.package_type }}</p>
 			                    									</li>
 			                    									<li>
-			                    										<p><span class="title">SKU:</span>{{ item.order_sku }}</p>
+			                    										<p><span class="title">SKU: </span>{{ item.order_sku }}</p>
 			                    									</li>
 			                    									<li>
-			                    										<p><span class="title">Unit price:</span> {{ item.unit_price }} $ /<!-- --> <span class="time">Всего:</span> {{ item.total }} $</p>
+			                    										<p><span class="title">Unit price: </span> {{ item.unit_price }} $ /<!-- --> <span class="time">Total: </span> {{ item.total }} $</p>
 			                    									</li>
 			                    								</ul>
 
@@ -528,7 +528,7 @@
 			                    						</div>
 
 			                    					</div>
-			                    						<p><img alt="" src="{% static 'assets/images/icon/company-4.svg' %}"> Количество:<span>{{ item.quantity }}</span></p>
+			                    						<p><img alt="" src="{% static 'assets/images/icon/category-2.svg' %}"> Quantity: <span>{{ item.quantity }}</span></p>
 			                    				</div>
 			                    			</div>
                                                 {% endfor %}
@@ -540,7 +540,6 @@
                                         <div class="order-total-amount">
                                             <h3>Total price with tax: ${{ total_amount_with_tax|floatformat:"2" }}</h3>
                                         </div>
-
 
 			                    		</div>
 			                    	</div>
@@ -555,7 +554,7 @@
 						<div class="job-details-sidebar">
 							<div class="save-apply-btn d-flex justify-content-end mb-50">
 								<ul>
-									<h3>История статусов заказа:</h3>
+									<h3>Order status history:</h3>
                                     <ul>
                                         {% for status_record in status_history %}
                                             <li>{{ status_record.timestamp }}: {{ status_record.status }}</li>
@@ -566,29 +565,29 @@
 							<div class="job-summary-area mb-50">
 								<div class="pin"><img alt="" src="{% static 'assets/images/icon/pin.svg' %}"></div>
 								<div class="job-summary-title">
-									<h6>Адрес:</h6>
+									<h6>Address:</h6>
 								</div>
 								<ul>
 									<li>
-										<p><span class="title">Улица:</span> {{ order.address_line1 }}</p>
+										<p><span class="title">Street:</span> {{ order.address_line1 }}</p>
 									</li>
 									<li>
-										<p><span class="title">Дом/Квартира:</span> {{ order.address_line2 }}</p>
+										<p><span class="title">House/Apartment:</span> {{ order.address_line2 }}</p>
 									</li>
 									<li>
-										<p><span class="title">Город:</span> {{ order.city }}</p>
+										<p><span class="title">City:</span> {{ order.city }}</p>
 									</li>
 									<li>
-										<p><span class="title">Область/Штат:</span> {{ order.state }}</p>
+										<p><span class="title">Province/State:</span> {{ order.state }}</p>
 									</li>
 									<li>
-										<p><span class="title">Страна:</span> {{ order.country }}</p>
+										<p><span class="title">Country:</span> {{ order.country }}</p>
 									</li>
 									<li>
-										<p><span class="title">Почтовый индекс:</span> {{ order.postal_code }}</p>
+										<p><span class="title">Postcode:</span> {{ order.postal_code }}</p>
 									</li>
 									<li>
-										<p><span class="title">Дополнительная информация:</span> {{ order.additional_info }}</p>
+										<p><span class="title">Additional Information:</span> {{ order.additional_info }}</p>
 									</li>
 								</ul>
 							</div>

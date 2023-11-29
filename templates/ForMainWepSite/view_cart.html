@@ -559,7 +559,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 								</div>
 								<div class="job-type-apply">
-									<p><img alt="" src="{% static 'assets/images/icon/company-4.svg' %}"> Количество:<span>{% if item.sku %}
+									<p><img alt="" src="{% static 'assets/images/icon/company-4.svg' %}"> Количество:<span>
+                                        {% if item.sku %}
                                         <form method="post" action="{% url 'MainWepSite:update_cart_quantity' item.sku %}">
                                         {% csrf_token %}
                                         <input type="number" name="quantity" value="{{ item.quantity }}">
@@ -589,37 +590,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 							<nav aria-label="...">
 								<ul class="pagination">
 									<li class="apply-btn">
-                                        <a class="primry-btn-2 lg-btn" href="{% url 'MainWepSite:index' %}">Вернуться к продуктам</a>
+                                        <a class="primry-btn-2 lg-btn" href="{% url 'MainWepSite:index' %}">Back to products</a>
 									</li>
 									<li class="page-item active">
 
-                                    <a class="primry-btn-2 lg-btn" href="{% url 'MainWepSite:clear_cart' %}">Очистить корзину</a>
+                                    <a class="primry-btn-2 lg-btn" href="{% url 'MainWepSite:clear_cart' %}">Cleant the cart</a>
 
 									</li>
 									<li class="apply-btn">
-                                        <a class="primry-btn-2 lg-btn" href="{% url 'orders:create_order' %}">Оформить заказ</a>
+                                        <a class="primry-btn-2 lg-btn" href="{% url 'orders:create_order' %}">Checkout</a>
 									</li>
 								</ul>
 							</nav>
 						</div>
-
-
-                    <h2>Create Order</h2>
-{#    {% if user.is_authenticated %}#}
-{#        <p>Use your saved information for a quicker checkout:</p>#}
-{#        <form method="post">#}
-{#            {% csrf_token %}#}
-{#            {{ form.as_p }}#}
-{#            <button type="submit" class="btn-primary">Order with Saved Details</button>#}
-{#        </form>#}
-{#    {% else %}#}
-{#        <p>New or not logged in? Fill in your details:</p>#}
-{#        <form method="post">#}
-{#            {% csrf_token %}#}
-{#            {{ form.as_p }}#}
-{#            <button type="submit" class="btn-primary">Order as New/Guest</button>#}
-{#        </form>#}
-{#    {% endif %}#}
 					</div>
 				</div>
 			</div>

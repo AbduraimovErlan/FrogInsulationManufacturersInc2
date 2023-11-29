@@ -35,6 +35,7 @@ class Order(models.Model):
     customer_phone = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    company_name = models.CharField(max_length=100, verbose_name='Company Name', blank=True)
 
     address_line1 = models.CharField(max_length=255, blank=True, null=True)
     address_line2 = models.CharField(max_length=255, blank=True, null=True)

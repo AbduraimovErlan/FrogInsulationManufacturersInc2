@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'orders',
     'Warehouse1',
     'MainOffice',
+    'PaymentsApp',
+    'paypal.standard.ipn',
 ]
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
@@ -149,9 +151,12 @@ CACHES = {
     }
 }
 
+PAYPAL_TEST = True
+
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+PAYPAL_RECEIVER_EMAIL = 'sb-1ra47n28404210@business.example.com' # where cash is paid into
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
