@@ -12,7 +12,7 @@ urlpatterns = [
     path('', include('Warehouse1.urls', namespace='Warehouse1')),
     path("select2/", include("django_select2.urls")),
     path('', include('custom_users.urls', namespace='custom_users')),
-    path('', include('PaymentsApp.urls')),
+    # path('', include('PaymentsApp.urls')),
     path('', include('paypal.standard.ipn.urls'))
 
 ]

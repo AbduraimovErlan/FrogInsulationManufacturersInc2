@@ -1,0 +1,60 @@
+{% extends "ForMainWepSite/base.html" %}
+
+
+{% block content %}
+
+    <h1>confirm</h1>
+
+    <div class="container">
+        <!-- Карточка информации о продуктах и доставке -->
+        <div class="card">
+            <div class="card-header">Информация о заказе</div>
+            <div class="card-body">
+                <h5 class="card-title">Продукты</h5>
+                <!-- Вывод информации о продуктах -->
+                {% for item in items %}
+                    <p>{{ item.product_id }} - {{ item.quantity }} x {{ item.price }}</p>
+                {% endfor %}
+
+                <h5 class="card-title">Адрес доставки</h5>
+                <!-- Вывод адреса доставки -->
+                <p>{{ delivery_address.address_line1 }}</p>
+                <!-- Другие поля адреса -->
+            </div>
+        </div>
+
+        <!-- Карточка информации о цене с учетом налога и тарифа PayPal -->
+        <div class="card">
+            <div class="card-header">Итоговая сумма</div>
+            <div class="card-body">
+                <p>Общая стоимость: {{ order_data.total_price }}</p>
+                <p>Налог: {{ order_data.tax }}</p>
+                <p>Тариф PayPal: {{ paypal_fee }}</p>
+                <p>Итого с тарифом PayPal: {{ total_with_fee }}</p>
+
+                {{ paypal_form.render }}
+
+
+
+            </div>
+        </div>
+
+        <!-- Карточка офлайн оплаты -->
+        <div class="card">
+            <div class="card-header">Офлайн оплата</div>
+            <div class="card-body">
+                <p>Оплата при получении</p>
+                <p>Банковский перевод</p>
+                <div class="offline-payment">
+    <h2>Offline Payment</h2>
+    <p>You can also choose to pay offline.</p>
+    <a href="{% url 'orders:create_offline_order' transaction_id %}">Pay Offline</a>
+</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

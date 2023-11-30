@@ -16,15 +16,19 @@ from MainWepSite.models import Product, ProductSize, Size
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
 from MainWepSite.views import get_recent_views_with_details, recommend_products_based_on_views
-
-# Теперь вы можете использовать get_recent_views_with_details здесь
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import OrderForm
 from orders.models import Order, OrderItem
 from MainWepSite.models import Product, ProductSize
 from decimal import Decimal
+from django.http import HttpResponse
+from MainWepSite.models import Product
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+import uuid
+from django.views.decorators.csrf import csrf_exempt
+from paypal.standard.ipn.signals import valid_ipn_received
 
 def calculate_tax(total_price, is_tax_exempt):
     if is_tax_exempt:
@@ -35,6 +39,8 @@ def calculate_tax(total_price, is_tax_exempt):
 
 
 
+from django.http import JsonResponse
+from custom_users.models import DeliveryAddress, Client
 def create_order(request):
     client = None
     if hasattr(request.user, 'client'):
@@ -109,19 +115,36 @@ def create_order(request):
                     messages.warning(request, str(e))
                     del cart[sku]
 
-            is_tax_exempt = bool(tax_exemption_document)
-
             # Расчет налога
+            # Расчет налога и итоговой стоимости заказа
+            is_tax_exempt = bool(tax_exemption_document)
             tax = calculate_tax(total_price, is_tax_exempt)
             total_price_with_tax = total_price + tax
 
-            # Сохраняем итоговую сумму заказа
-            order.total_price = total_price_with_tax
-            order.save()
+            # Сохранение данных для подтверждения заказа в сессии
+            request.session['order_confirmation'] = {
+                'client_id': client.id if client else request.user.id,
+                'total_price': str(total_price_with_tax),
+                'tax': str(tax),
+                'items': [{
+                    'product_id': item['product_id'],
+                    'quantity': item['quantity'],
+                    'price': str(item['price'])
+                } for item in cart.values()],
+                'delivery_address': {
+                    'address_line1': address_line1,
+                    'address_line2': address_line2,
+                    'city': form.cleaned_data.get('city'),
+                    'state': form.cleaned_data.get('state'),
+                    'country': form.cleaned_data.get('country'),
+                    'postal_code': form.cleaned_data.get('postal_code')
+                },
+                'tax_exemption': 'Yes' if tax_exemption_document else 'No'
+            }
 
+            # Перенаправление на страницу подтверждения заказа
+            return HttpResponseRedirect('/confirm-order/')
 
-            request.session['cart'] = {}
-            return redirect('orders:customer_order_detail', order_id=order.id)
 
     else:
 
@@ -130,10 +153,6 @@ def create_order(request):
     return render(request, 'templates_for_orders/create_order.html', {'form': form})
 
 
-# views.py
-
-from django.http import JsonResponse
-from custom_users.models import DeliveryAddress
 
 def get_address_details(request):
     address_id = request.GET.get('address_id')
@@ -153,6 +172,129 @@ def get_address_details(request):
         return JsonResponse({'error': 'Address not found'}, status=404)
 
 
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from decimal import Decimal
+import uuid
+
+def confirm_order(request):
+    order_data = request.session.get('order_confirmation', {})
+
+    if not order_data:
+        # Если нет данных о заказе, перенаправляем на страницу корзины или главную
+        messages.error(request, "No order data found.")
+        return redirect('main_page')
+
+    # Создаем уникальный ID для транзакции
+    transaction_id = str(uuid.uuid4())
+
+
+
+
+    # Расчет комиссии PayPal
+    paypal_fee = Decimal(order_data['total_price']) * Decimal('0.029') + Decimal('0.30')
+
+    host = request.get_host()
+
+    # Составление данных для формы PayPal
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': str(Decimal(order_data['total_price']) + paypal_fee),
+        'item_name': 'Order Confirmation',
+        'invoice': transaction_id,
+        'currency_code': 'USD',
+        'notify_url': 'http://{}{}'.format(host, reverse('paypal-ipn')),
+        'return_url': 'http://{}{}'.format(host, reverse('orders:payment-success', args=[transaction_id])),
+        'cancel_url': 'http://{}{}'.format(host, reverse('orders:payment-failed', args=[transaction_id])),
+    }
+
+
+
+
+    # Создаем форму PayPal
+    form = PayPalPaymentsForm(initial=paypal_dict)
+
+    context = {
+        'order_data': order_data,
+        'transaction_id': transaction_id,
+        'paypal_form': form,
+        'paypal_fee': paypal_fee,
+        'total_with_fee': Decimal(order_data['total_price']) + paypal_fee
+    }
+
+    return render(request, 'templates_for_orders/confirm_order.html', context)
+
+
+# Представление для успешного платежа
+def payment_success(request, transaction_id):
+    # Здесь вы можете добавить логику для обработки успешного платежа,
+    # например, обновление статуса заказа, отправку уведомления пользователю и т.д.
+    messages.success(request, "Your payment was successful! Transaction ID: {}".format(transaction_id))
+    return render(request, 'templates_for_payment/payment-success.html', {'transaction_id': transaction_id})
+
+# Представление для неудачного платежа
+def payment_failed(request, transaction_id):
+    # Здесь вы можете добавить логику для обработки неудачного платежа,
+    # например, запись в лог, уведомление пользователя о проблеме и т.д.
+    messages.error(request, "Your payment failed. Please try again. Transaction ID: {}".format(transaction_id))
+    return render(request, 'templates_for_payment/payment-failed.html', {'transaction_id': transaction_id})
+
+
+
+
+def create_offline_order(request, transaction_id):
+    order_data = request.session.get('order_confirmation', {})
+
+    if not order_data:
+        messages.error(request, "No order data found.")
+        return redirect('main_page')
+
+    # Поиск или создание адреса доставки
+    delivery_address_data = order_data.get('delivery_address', {})
+    delivery_address, created = DeliveryAddress.objects.get_or_create(
+        client_id=order_data['client_id'],
+        address_line1=delivery_address_data.get('address_line1'),
+        address_line2=delivery_address_data.get('address_line2'),
+        defaults={
+            'city': delivery_address_data.get('city'),
+            'state': delivery_address_data.get('state'),
+            'country': delivery_address_data.get('country'),
+            'postal_code': delivery_address_data.get('postal_code')
+        }
+    )
+
+    # Создание заказа с использованием transaction_id
+    order = Order.objects.create(
+        client_id=order_data['client_id'],
+        total_price=Decimal(order_data['total_price']),
+        tax=Decimal(order_data['tax']),
+        delivery_address=delivery_address,
+        is_paid=False,
+        payment_method='offline',
+        transaction_id=transaction_id  # Использование transaction_id
+    )
+
+    # Добавление товаров в заказ
+    for item in order_data.get('items', []):
+        product = Product.objects.get(id=item['product_id'])
+        product_size = ProductSize.objects.get(product=product, size_sku=item['sku'])
+        OrderItem.objects.create(
+            order=order,
+            product=product,
+            product_size=product_size,
+            quantity=item['quantity'],
+            price_at_time_of_purchase=Decimal(item['price'])
+        )
+
+    # Очистка данных о заказе из сессии
+    del request.session['order_confirmation']
+
+    messages.success(request, "Your order has been placed successfully. Please follow the instructions for offline payment.")
+    return redirect('order_success', order_id=order.id)
 
 
 

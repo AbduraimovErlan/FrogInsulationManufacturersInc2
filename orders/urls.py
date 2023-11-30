@@ -12,12 +12,29 @@ register_converter(converters.BoolConverter, 'bool')
 
 
 
+
+
 app_name = 'orders'  # только если вы используете пространство имен
 
 urlpatterns = [
 
 
     path('create_order/', views.create_order, name='create_order'),
+
+
+
+    path('confirm-order/', views.confirm_order, name='confirm_order'),
+    # URL для успешной и неудачной оплаты
+    path('create-offline-order/<uuid:transaction_id>/', views.create_offline_order, name='create_offline_order'),
+
+    path('payment-success/<uuid:transaction_id>/', views.payment_success, name='payment-success'),
+    path('payment-failed/<uuid:transaction_id>/', views.payment_failed, name='payment-failed'),
+
+
+    # URL для PayPal IPN
+    # path('paypal-ipn/', views.paypal_ipn_listener, name='paypal-ipn'),
+
+
     # path('get_client_data/', views.get_client_data, name='get_client_data'),
     path('get-address-details/', views.get_address_details, name='get-address-details'),
 

@@ -157,26 +157,7 @@
 						<ul class="menu-list">
 							<li class="menu-item-has-children">
 								<a class="drop-down" href="#">Home</a><i class="bi bi-plus dropdown-icon"></i>
-								<ul class="sub-menu">
-									<li>
-										<a href="index.htm">Home One</a>
-									</li>
-									<li>
-										<a href="index2.html">Home Two</a>
-									</li>
-									<li>
-										<a href="index3-1.html">Home Three</a>
-									</li>
-									<li>
-										<a href="index4.html">Home Four</a>
-									</li>
-									<li>
-										<a href="index5.html">Home Five</a>
-									</li>
-									<li>
-										<a href="index6.html">Home Six</a>
-									</li>
-								</ul>
+
 							</li>
 							<li class="active">
 								<a class="drop-down" href="#">Product list</a><i class="bi bi-plus dropdown-icon"></i>
@@ -211,10 +192,10 @@
 										<a class="" href="/error">Error</a>
 									</li>
 									<li>
-										<a class="" href="../templates_for_office/login.html">Login</a>
+										<a class="" href="/login">Login</a>
 									</li>
 									<li>
-										<a class="" href="../templates_for_office/register.html">Register</a>
+										<a class="" href="/register">Register</a>
 									</li>
 								</ul>
 							</li>
@@ -530,7 +511,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 										<div class="job-discription">
 											<ul>
 												<li>
-													<p><span class="title">Размер:</span>
+													<p><span class="title">Size: </span>
                                                         {% if item.size %}
                                                             {{ item.size }}
                                                         {% else %}
@@ -538,19 +519,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
                                                         {% endif %}</p>
 												</li>
 												<li>
-													<p><span class="title">Номер продукта:</span>{% if item.product_number %}{{ item.product_number }}{% else %}-{% endif %}</p>
+													<p><span class="title">Zeston number: </span>{% if item.product_number %}{{ item.product_number }}{% else %}-{% endif %}</p>
 												</li>
 
 											</ul>
                                             <ul>
                                                 <li>
-													<p><span class="title">Тип упаковки:</span>{{ item.package_type }}</p>
+													<p><span class="title">Unit of Measure: </span>{{ item.package_type }}</p>
 												</li>
 												<li>
-													<p><span class="title">SKU:</span>{{ item.sku }}</p>
+													<p><span class="title">SKU: </span>{{ item.sku }}</p>
 												</li>
 												<li>
-													<p><span class="title">Unit price:</span> {{ item.price }} $ /<!-- --> <span class="time">Всего:</span> {{ item.total }} $</p>
+													<p><span class="title">Unit price:</span> {{ item.price }} $ /<!-- --> <span class="time">Total: </span> {{ item.total }} $</p>
 												</li>
 											</ul>
 
@@ -559,7 +540,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 								</div>
 								<div class="job-type-apply">
-									<p><img alt="" src="{% static 'assets/images/icon/company-4.svg' %}"> Количество:<span>
+									<p><img alt="" src="{% static 'assets/images/icon/company-4.svg' %}"> Quantity: <span>
                                         {% if item.sku %}
                                         <form method="post" action="{% url 'MainWepSite:update_cart_quantity' item.sku %}">
                                         {% csrf_token %}
@@ -573,7 +554,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									<div class="apply-btn">
 										<a href="product_detail.html"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>{% if item.sku %}
                                         <td><a href="{% url 'MainWepSite:remove_from_cart' item.sku %}">Remove</a></td>{% else %}
-                                            <td>SKU отсутствует</td>
+                                            <td>SKU missing</td>
                                         {% endif %}</a>
 									</div>
 								</div>
