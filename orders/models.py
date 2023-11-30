@@ -52,6 +52,12 @@ class Order(models.Model):
     sent_at = models.DateTimeField(null=True, blank=True)
     truck_fully_loaded = models.BooleanField(default=False, null=True)
 
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    tax = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    is_paid = models.BooleanField(default=False, null=True)
+    payment_method = models.CharField(max_length=100, default='offline', null=True)
+    transaction_id = models.UUIDField(null=True)
+
     def send_for_loading(self):
         self.sent_for_loading_at = timezone.now()
         self.save()

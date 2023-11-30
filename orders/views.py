@@ -90,6 +90,7 @@ def create_order(request):
             order.save()
 
             cart = request.session.get('cart', {})
+            print(cart)
             total_price = Decimal(0)
             for sku, item_data in cart.items():
                 try:
@@ -111,11 +112,11 @@ def create_order(request):
 
                     order_item.save()
 
+
                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
                     messages.warning(request, str(e))
                     del cart[sku]
 
-            # Расчет налога
             # Расчет налога и итоговой стоимости заказа
             is_tax_exempt = bool(tax_exemption_document)
             tax = calculate_tax(total_price, is_tax_exempt)
@@ -141,6 +142,7 @@ def create_order(request):
                 },
                 'tax_exemption': 'Yes' if tax_exemption_document else 'No'
             }
+            print('order_confirmation')
 
             # Перенаправление на страницу подтверждения заказа
             return HttpResponseRedirect('/confirm-order/')
@@ -173,9 +175,6 @@ def get_address_details(request):
 
 
 
-
-
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from decimal import Decimal
@@ -187,12 +186,10 @@ def confirm_order(request):
     if not order_data:
         # Если нет данных о заказе, перенаправляем на страницу корзины или главную
         messages.error(request, "No order data found.")
-        return redirect('main_page')
+        return redirect('MainWepSite:index')
 
     # Создаем уникальный ID для транзакции
     transaction_id = str(uuid.uuid4())
-
-
 
 
     # Расчет комиссии PayPal
@@ -211,8 +208,6 @@ def confirm_order(request):
         'return_url': 'http://{}{}'.format(host, reverse('orders:payment-success', args=[transaction_id])),
         'cancel_url': 'http://{}{}'.format(host, reverse('orders:payment-failed', args=[transaction_id])),
     }
-
-
 
 
     # Создаем форму PayPal
@@ -244,8 +239,6 @@ def payment_failed(request, transaction_id):
     return render(request, 'templates_for_payment/payment-failed.html', {'transaction_id': transaction_id})
 
 
-
-
 def create_offline_order(request, transaction_id):
     order_data = request.session.get('order_confirmation', {})
 
@@ -253,50 +246,54 @@ def create_offline_order(request, transaction_id):
         messages.error(request, "No order data found.")
         return redirect('main_page')
 
-    # Поиск или создание адреса доставки
+    # Ensure client_id is provided
+    client_id = order_data.get('client_id')
+    if not client_id:
+        messages.error(request, "Client ID is missing.")
+        return redirect('main_page')
+
     delivery_address_data = order_data.get('delivery_address', {})
-    delivery_address, created = DeliveryAddress.objects.get_or_create(
-        client_id=order_data['client_id'],
-        address_line1=delivery_address_data.get('address_line1'),
-        address_line2=delivery_address_data.get('address_line2'),
-        defaults={
-            'city': delivery_address_data.get('city'),
-            'state': delivery_address_data.get('state'),
-            'country': delivery_address_data.get('country'),
-            'postal_code': delivery_address_data.get('postal_code')
-        }
+    delivery_address = DeliveryAddress.objects.create(
+        client_id=client_id,
+        **delivery_address_data
     )
 
-    # Создание заказа с использованием transaction_id
     order = Order.objects.create(
         client_id=order_data['client_id'],
         total_price=Decimal(order_data['total_price']),
         tax=Decimal(order_data['tax']),
-        delivery_address=delivery_address,
         is_paid=False,
         payment_method='offline',
-        transaction_id=transaction_id  # Использование transaction_id
+        transaction_id=transaction_id,
+        delivery_address=delivery_address  # Assuming you have a foreign key to DeliveryAddress
     )
 
     # Добавление товаров в заказ
     for item in order_data.get('items', []):
         product = Product.objects.get(id=item['product_id'])
-        product_size = ProductSize.objects.get(product=product, size_sku=item['sku'])
-        OrderItem.objects.create(
-            order=order,
-            product=product,
-            product_size=product_size,
-            quantity=item['quantity'],
-            price_at_time_of_purchase=Decimal(item['price'])
-        )
+        print("Item dictionary:", item)
+        # Используйте .get() для безопасного доступа к ключу 'sku'
+        sku = item.get('sku')
+        if sku:
+            product_size = ProductSize.objects.get(product=product, size_sku=sku)
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                product_size=product_size,
+                quantity=item['quantity'],
+                price_at_time_of_purchase=Decimal(item['price'])
+            )
+        else:
+            # Обработайте случай, когда 'sku' недоступен
+            # Возможно, вам нужно будет создать OrderItem без product_size
+            # или обработать эту ситуацию в соответствии с требованиями вашего приложения
+            pass
 
     # Очистка данных о заказе из сессии
     del request.session['order_confirmation']
 
     messages.success(request, "Your order has been placed successfully. Please follow the instructions for offline payment.")
-    return redirect('order_success', order_id=order.id)
-
-
+    return redirect('orders:customer_order_detail', order_id=order.id)
 
 
 class BaseOrderDetailView(View):
