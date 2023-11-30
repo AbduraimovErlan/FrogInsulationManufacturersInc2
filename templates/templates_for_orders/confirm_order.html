@@ -407,7 +407,7 @@
                     <p>add to cart</p>
                 </div>
                 <div class="stepwizard-step">
-                    <a href="{% url 'orders:create_order' %}"type="button" class="btn active-number btn-circle" disabled="disabled">2</a>
+                    <a href="{% url 'orders:save_order_details' %}"type="button" class="btn active-number btn-circle" disabled="disabled">2</a>
                     <p>add address</p>
                 </div>
                 <div class="stepwizard-step">
@@ -452,29 +452,51 @@ document.addEventListener('DOMContentLoaded', (event) => {
 						<div class="pricing-plan-card2">
 							<h4>Information about order</h4>
 							<div class="scrolling-wrapper">
-								<div class="pricing-mathord mb-40">
+                             {% for item in cart_items %}
+             				<div class="pricing-mathord mb-40">
 									<div class="title-and-btn">
 										<div class="title">
 											<h5>Products</h5>
 										</div>
 									</div>
 									<ul class="priceing-list">
-                                        {% for item in items %}
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>{{ item.product_id }}<span>4 job post.</span></p>
+											<p>Product name: <span>{{ item.product.name }}.</span></p>
+										</li>
+                                        <li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>Zeston number: <span>{% if item.product_number %}{{ item.product_number }}{% else %}-{% endif %}</span></p>
+										</li>
+                                         <li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>Sku: <span>{{ item.size_sku }}</span></p>
+										</li>
+
+										<li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>Size: <span>{{ item.product_size.size }}</span></p>
+										</li>
+                                        <li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>U/M: <span>{{ item.package_type }}.</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>{{ item.quantity }}.</p>
+											<p>Quantity: <span>{{ item.quantity }}.</span></p>
 										</li>
-										<li>
+                                        <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>{{ item.price }}<span>1 weeks.</span></p>
+											<p>Price: <span>${{ item.price }}.</span></p>
 										</li>
-                                         {% endfor %}
+                                        <li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>Subtotal price: <span>${{ item.subtotal }}.</span></p>
+										</li>
 									</ul>
 								</div>
+                            {% endfor %}
+                            {% if delivery_address %}
 								<div class="pricing-mathord mb-40">
 									<div class="title-and-btn">
 										<div class="title">
@@ -484,40 +506,55 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									<ul class="priceing-list">
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>{{ delivery_address.address_line1 }}<span>4 job post.</span></p>
+											<p>1 Address: <span>{{ delivery_address.address_line1 }}.</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Resume and cover letter review and editing services.</p>
+											<p>2 Address: <span>{{ delivery_address.address_line2 }}</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Job displayed for &nbsp;<span>1 weeks.</span></p>
+											<p>City: <span>{{ delivery_address.city }}.</span></p>
 										</li>
+                                        <li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>State: <span>{{ delivery_address.state }}.</span></p>
+										</li>
+                                        <li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>Country: <span>{{ delivery_address.country }}.</span></p>
+										</li>
+                                         <li>
+											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
+											<p>Post code: <span>{{ delivery_address.postal_code }}.</span></p>
+										</li>
+
 									</ul>
 								</div>
+                            {% endif %}
+                                             {% if client %}
 								<div class="pricing-mathord">
 									<div class="title-and-btn">
 										<div class="title">
-											<h5>Featured Jobs</h5>
-											<h6>(Start $8 + VAT)</h6>
+											<h5>Client Information</h5>
 										</div>
 									</div>
 									<ul class="priceing-list">
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>You can create &nbsp;<span>4 job post.</span></p>
+											<p>Name:&nbsp;<span>{{ client.customer_name }}.</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Resume and cover letter review and editing services.</p>
+											<p>Email: <span>{{ client.customer_email }}</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Job displayed for &nbsp;<span>1 weeks.</span></p>
+											<p>Phone: <span>{{ client.customer_phone }}.</span></p>
 										</li>
 									</ul>
 								</div>
+                                {% endif %}
 							</div>
 						</div>
 					</div>
@@ -581,7 +618,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									</tr>
 								</tbody>
 							</table>
-                            <a href="{% url 'orders:create_offline_order' transaction_id %}">Pay Offline</a>
+{#                            <a href="{% url 'orders:create_offline_order' transaction_id %}">Pay Offline</a>#}
 							<h3 class="total-price">${{ total_with_fee|floatformat:"2" }}</h3><button class="primry-btn-2 lg-btn" type="submit">Buy Now</button>
 						</div>
 					</div>

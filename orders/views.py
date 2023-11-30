@@ -10,6 +10,7 @@ from MainOffice.models import OperationalManager, President, AccountsReceivableM
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
 from custom_users.forms import DeliveryAddressForm
+from custom_users.models import DeliveryAddress
 from orders.forms import OrderForm, OrderItemForm, OrderItemFormSize
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
 from MainWepSite.models import Product, ProductSize, Size
@@ -37,29 +38,97 @@ def calculate_tax(total_price, is_tax_exempt):
     return total_price * tax_rate
 
 
-
-
-from django.http import JsonResponse
-from custom_users.models import DeliveryAddress, Client
-def create_order(request):
+def save_order_details(request):
     client = None
     if hasattr(request.user, 'client'):
         client = request.user.client
 
     if request.method == 'POST':
-        form = OrderForm(request.POST, request.FILES, user=request.user)
+        form = OrderForm(request.POST, user=request.user)
         if form.is_valid():
-            order = form.save(commit=False)
-            if client:
-                order.client = client
-            else:
-                order.client = request.user
+
+            tax_exemption_document = form.cleaned_data.get('tax_exemption_document', None)
+            is_tax_exempt = bool(tax_exemption_document)
+            request.session['is_tax_exempt'] = is_tax_exempt
 
             # Получаем данные адреса из формы
             address_line1 = form.cleaned_data.get('address_line1')
             address_line2 = form.cleaned_data.get('address_line2')
 
             # Проверка наличия такого адреса в базе
+            existing_address = DeliveryAddress.objects.filter(
+                address_line1=address_line1,
+                address_line2=address_line2,
+                client=client
+            ).first()
+
+            if not existing_address:
+                # Если адрес не найден, создаем новый
+                new_address = DeliveryAddress(
+                    client=client,
+                    address_line1=address_line1,
+                    address_line2=address_line2,
+                    city=form.cleaned_data.get('city'),
+                    state=form.cleaned_data.get('state'),
+                    country=form.cleaned_data.get('country'),
+                    postal_code=form.cleaned_data.get('postal_code')
+                )
+                new_address.save()
+                address_id = new_address.id
+            else:
+                # Если адрес найден, используем существующий
+                address_id = existing_address.id
+
+
+            # Сохранение ID адреса в сессии
+            request.session['order_address_id'] = address_id
+            print('order_address_id')
+
+            # Перенаправление на страницу подтверждения заказа
+            return HttpResponseRedirect('/confirm-order/')
+    else:
+        form = OrderForm(user=request.user, initial={'client': client})
+        print("Форма не валидна:", form.errors)
+
+    return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
+
+
+def get_address_details(request):
+    address_id = request.GET.get('address_id')
+    try:
+        address = DeliveryAddress.objects.get(id=address_id)
+        data = {
+            'line1': address.address_line1,
+            'line2': address.address_line2,
+            'city': address.city,
+            'state': address.state,
+            'country': address.country,
+            'postal_code': address.postal_code,
+            'company_name': address.company_name,  # Убедитесь, что это поле возвращается
+        }
+        return JsonResponse(data)
+    except DeliveryAddress.DoesNotExist:
+        return JsonResponse({'error': 'Address not found'}, status=404)
+
+#
+def create_order(request):
+    client = None
+    if hasattr(request.user, 'client'):
+        client = request.user.client
+    if request.method == 'POST':
+        form = OrderForm(request.POST, user=request.user)
+        if form.is_valid():
+            order = form.save(commit=False)
+            if client:
+                 order.client = client
+            else:
+                order.client = request.user
+
+             # Получаем данные адреса из формы
+            address_line1 = form.cleaned_data.get('address_line1')
+            address_line2 = form.cleaned_data.get('address_line2')
+
+             # Проверка наличия такого адреса в базе
             existing_address = DeliveryAddress.objects.filter(
                 Q(address_line1=address_line1),
                 Q(address_line2=address_line2),
@@ -82,15 +151,9 @@ def create_order(request):
             else:
                 # Если адрес найден, используем существующий
                 order.delivery_address = existing_address
-
-            tax_exemption_document = form.cleaned_data.get('tax_exemption_document', None)
-            if tax_exemption_document:
-                order.tax_exemption_document = tax_exemption_document
-
             order.save()
 
             cart = request.session.get('cart', {})
-            print(cart)
             total_price = Decimal(0)
             for sku, item_data in cart.items():
                 try:
@@ -100,7 +163,6 @@ def create_order(request):
                     price_at_time_of_purchase = Decimal(item_data['price'])
                     quantity = item_data['quantity']
                     total_price += price_at_time_of_purchase * quantity
-
                     order_item = OrderItem(
                         order=order,
                         product=product,
@@ -109,119 +171,250 @@ def create_order(request):
                         price_at_time_of_purchase=price_at_time_of_purchase,
                         order_sku=sku,
                     )
-
                     order_item.save()
-
-
                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
                     messages.warning(request, str(e))
                     del cart[sku]
-
-            # Расчет налога и итоговой стоимости заказа
-            is_tax_exempt = bool(tax_exemption_document)
-            tax = calculate_tax(total_price, is_tax_exempt)
-            total_price_with_tax = total_price + tax
-
-            # Сохранение данных для подтверждения заказа в сессии
-            request.session['order_confirmation'] = {
-                'client_id': client.id if client else request.user.id,
-                'total_price': str(total_price_with_tax),
-                'tax': str(tax),
-                'items': [{
-                    'product_id': item['product_id'],
-                    'quantity': item['quantity'],
-                    'price': str(item['price'])
-                } for item in cart.values()],
-                'delivery_address': {
-                    'address_line1': address_line1,
-                    'address_line2': address_line2,
-                    'city': form.cleaned_data.get('city'),
-                    'state': form.cleaned_data.get('state'),
-                    'country': form.cleaned_data.get('country'),
-                    'postal_code': form.cleaned_data.get('postal_code')
-                },
-                'tax_exemption': 'Yes' if tax_exemption_document else 'No'
-            }
-            print('order_confirmation')
-
-            # Перенаправление на страницу подтверждения заказа
-            return HttpResponseRedirect('/confirm-order/')
-
-
+            request.session['cart'] = {}
+            return redirect('orders:customer_order_detail', order_id=order.id)
     else:
-
         form = OrderForm(user=request.user, initial={'client': client})
-
-    return render(request, 'templates_for_orders/create_order.html', {'form': form})
-
+    return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
 
 
-def get_address_details(request):
-    address_id = request.GET.get('address_id')
-    try:
-        address = DeliveryAddress.objects.get(id=address_id)
-        data = {
-            'line1': address.address_line1,
-            'line2': address.address_line2,
-            'city': address.city,
-            'state': address.state,
-            'country': address.country,
-            'postal_code': address.postal_code,
-            'company_name': address.company_name,  # Убедитесь, что это поле возвращается
-        }
-        return JsonResponse(data)
-    except DeliveryAddress.DoesNotExist:
-        return JsonResponse({'error': 'Address not found'}, status=404)
+#
+# from django.http import JsonResponse
+# from custom_users.models import DeliveryAddress, Client
+# def create_order(request):
+#     client = None
+#     if hasattr(request.user, 'client'):
+#         client = request.user.client
+#
+#     if request.method == 'POST':
+#         form = OrderForm(request.POST, request.FILES, user=request.user)
+#         if form.is_valid():
+#             order = form.save(commit=False)
+#             if client:
+#                 order.client = client
+#             else:
+#                 order.client = request.user
+#
+#             # Получаем данные адреса из формы
+#             address_line1 = form.cleaned_data.get('address_line1')
+#             address_line2 = form.cleaned_data.get('address_line2')
+#
+#             # Проверка наличия такого адреса в базе
+#             existing_address = DeliveryAddress.objects.filter(
+#                 Q(address_line1=address_line1),
+#                 Q(address_line2=address_line2),
+#                 Q(client=client)
+#             ).first()
+#
+#             if not existing_address:
+#                 # Если адрес не найден, создаем новый
+#                 new_address = DeliveryAddress(
+#                     client=client,
+#                     address_line1=address_line1,
+#                     address_line2=address_line2,
+#                     city=form.cleaned_data.get('city'),
+#                     state=form.cleaned_data.get('state'),
+#                     country=form.cleaned_data.get('country'),
+#                     postal_code=form.cleaned_data.get('postal_code')
+#                 )
+#                 new_address.save()
+#                 order.delivery_address = new_address
+#             else:
+#                 # Если адрес найден, используем существующий
+#                 order.delivery_address = existing_address
+#
+#             tax_exemption_document = form.cleaned_data.get('tax_exemption_document', None)
+#             if tax_exemption_document:
+#                 order.tax_exemption_document = tax_exemption_document
+#
+#             order.save()
+#
+#             cart = request.session.get('cart', {})
+#             print(cart)
+#             total_price = Decimal(0)
+#             for sku, item_data in cart.items():
+#                 try:
+#                     product_id = item_data['product_id']
+#                     product = Product.objects.get(id=product_id)
+#                     product_size = ProductSize.objects.get(product=product, size_sku=sku)  # Получаем размер продукта по SKU
+#                     price_at_time_of_purchase = Decimal(item_data['price'])
+#                     quantity = item_data['quantity']
+#                     total_price += price_at_time_of_purchase * quantity
+#
+#                     order_item = OrderItem(
+#                         order=order,
+#                         product=product,
+#                         product_size=product_size,  # Указываем размер продукта
+#                         quantity=quantity,
+#                         price_at_time_of_purchase=price_at_time_of_purchase,
+#                         order_sku=sku,
+#                     )
+#
+#                     order_item.save()
+#
+#
+#                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
+#                     messages.warning(request, str(e))
+#                     del cart[sku]
+#
+#             # Расчет налога и итоговой стоимости заказа
+#             is_tax_exempt = bool(tax_exemption_document)
+#             tax = calculate_tax(total_price, is_tax_exempt)
+#             total_price_with_tax = total_price + tax
+#
+#             # Сохранение данных для подтверждения заказа в сессии
+#             request.session['order_confirmation'] = {
+#                 'client_id': client.id if client else request.user.id,
+#                 'total_price': str(total_price_with_tax),
+#                 'tax': str(tax),
+#                 'items': [{
+#                     'product_id': item['product_id'],
+#                     'quantity': item['quantity'],
+#                     'price': str(item['price'])
+#                 } for item in cart.values()],
+#                 'delivery_address': {
+#                     'address_line1': address_line1,
+#                     'address_line2': address_line2,
+#                     'city': form.cleaned_data.get('city'),
+#                     'state': form.cleaned_data.get('state'),
+#                     'country': form.cleaned_data.get('country'),
+#                     'postal_code': form.cleaned_data.get('postal_code')
+#                 },
+#                 'tax_exemption': 'Yes' if tax_exemption_document else 'No'
+#             }
+#             print('order_confirmation')
+#
+#             # Перенаправление на страницу подтверждения заказа
+#             return HttpResponseRedirect('/confirm-order/')
+#
+#
+#     else:
+#
+#         form = OrderForm(user=request.user, initial={'client': client})
+#
+#     return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
+#
 
 
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from decimal import Decimal
-import uuid
 
 def confirm_order(request):
-    order_data = request.session.get('order_confirmation', {})
+    context = {}
 
-    if not order_data:
-        # Если нет данных о заказе, перенаправляем на страницу корзины или главную
-        messages.error(request, "No order data found.")
-        return redirect('MainWepSite:index')
+    # Извлекаем информацию о заказе из сессии
+    order_address_id = request.session.get('order_address_id')
+    is_tax_exempt = request.session.get('is_tax_exempt', False)
 
-    # Создаем уникальный ID для транзакции
-    transaction_id = str(uuid.uuid4())
+    # Получаем адрес доставки
+    try:
+        delivery_address = DeliveryAddress.objects.get(id=order_address_id)
+    except DeliveryAddress.DoesNotExist:
+        delivery_address = None
 
+    # Получаем информацию о клиенте
+    if request.user.is_authenticated and hasattr(request.user, 'client'):
+        client = request.user.client
+    else:
+        client = None
 
-    # Расчет комиссии PayPal
-    paypal_fee = Decimal(order_data['total_price']) * Decimal('0.029') + Decimal('0.30')
+    # Получаем данные корзины
+    cart = request.session.get('cart', {})
+    cart_items = []
+    total_price = Decimal(0)
 
-    host = request.get_host()
+    for sku, item_data in cart.items():
+        try:
+            product_id = item_data['product_id']
+            product = Product.objects.get(id=product_id)
+            product_size = ProductSize.objects.get(product=product, size_sku=sku)
+            price_at_time_of_purchase = Decimal(item_data['price'])
+            quantity = item_data['quantity']
+            total_price += price_at_time_of_purchase * quantity
 
-    # Составление данных для формы PayPal
-    paypal_dict = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': str(Decimal(order_data['total_price']) + paypal_fee),
-        'item_name': 'Order Confirmation',
-        'invoice': transaction_id,
-        'currency_code': 'USD',
-        'notify_url': 'http://{}{}'.format(host, reverse('paypal-ipn')),
-        'return_url': 'http://{}{}'.format(host, reverse('orders:payment-success', args=[transaction_id])),
-        'cancel_url': 'http://{}{}'.format(host, reverse('orders:payment-failed', args=[transaction_id])),
-    }
+            cart_items.append({
+                'product': product,
+                'product_size': product_size,
+                'quantity': quantity,
+                'price': price_at_time_of_purchase,
+                'subtotal': price_at_time_of_purchase * quantity,
+                'size_sku': product_size.size_sku,
+                'product_number': product_size.product_number,
+                'package_type': product_size.get_package_type_display(),
+                # Используйте get_FOO_display() для отображения читаемого значения
+            })
 
+        except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
+            # Обработка ошибок, связанных с отсутствующими продуктами или размерами
+            pass
 
-    # Создаем форму PayPal
-    form = PayPalPaymentsForm(initial=paypal_dict)
+    # Расчет налога
+    tax = calculate_tax(total_price, is_tax_exempt)
+    final_price = total_price + tax
 
-    context = {
-        'order_data': order_data,
-        'transaction_id': transaction_id,
-        'paypal_form': form,
-        'paypal_fee': paypal_fee,
-        'total_with_fee': Decimal(order_data['total_price']) + paypal_fee
-    }
+    # Добавляем информацию в контекст
+    context['delivery_address'] = delivery_address
+    context['client'] = client
+    context['cart_items'] = cart_items
+    context['total_price'] = total_price
+    context['tax'] = tax
+    context['final_price'] = final_price
+    context['is_tax_exempt'] = is_tax_exempt
 
     return render(request, 'templates_for_orders/confirm_order.html', context)
+
+# Остальные функции (calculate_tax, get_total_price_from_cart) остаются без изменений
+
+
+#
+#
+#
+# from django.shortcuts import render, redirect
+# from django.contrib import messages
+# from decimal import Decimal
+# import uuid
+#
+# def confirm_order(request):
+#     order_data = request.session.get('order_confirmation', {})
+#
+#
+#
+#     # Создаем уникальный ID для транзакции
+#     transaction_id = str(uuid.uuid4())
+#
+#
+#     # Расчет комиссии PayPal
+#     paypal_fee = Decimal(order_data['total_price']) * Decimal('0.029') + Decimal('0.30')
+#
+#     host = request.get_host()
+#
+#     # Составление данных для формы PayPal
+#     paypal_dict = {
+#         'business': settings.PAYPAL_RECEIVER_EMAIL,
+#         'amount': str(Decimal(order_data['total_price']) + paypal_fee),
+#         'item_name': 'Order Confirmation',
+#         'invoice': transaction_id,
+#         'currency_code': 'USD',
+#         'notify_url': 'http://{}{}'.format(host, reverse('paypal-ipn')),
+#         'return_url': 'http://{}{}'.format(host, reverse('orders:payment-success', args=[transaction_id])),
+#         'cancel_url': 'http://{}{}'.format(host, reverse('orders:payment-failed', args=[transaction_id])),
+#     }
+#
+#
+#     # Создаем форму PayPal
+#     form = PayPalPaymentsForm(initial=paypal_dict)
+#
+#     context = {
+#         'order_data': order_data,
+#         'transaction_id': transaction_id,
+#         'paypal_form': form,
+#         'paypal_fee': paypal_fee,
+#         'total_with_fee': Decimal(order_data['total_price']) + paypal_fee
+#     }
+#
+#     return render(request, 'templates_for_orders/confirm_order.html', context)
 
 
 # Представление для успешного платежа
@@ -739,7 +932,7 @@ def operator_create_order(request):
     else:
         form = OrderForm()
 
-    return render(request, 'templates_for_orders/create_order.html', {'form': form})
+    return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
 
 
 

@@ -124,7 +124,7 @@
 						pageName: "Post A Jobs",
 						pageTitle: "Post A Jobs"
 					}), (0, l.jsx)("div", {
-						className: "create_order.html-area pt-120 mb-120",
+						className: "save_order_details.html-area pt-120 mb-120",
 						children: (0, l.jsx)("div", {
 							className: "container",
 							children: (0, l.jsx)("div", {

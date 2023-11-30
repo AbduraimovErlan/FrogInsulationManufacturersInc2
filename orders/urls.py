@@ -19,8 +19,7 @@ app_name = 'orders'  # только если вы используете про�
 urlpatterns = [
 
 
-    path('create_order/', views.create_order, name='create_order'),
-
+    path('save-order-details/', views.save_order_details, name='save_order_details'),
 
 
     path('confirm-order/', views.confirm_order, name='confirm_order'),

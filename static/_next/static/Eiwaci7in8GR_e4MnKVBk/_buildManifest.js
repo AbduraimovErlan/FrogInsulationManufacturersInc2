@@ -37,7 +37,7 @@ self.__BUILD_MANIFEST = function(a, s, c, e, d, t, i, n, o, b, p) {
 		"/job-details": [a, e, "static/chunks/8863-fb3955eb4b42b806.js", s, c, "static/css/d85a191978c47127.css", "static/chunks/pages/product_detail.html-7d35cba4599a143e.js"],
 		"/job-details-for-company": [a, s, c, "static/chunks/pages/product_detail.html-for-company.html-a00894a0bf89a219.js"],
 		"/job-listing1": [a, s, c, "static/chunks/pages/job-listing1.html-f70c64ba3f056d3b.js"],
-		"/job-post": [a, d, o, p, "static/css/8b54669db085020c.css", "static/chunks/512-807b1b9847f0c759.js", s, c, "static/chunks/pages/create_order.html-fe8550bd211e7fde.js"],
+		"/job-post": [a, d, o, p, "static/css/8b54669db085020c.css", "static/chunks/512-807b1b9847f0c759.js", s, c, "static/chunks/pages/save_order_details.html-fe8550bd211e7fde.js"],
 		"/login": [a, s, c, "static/chunks/pages/login.html-8acdef807aa61ce1.js"],
 		"/pricing-plan": [a, s, c, "static/chunks/pages/pricing-plan.html-d0e99283b9eccf36.js"],
 		"/register": [a, s, c, "static/chunks/pages/register.html-3574c60b86133de8.js"],
