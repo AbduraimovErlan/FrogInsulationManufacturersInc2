@@ -454,6 +454,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 						</div>
 					</div>
 				</div>
+            <form action="{% url 'orders:offline_order_confirm' %}" method="post">
+    {% csrf_token %}
 				<div class="row g-4 mb-70 justify-content-center align-items-center">
                     <div class="col-lg-4 col-md-6">
 						<div class="pricing-plan-card2">
@@ -622,11 +624,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									</tr>
 								</tbody>
 							</table>
-{#                            <a href="{% url 'orders:create_offline_order' transaction_id %}">Pay Offline</a>#}
-							<h3 class="total-price">${{ final_price|floatformat:"2" }}</h3><button class="primry-btn-2 lg-btn" type="submit">Buy Now</button>
-						</div>
+
+							<h3 class="total-price">${{ final_price|floatformat:"2" }}</h3><button class="primry-btn-2 lg-btn" type="submit">Confirm Order</button>
+						<a href="{% url 'orders:offline_order_confirm' %}">Confirm Order with Offline Payment</a>
+                        </div>
 					</div>
 				</div>
+                        </form>
 
 			</div>
 		</div>

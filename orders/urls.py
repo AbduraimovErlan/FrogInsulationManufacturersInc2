@@ -24,10 +24,11 @@ urlpatterns = [
 
     path('confirm-order/', views.confirm_order, name='confirm_order'),
     # URL для успешной и неудачной оплаты
-    path('create-offline-order/<uuid:transaction_id>/', views.create_offline_order, name='create_offline_order'),
-
+    path('offline_order_confirm/<int:order_id>/', views.offline_order_confirm, name='offline_order_confirm'),
     path('payment-success/<uuid:transaction_id>/', views.payment_success, name='payment-success'),
     path('payment-failed/<uuid:transaction_id>/', views.payment_failed, name='payment-failed'),
+
+    path('paypal-ipn/', views.paypal_ipn, name='paypal-ipn'),
 
 
     # URL для PayPal IPN

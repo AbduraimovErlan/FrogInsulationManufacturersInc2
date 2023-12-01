@@ -1,5 +1,6 @@
 from _decimal import InvalidOperation
 
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -107,75 +108,75 @@ def get_address_details(request):
         return JsonResponse({'error': 'Address not found'}, status=404)
 
 #
-def create_order(request):
-    client = None
-    if hasattr(request.user, 'client'):
-        client = request.user.client
-    if request.method == 'POST':
-        form = OrderForm(request.POST, user=request.user)
-        if form.is_valid():
-            order = form.save(commit=False)
-            if client:
-                 order.client = client
-            else:
-                order.client = request.user
-
-             # Получаем данные адреса из формы
-            address_line1 = form.cleaned_data.get('address_line1')
-            address_line2 = form.cleaned_data.get('address_line2')
-
-             # Проверка наличия такого адреса в базе
-            existing_address = DeliveryAddress.objects.filter(
-                Q(address_line1=address_line1),
-                Q(address_line2=address_line2),
-                Q(client=client)
-            ).first()
-
-            if not existing_address:
-                # Если адрес не найден, создаем новый
-                new_address = DeliveryAddress(
-                    client=client,
-                    address_line1=address_line1,
-                    address_line2=address_line2,
-                    city=form.cleaned_data.get('city'),
-                    state=form.cleaned_data.get('state'),
-                    country=form.cleaned_data.get('country'),
-                    postal_code=form.cleaned_data.get('postal_code')
-                )
-                new_address.save()
-                order.delivery_address = new_address
-            else:
-                # Если адрес найден, используем существующий
-                order.delivery_address = existing_address
-            order.save()
-
-            cart = request.session.get('cart', {})
-            total_price = Decimal(0)
-            for sku, item_data in cart.items():
-                try:
-                    product_id = item_data['product_id']
-                    product = Product.objects.get(id=product_id)
-                    product_size = ProductSize.objects.get(product=product, size_sku=sku)  # Получаем размер продукта по SKU
-                    price_at_time_of_purchase = Decimal(item_data['price'])
-                    quantity = item_data['quantity']
-                    total_price += price_at_time_of_purchase * quantity
-                    order_item = OrderItem(
-                        order=order,
-                        product=product,
-                        product_size=product_size,  # Указываем размер продукта
-                        quantity=quantity,
-                        price_at_time_of_purchase=price_at_time_of_purchase,
-                        order_sku=sku,
-                    )
-                    order_item.save()
-                except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
-                    messages.warning(request, str(e))
-                    del cart[sku]
-            request.session['cart'] = {}
-            return redirect('orders:customer_order_detail', order_id=order.id)
-    else:
-        form = OrderForm(user=request.user, initial={'client': client})
-    return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
+# def create_order(request):
+#     client = None
+#     if hasattr(request.user, 'client'):
+#         client = request.user.client
+#     if request.method == 'POST':
+#         form = OrderForm(request.POST, user=request.user)
+#         if form.is_valid():
+#             order = form.save(commit=False)
+#             if client:
+#                  order.client = client
+#             else:
+#                 order.client = request.user
+#
+#              # Получаем данные адреса из формы
+#             address_line1 = form.cleaned_data.get('address_line1')
+#             address_line2 = form.cleaned_data.get('address_line2')
+#
+#              # Проверка наличия такого адреса в базе
+#             existing_address = DeliveryAddress.objects.filter(
+#                 Q(address_line1=address_line1),
+#                 Q(address_line2=address_line2),
+#                 Q(client=client)
+#             ).first()
+#
+#             if not existing_address:
+#                 # Если адрес не найден, создаем новый
+#                 new_address = DeliveryAddress(
+#                     client=client,
+#                     address_line1=address_line1,
+#                     address_line2=address_line2,
+#                     city=form.cleaned_data.get('city'),
+#                     state=form.cleaned_data.get('state'),
+#                     country=form.cleaned_data.get('country'),
+#                     postal_code=form.cleaned_data.get('postal_code')
+#                 )
+#                 new_address.save()
+#                 order.delivery_address = new_address
+#             else:
+#                 # Если адрес найден, используем существующий
+#                 order.delivery_address = existing_address
+#             order.save()
+#
+#             cart = request.session.get('cart', {})
+#             total_price = Decimal(0)
+#             for sku, item_data in cart.items():
+#                 try:
+#                     product_id = item_data['product_id']
+#                     product = Product.objects.get(id=product_id)
+#                     product_size = ProductSize.objects.get(product=product, size_sku=sku)  # Получаем размер продукта по SKU
+#                     price_at_time_of_purchase = Decimal(item_data['price'])
+#                     quantity = item_data['quantity']
+#                     total_price += price_at_time_of_purchase * quantity
+#                     order_item = OrderItem(
+#                         order=order,
+#                         product=product,
+#                         product_size=product_size,  # Указываем размер продукта
+#                         quantity=quantity,
+#                         price_at_time_of_purchase=price_at_time_of_purchase,
+#                         order_sku=sku,
+#                     )
+#                     order_item.save()
+#                 except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
+#                     messages.warning(request, str(e))
+#                     del cart[sku]
+#             request.session['cart'] = {}
+#             return redirect('orders:customer_order_detail', order_id=order.id)
+#     else:
+#         form = OrderForm(user=request.user, initial={'client': client})
+#     return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
 
 
 #
@@ -393,13 +394,19 @@ def confirm_order(request):
     return render(request, 'templates_for_orders/confirm_order.html', context)
 
 
-
-# Представление для успешного платежа
 def payment_success(request, transaction_id):
-    # Здесь вы можете добавить логику для обработки успешного платежа,
-    # например, обновление статуса заказа, отправку уведомления пользователю и т.д.
-    messages.success(request, "Your payment was successful! Transaction ID: {}".format(transaction_id))
+    # Здесь логика обновления статуса заказа
+    try:
+        # Предположим, у вас есть модель Order с полем transaction_id
+        order = Order.objects.get(transaction_id=transaction_id)
+        order.status = 'Paid'  # Обновляем статус заказа на 'Paid'
+        order.save()
+        messages.success(request, "Your payment was successful! Transaction ID: {}".format(transaction_id))
+    except Order.DoesNotExist:
+        messages.error(request, "Order not found. Transaction ID: {}".format(transaction_id))
+
     return render(request, 'templates_for_payment/payment-success.html', {'transaction_id': transaction_id})
+
 
 # Представление для неудачного платежа
 def payment_failed(request, transaction_id):
@@ -408,62 +415,131 @@ def payment_failed(request, transaction_id):
     messages.error(request, "Your payment failed. Please try again. Transaction ID: {}".format(transaction_id))
     return render(request, 'templates_for_payment/payment-failed.html', {'transaction_id': transaction_id})
 
+from django.http import HttpResponse
+from .models import Order
+# views.py
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from .models import Order
+from paypal.standard.ipn.signals import valid_ipn_received
 
-def create_offline_order(request, transaction_id):
-    order_data = request.session.get('order_confirmation', {})
+@csrf_exempt
+def paypal_ipn(request):
+    # Ваша логика обработки IPN
+    ipn_data = request.POST
 
-    if not order_data:
-        messages.error(request, "No order data found.")
-        return redirect('main_page')
+    if ipn_data.get('payment_status') == 'Completed':
+        # Проверка, что платеж был успешным
+        transaction_id = ipn_data.get('txn_id')
+        receiver_email = ipn_data.get('receiver_email')
+        payment_amount = ipn_data.get('mc_gross')
+        payment_currency = ipn_data.get('mc_currency')
 
-    # Ensure client_id is provided
-    client_id = order_data.get('client_id')
-    if not client_id:
-        messages.error(request, "Client ID is missing.")
-        return redirect('main_page')
+        # Проверка получателя платежа и валюты
+        if receiver_email == settings.PAYPAL_RECEIVER_EMAIL and payment_currency == 'USD':
+            try:
+                order = Order.objects.get(transaction_id=transaction_id)
+                order.status = 'Paid'
+                order.save()
+                # Дополнительная логика, если необходимо
+            except Order.DoesNotExist:
+                # Создание нового заказа, если он еще не существует
+                Order.objects.create(
+                    transaction_id=transaction_id,
+                    status='Paid',
+                    total=payment_amount
+                    # Другие поля заказа
+                )
+                # Дополнительная логика, если необходимо
 
-    delivery_address_data = order_data.get('delivery_address', {})
-    delivery_address = DeliveryAddress.objects.create(
-        client_id=client_id,
-        **delivery_address_data
-    )
+    return HttpResponse('IPN received successfully')
 
-    order = Order.objects.create(
-        client_id=order_data['client_id'],
-        total_price=Decimal(order_data['total_price']),
-        tax=Decimal(order_data['tax']),
-        is_paid=False,
-        payment_method='offline',
-        transaction_id=transaction_id,
-        delivery_address=delivery_address  # Assuming you have a foreign key to DeliveryAddress
-    )
 
-    # Добавление товаров в заказ
-    for item in order_data.get('items', []):
-        product = Product.objects.get(id=item['product_id'])
-        print("Item dictionary:", item)
-        # Используйте .get() для безопасного доступа к ключу 'sku'
-        sku = item.get('sku')
-        if sku:
-            product_size = ProductSize.objects.get(product=product, size_sku=sku)
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                product_size=product_size,
-                quantity=item['quantity'],
-                price_at_time_of_purchase=Decimal(item['price'])
-            )
-        else:
-            # Обработайте случай, когда 'sku' недоступен
-            # Возможно, вам нужно будет создать OrderItem без product_size
-            # или обработать эту ситуацию в соответствии с требованиями вашего приложения
+# views.py
+from django.shortcuts import redirect, render
+from .models import Order
+
+from decimal import Decimal
+from django.shortcuts import render, redirect
+from .models import Order, DeliveryAddress  # Импортируйте модели, если они еще не импортированы
+
+
+
+from decimal import Decimal
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+def offline_order_confirm(request):
+    if request.method == 'POST':
+        # Сбор информации из сессии
+        client, delivery_address, cart, total_price, is_tax_exempt = get_order_data_from_session(request)
+
+        # Проверка наличия товаров в корзине
+        if not cart:
+            messages.error(request, "Ваша корзина пуста.")
+            return redirect('cart')
+
+        # Создание заказа
+        order = Order.objects.create(
+            client=client,
+            delivery_address=delivery_address,
+            total_price=total_price,
+            tax=calculate_tax(total_price, is_tax_exempt),
+            status='Awaiting Offline Payment',  # Или любой другой начальный статус
+        )
+
+        # Сохранение элементов корзины как элементов заказа
+        for item_data in cart.values():
+            try:
+                product = Product.objects.get(id=item_data['product_id'])
+                product_size = ProductSize.objects.get(product=product, size_sku=item_data['sku'])
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    product_size=product_size,
+                    quantity=item_data['quantity'],
+                    price_at_time_of_purchase=Decimal(item_data['price']),
+                )
+            except (Product.DoesNotExist, ProductSize.DoesNotExist):
+                messages.error(request, f"Продукт или размер не найден: {item_data['product_id']}")
+                order.delete()  # Удаление заказа в случае ошибки
+                return redirect('cart')
+
+        # Очистка сессии
+        clear_order_data_from_session(request)
+
+        # Перенаправление на страницу подтверждения заказа
+        return redirect('customer_order_detail', order_id=order.id)
+
+
+    # Если метод не POST, вернуть пользователя обратно на страницу подтверждения заказа
+    return redirect('orders:customer_order_detail')
+
+def get_order_data_from_session(request):
+    cart = request.session.get('cart', {})
+    order_address_id = request.session.get('order_address_id')
+    is_tax_exempt = request.session.get('is_tax_exempt', False)
+    total_price = sum(Decimal(item['price']) * item['quantity'] for item in cart.values())
+
+    delivery_address = None
+    if order_address_id:
+        try:
+            delivery_address = DeliveryAddress.objects.get(id=order_address_id)
+        except DeliveryAddress.DoesNotExist:
             pass
 
-    # Очистка данных о заказе из сессии
-    del request.session['order_confirmation']
+    client = request.user.client if request.user.is_authenticated and hasattr(request.user, 'client') else None
 
-    messages.success(request, "Your order has been placed successfully. Please follow the instructions for offline payment.")
-    return redirect('orders:customer_order_detail', order_id=order.id)
+    return client, delivery_address, cart, total_price, is_tax_exempt
+
+def clear_order_data_from_session(request):
+    request.session.pop('cart', None)
+    request.session.pop('order_address_id', None)
+    request.session.pop('is_tax_exempt', None)
+
+
+
 
 
 class BaseOrderDetailView(View):
