@@ -78,6 +78,10 @@ def save_order_details(request):
 
 
             # Сохранение ID адреса в сессии
+            request.session['customer_name'] = form.cleaned_data.get('customer_name')
+            request.session['customer_email'] = form.cleaned_data.get('customer_email')
+            request.session['customer_phone'] = form.cleaned_data.get('customer_phone')
+
             request.session['order_address_id'] = address_id
             print('order_address_id')
 
@@ -456,37 +460,39 @@ def paypal_ipn(request):
     return HttpResponse('IPN received successfully')
 
 
-# views.py
-from django.shortcuts import redirect, render
-from .models import Order
-
-from decimal import Decimal
-from django.shortcuts import render, redirect
-from .models import Order, DeliveryAddress  # Импортируйте модели, если они еще не импортированы
-
-
-
 from decimal import Decimal
 from django.shortcuts import render, redirect
 from django.contrib import messages
+import logging
 
+logger = logging.getLogger(__name__)
 def offline_order_confirm(request):
     if request.method == 'POST':
         # Сбор информации из сессии
         client, delivery_address, cart, total_price, is_tax_exempt = get_order_data_from_session(request)
+        order_address_id = request.session.get('order_address_id')
 
-        # Проверка наличия товаров в корзине
+        try:
+            delivery_address = DeliveryAddress.objects.get(id=order_address_id)
+            logger.info(f"Delivery address found: {delivery_address}")
+        except DeliveryAddress.DoesNotExist:
+            logger.error(f"Delivery address not found for id: {order_address_id}")
+            delivery_address = None
+
         if not cart:
             messages.error(request, "Ваша корзина пуста.")
             return redirect('cart')
 
-        # Создание заказа
+        # Создание заказа с дополнительными полями
         order = Order.objects.create(
             client=client,
             delivery_address=delivery_address,
             total_price=total_price,
             tax=calculate_tax(total_price, is_tax_exempt),
-            status='Awaiting Offline Payment',  # Или любой другой начальный статус
+            customer_name=request.session.get('customer_name'),
+            customer_email=request.session.get('customer_email'),
+            customer_phone=request.session.get('customer_phone'),
+            status='Awaiting Offline Payment'
         )
 
         # Сохранение элементов корзины как элементов заказа
@@ -506,15 +512,22 @@ def offline_order_confirm(request):
                 order.delete()  # Удаление заказа в случае ошибки
                 return redirect('cart')
 
+        logger.info(f"Order created with id: {order.id} and delivery address: {order.delivery_address}")
+
         # Очистка сессии
         clear_order_data_from_session(request)
+        request.session.pop('customer_name', None)
+        request.session.pop('customer_email', None)
+        request.session.pop('customer_phone', None)
 
         # Перенаправление на страницу подтверждения заказа
-        return redirect('customer_order_detail', order_id=order.id)
+        return redirect('orders:customer_order_detail', order_id=order.id)
 
 
     # Если метод не POST, вернуть пользователя обратно на страницу подтверждения заказа
-    return redirect('orders:customer_order_detail')
+    return redirect('orders:confirm_order')  # или другая подходящая страница
+
+
 
 def get_order_data_from_session(request):
     cart = request.session.get('cart', {})

@@ -21,14 +21,20 @@ urlpatterns = [
 
     path('save-order-details/', views.save_order_details, name='save_order_details'),
 
-
+    # Путь к странице подтверждения заказа
     path('confirm-order/', views.confirm_order, name='confirm_order'),
-    # URL для успешной и неудачной оплаты
-    path('offline_order_confirm/<int:order_id>/', views.offline_order_confirm, name='offline_order_confirm'),
+
+    # Пути для обработки результатов платежа через PayPal
     path('payment-success/<uuid:transaction_id>/', views.payment_success, name='payment-success'),
     path('payment-failed/<uuid:transaction_id>/', views.payment_failed, name='payment-failed'),
 
-    path('paypal-ipn/', views.paypal_ipn, name='paypal-ipn'),
+    # Путь для обработки IPN от PayPal
+    path('paypal-ipn/', views.paypal_ipn, name='paypal_ipn'),
+
+    # Путь для подтверждения офлайн-заказа
+    path('offline-order-confirm/', views.offline_order_confirm, name='offline_order_confirm'),
+
+    # Путь для страницы деталей заказа (предполагается, что у вас есть такая страница)
 
 
     # URL для PayPal IPN

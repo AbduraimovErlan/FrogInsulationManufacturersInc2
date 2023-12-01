@@ -569,25 +569,25 @@
 								</div>
 								<ul>
 									<li>
-										<p><span class="title">Street:</span> {{ order.address_line1 }}</p>
+										<p><span class="title">Street:</span> {{ order.delivery_address.address_line1 }}</p>
 									</li>
 									<li>
-										<p><span class="title">House/Apartment:</span> {{ order.address_line2 }}</p>
+										<p><span class="title">House/Apartment:</span> {{ order.delivery_address.address_line2 }}</p>
 									</li>
 									<li>
-										<p><span class="title">City:</span> {{ order.city }}</p>
+										<p><span class="title">City:</span> {{ order.delivery_address.city }}</p>
 									</li>
 									<li>
-										<p><span class="title">Province/State:</span> {{ order.state }}</p>
+										<p><span class="title">Province/State:</span> {{ order.delivery_address.state }}</p>
 									</li>
 									<li>
-										<p><span class="title">Country:</span> {{ order.country }}</p>
+										<p><span class="title">Country:</span> {{ order.delivery_address.country }}</p>
 									</li>
 									<li>
-										<p><span class="title">Postcode:</span> {{ order.postal_code }}</p>
+										<p><span class="title">Postcode:</span> {{ order.delivery_address.postal_code }}</p>
 									</li>
 									<li>
-										<p><span class="title">Additional Information:</span> {{ order.additional_info }}</p>
+										<p><span class="title">Additional Information:</span> {{ order.delivery_address.additional_info }}</p>
 									</li>
 								</ul>
 							</div>
