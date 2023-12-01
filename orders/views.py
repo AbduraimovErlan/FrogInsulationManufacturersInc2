@@ -33,37 +33,58 @@ from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.ipn.signals import valid_ipn_received
 
 
-
 def save_order_details(request):
-    client = None
-    if hasattr(request.user, 'client'):
-        client = request.user.client
+    if not request.user.is_authenticated or not hasattr(request.user, 'client'):
+        messages.error(request, "Вы должны быть авторизованы для оформления заказа.")
+        return redirect('MainOffice:login_employee')  # Перенаправление на страницу входа
+
+    client = request.user.client
 
     if request.method == 'POST':
         form = OrderForm(request.POST, user=request.user)
         if form.is_valid():
+
             tax_exemption_document = form.cleaned_data.get('tax_exemption_document', None)
             is_tax_exempt = bool(tax_exemption_document)
             request.session['is_tax_exempt'] = is_tax_exempt
 
-            # Создаем новый адрес каждый раз
-            new_address = DeliveryAddress(
-                client=client,
-                address_line1=form.cleaned_data.get('address_line1'),
-                address_line2=form.cleaned_data.get('address_line2'),
-                city=form.cleaned_data.get('city'),
-                state=form.cleaned_data.get('state'),
-                country=form.cleaned_data.get('country'),
-                postal_code=form.cleaned_data.get('postal_code')
-            )
-            new_address.save()
-            address_id = new_address.id
+            # Получаем данные адреса из формы
+            address_line1 = form.cleaned_data.get('address_line1')
+            address_line2 = form.cleaned_data.get('address_line2')
 
-            # Сохранение дополнительных данных и ID адреса в сессии
+            # Проверка наличия такого адреса в базе
+            existing_address = DeliveryAddress.objects.filter(
+                address_line1=address_line1,
+                address_line2=address_line2,
+                client=client
+            ).first()
+
+            if not existing_address:
+                # Если адрес не найден, создаем новый
+                new_address = DeliveryAddress(
+                    client=client,
+                    address_line1=address_line1,
+                    address_line2=address_line2,
+                    city=form.cleaned_data.get('city'),
+                    state=form.cleaned_data.get('state'),
+                    country=form.cleaned_data.get('country'),
+                    postal_code=form.cleaned_data.get('postal_code'),
+                    company_name=form.cleaned_data.get('company_name'),
+                )
+                new_address.save()
+                address_id = new_address.id
+            else:
+                # Если адрес найден, используем существующий
+                address_id = existing_address.id
+
+
+            # Сохранение ID адреса в сессии
             request.session['customer_name'] = form.cleaned_data.get('customer_name')
             request.session['customer_email'] = form.cleaned_data.get('customer_email')
             request.session['customer_phone'] = form.cleaned_data.get('customer_phone')
+
             request.session['order_address_id'] = address_id
+            print('order_address_id')
 
             # Перенаправление на страницу подтверждения заказа
             return HttpResponseRedirect('/confirm-order/')
@@ -72,7 +93,6 @@ def save_order_details(request):
         print("Форма не валидна:", form.errors)
 
     return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
-
 
 
 def get_address_details(request):
