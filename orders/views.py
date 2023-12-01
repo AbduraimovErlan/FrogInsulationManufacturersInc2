@@ -31,11 +31,7 @@ import uuid
 from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.ipn.signals import valid_ipn_received
 
-def calculate_tax(total_price, is_tax_exempt):
-    if is_tax_exempt:
-        return Decimal('0.00')  # Нет налога, если есть документ об освобождении от налогов
-    tax_rate = Decimal('0.08875')  # Пример: Нью-Йоркский налоговый процент, преобразованный в Decimal
-    return total_price * tax_rate
+
 
 
 def save_order_details(request):
@@ -299,6 +295,11 @@ def create_order(request):
 #     return render(request, 'templates_for_orders/save_order_details.html', {'form': form})
 #
 
+def calculate_tax(total_price, is_tax_exempt):
+    if is_tax_exempt:
+        return Decimal('0.00')  # Нет налога, если есть документ об освобождении от налогов
+    tax_rate = Decimal('0.08875')  # Пример: Нью-Йоркский налоговый процент, преобразованный в Decimal
+    return total_price * tax_rate
 
 
 def confirm_order(request):
@@ -343,78 +344,54 @@ def confirm_order(request):
                 'size_sku': product_size.size_sku,
                 'product_number': product_size.product_number,
                 'package_type': product_size.get_package_type_display(),
-                # Используйте get_FOO_display() для отображения читаемого значения
             })
 
         except (Product.DoesNotExist, ProductSize.DoesNotExist) as e:
-            # Обработка ошибок, связанных с отсутствующими продуктами или размерами
+            # Обработка ошибок
             pass
 
     # Расчет налога
     tax = calculate_tax(total_price, is_tax_exempt)
     final_price = total_price + tax
 
+    # Создаем уникальный ID для транзакции
+    transaction_id = str(uuid.uuid4())
+
+    # Расчет комиссии PayPal
+    paypal_fee = total_price * Decimal('0.029') + Decimal('0.30')
+
+    # Составление данных для формы PayPal
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': str(final_price + paypal_fee),
+        'item_name': 'Order Confirmation',
+        'invoice': transaction_id,
+        'currency_code': 'USD',
+        'notify_url': 'http://{}{}'.format(request.get_host(), reverse('paypal-ipn')),
+        'return_url': 'http://{}{}'.format(request.get_host(), reverse('orders:payment-success', args=[transaction_id])),
+        'cancel_url': 'http://{}{}'.format(request.get_host(), reverse('orders:payment-failed', args=[transaction_id])),
+    }
+
+    # Создаем форму PayPal
+    form = PayPalPaymentsForm(initial=paypal_dict)
+
     # Добавляем информацию в контекст
-    context['delivery_address'] = delivery_address
-    context['client'] = client
-    context['cart_items'] = cart_items
-    context['total_price'] = total_price
-    context['tax'] = tax
-    context['final_price'] = final_price
-    context['is_tax_exempt'] = is_tax_exempt
+    context.update({
+        'delivery_address': delivery_address,
+        'client': client,
+        'cart_items': cart_items,
+        'total_price': total_price,
+        'tax': tax,
+        'final_price': final_price,
+        'is_tax_exempt': is_tax_exempt,
+        'transaction_id': transaction_id,
+        'paypal_form': form,
+        'paypal_fee': paypal_fee,
+        'total_with_fee': final_price + paypal_fee
+    })
 
     return render(request, 'templates_for_orders/confirm_order.html', context)
 
-# Остальные функции (calculate_tax, get_total_price_from_cart) остаются без изменений
-
-
-#
-#
-#
-# from django.shortcuts import render, redirect
-# from django.contrib import messages
-# from decimal import Decimal
-# import uuid
-#
-# def confirm_order(request):
-#     order_data = request.session.get('order_confirmation', {})
-#
-#
-#
-#     # Создаем уникальный ID для транзакции
-#     transaction_id = str(uuid.uuid4())
-#
-#
-#     # Расчет комиссии PayPal
-#     paypal_fee = Decimal(order_data['total_price']) * Decimal('0.029') + Decimal('0.30')
-#
-#     host = request.get_host()
-#
-#     # Составление данных для формы PayPal
-#     paypal_dict = {
-#         'business': settings.PAYPAL_RECEIVER_EMAIL,
-#         'amount': str(Decimal(order_data['total_price']) + paypal_fee),
-#         'item_name': 'Order Confirmation',
-#         'invoice': transaction_id,
-#         'currency_code': 'USD',
-#         'notify_url': 'http://{}{}'.format(host, reverse('paypal-ipn')),
-#         'return_url': 'http://{}{}'.format(host, reverse('orders:payment-success', args=[transaction_id])),
-#         'cancel_url': 'http://{}{}'.format(host, reverse('orders:payment-failed', args=[transaction_id])),
-#     }
-#
-#
-#     # Создаем форму PayPal
-#     form = PayPalPaymentsForm(initial=paypal_dict)
-#
-#     context = {
-#         'order_data': order_data,
-#         'transaction_id': transaction_id,
-#         'paypal_form': form,
-#         'paypal_fee': paypal_fee,
-#         'total_with_fee': Decimal(order_data['total_price']) + paypal_fee
-#     }
-#
-#     return render(request, 'templates_for_orders/confirm_order.html', context)
 
 
 # Представление для успешного платежа

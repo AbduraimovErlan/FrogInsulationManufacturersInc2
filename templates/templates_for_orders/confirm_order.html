@@ -447,22 +447,30 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 		<div class="pricing-plan-area pt-120 mb-120">
 			<div class="container">
+                <div class="row">
+					<div class="col-lg-12">
+						<div class="add-area">
+							<p><span>N.B:</span> You can choose the payment method as you wish.</p>
+						</div>
+					</div>
+				</div>
 				<div class="row g-4 mb-70 justify-content-center align-items-center">
                     <div class="col-lg-4 col-md-6">
 						<div class="pricing-plan-card2">
 							<h4>Information about order</h4>
 							<div class="scrolling-wrapper">
-                             {% for item in cart_items %}
              				<div class="pricing-mathord mb-40">
 									<div class="title-and-btn">
 										<div class="title">
 											<h5>Products</h5>
 										</div>
 									</div>
+                             {% for item in cart_items %}
 									<ul class="priceing-list">
+
 										<li>
-											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Product name: <span>{{ item.product.name }}.</span></p>
+
+											<p><br>Product name: <span>{{ item.product.name }}</span></p>
 										</li>
                                         <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
@@ -479,23 +487,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
 										</li>
                                         <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>U/M: <span>{{ item.package_type }}.</span></p>
+											<p>U/M: <span>{{ item.package_type }}</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Quantity: <span>{{ item.quantity }}.</span></p>
+											<p>Quantity: <span>{{ item.quantity }}</span></p>
 										</li>
                                         <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Price: <span>${{ item.price }}.</span></p>
+											<p>Price: <span>${{ item.price }}</span></p>
 										</li>
                                         <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Subtotal price: <span>${{ item.subtotal }}.</span></p>
+											<p>Subtotal price: <span>${{ item.subtotal }}</span></p>
 										</li>
 									</ul>
-								</div>
                             {% endfor %}
+								</div>
                             {% if delivery_address %}
 								<div class="pricing-mathord mb-40">
 									<div class="title-and-btn">
@@ -506,7 +514,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									<ul class="priceing-list">
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>1 Address: <span>{{ delivery_address.address_line1 }}.</span></p>
+											<p>1 Address: <span>{{ delivery_address.address_line1 }}</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
@@ -514,19 +522,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>City: <span>{{ delivery_address.city }}.</span></p>
+											<p>City: <span>{{ delivery_address.city }}</span></p>
 										</li>
                                         <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>State: <span>{{ delivery_address.state }}.</span></p>
+											<p>State: <span>{{ delivery_address.state }}</span></p>
 										</li>
                                         <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Country: <span>{{ delivery_address.country }}.</span></p>
+											<p>Country: <span>{{ delivery_address.country }}</span></p>
 										</li>
                                          <li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Post code: <span>{{ delivery_address.postal_code }}.</span></p>
+											<p>Post code: <span>{{ delivery_address.postal_code }}</span></p>
 										</li>
 
 									</ul>
@@ -542,7 +550,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									<ul class="priceing-list">
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Name:&nbsp;<span>{{ client.customer_name }}.</span></p>
+											<p>Name:&nbsp;<span>{{ client.customer_name }}</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
@@ -550,7 +558,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Phone: <span>{{ client.customer_phone }}.</span></p>
+											<p>Phone: <span>{{ client.customer_phone }}</span></p>
 										</li>
 									</ul>
 								</div>
@@ -566,7 +574,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 									<tr>
 										<td>Total price: </td>
-										<td>${{ order_data.total_price|floatformat:"2" }}</td>
+										<td>${{ total_price|floatformat:"2" }}</td>
 									</tr>
 									<tr>
 										<td>Delivery (Free): </td>
@@ -574,7 +582,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									</tr>
                                     <tr>
 										<td>Tax (8.875%): </td>
-										<td>${{ order_data.tax|floatformat:"2" }}</td>
+										<td>${{ tax|floatformat:"2" }}</td>
 									</tr>
 									<tr>
 										<td>PayPal tariff ( 2.9% + $0.30): </td>
@@ -598,7 +606,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 									<tr>
 										<td>Total price: </td>
-										<td>${{ order_data.total_price|floatformat:"2" }}</td>
+										<td>${{ total_price|floatformat:"2" }}</td>
 									</tr>
 									<tr>
 										<td>Delivery (Free): </td>
@@ -606,52 +614,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									</tr>
                                     <tr>
 										<td>Tax (8.875%): </td>
-										<td>${{ order_data.tax|floatformat:"2" }}</td>
-									</tr>
-									<tr>
-										<td>PayPal tariff ( 2.9% + $0.30): </td>
-										<td>${{ paypal_fee|floatformat:"2" }}</td>
+										<td>${{ tax|floatformat:"2" }}</td>
 									</tr>
 									<tr>
 										<td>Итого с тарифом PayPal</td>
-										<td>= ${{ total_with_fee|floatformat:"2" }}</td>
+										<td>= ${{ final_price|floatformat:"2" }}</td>
 									</tr>
 								</tbody>
 							</table>
 {#                            <a href="{% url 'orders:create_offline_order' transaction_id %}">Pay Offline</a>#}
-							<h3 class="total-price">${{ total_with_fee|floatformat:"2" }}</h3><button class="primry-btn-2 lg-btn" type="submit">Buy Now</button>
+							<h3 class="total-price">${{ final_price|floatformat:"2" }}</h3><button class="primry-btn-2 lg-btn" type="submit">Buy Now</button>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="add-area">
-							<p><span>N.B:</span> If are you never posted a job in JOBES? Get 15% off in your first job post.</p>
-						</div>
-					</div>
-					<div class="col-lg-12">
-						<div class="advertuse-area">
-							<h4>Why Choose Only JOBES for your business Advertise</h4>
-							<ul>
-								<li>
-									<p><span>10 thousand</span> users daily visitors</p>
-								</li>
-								<li>
-									<p>Easy to post a job in this site.</p>
-								</li>
-								<li>
-									<p>More than <span>5 thousand</span> CV’s in CV Bank.</p>
-								</li>
-								<li>
-									<p>There are more than <span>20 thousand</span> Recruiters Connected here.</p>
-								</li>
-								<li>
-									<p>The most powerful things that <span>15 thousand</span> viewers per jobs post.</p>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
+
 			</div>
 		</div>
 
