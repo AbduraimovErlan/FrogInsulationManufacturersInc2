@@ -1,16 +1,13 @@
 from _decimal import InvalidOperation
 
-from django.db import transaction
+
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic import ListView, View
-from decimal import Decimal
-from django.contrib.auth.decorators import login_required
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
-from custom_users.forms import DeliveryAddressForm
 from custom_users.models import DeliveryAddress, Client
 from orders.forms import OrderForm, OrderItemForm, OrderItemFormSize
 from orders.models import Order, OrderStatus, OrderStatusHistory, OrderItem, Notification
@@ -78,7 +75,6 @@ def save_order_details(request):
                 # Если адрес найден, используем существующий
                 address_id = existing_address.id
 
-
             # Сохранение ID адреса в сессии
             request.session['customer_name'] = form.cleaned_data.get('customer_name')
             request.session['customer_email'] = form.cleaned_data.get('customer_email')
@@ -120,7 +116,6 @@ def get_address_details(request):
         return JsonResponse(data)
     except DeliveryAddress.DoesNotExist:
         return JsonResponse({'error': 'Address not found'}, status=404)
-
 
 
 
@@ -230,7 +225,11 @@ def confirm_order(request):
         'transaction_id': transaction_id,
         'paypal_form': form,
         'paypal_fee': paypal_fee,
-        'total_with_fee': final_price + paypal_fee
+        'total_with_fee': final_price + paypal_fee,
+        'customer_name': request.session.get('customer_name'),
+        'customer_email': request.session.get('customer_email'),
+        'customer_phone': request.session.get('customer_phone'),
+
     })
 
     return render(request, 'templates_for_orders/confirm_order.html', context)
@@ -257,22 +256,16 @@ def payment_failed(request, transaction_id):
     messages.error(request, "Your payment failed. Please try again. Transaction ID: {}".format(transaction_id))
     return render(request, 'templates_for_payment/payment-failed.html', {'transaction_id': transaction_id})
 
-from django.http import HttpResponse
-from .models import Order
-# views.py
-import json
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
-from .models import Order
-from paypal.standard.ipn.signals import valid_ipn_received
+
+
+
+
 
 @csrf_exempt
 def paypal_ipn(request):
-    # Ваша логика обработки IPN
     ipn_data = request.POST
 
     if ipn_data.get('payment_status') == 'Completed':
-        # Проверка, что платеж был успешным
         transaction_id = ipn_data.get('txn_id')
         receiver_email = ipn_data.get('receiver_email')
         payment_amount = ipn_data.get('mc_gross')
@@ -281,42 +274,67 @@ def paypal_ipn(request):
         # Проверка получателя платежа и валюты
         if receiver_email == settings.PAYPAL_RECEIVER_EMAIL and payment_currency == 'USD':
             try:
+                # Попытка найти существующий заказ
                 order = Order.objects.get(transaction_id=transaction_id)
                 order.status = 'Paid'
                 order.save()
             except Order.DoesNotExist:
-                # Извлечение данных из сессии
+                # Если заказ не найден, создаем новый
                 session_data = request.session.get('order_data', {})
                 client_id = session_data.get('client_id')
                 client = Client.objects.get(id=client_id) if client_id else None
-                delivery_address = session_data.get('delivery_address')
+                delivery_address_id = session_data.get('delivery_address')
+                delivery_address = DeliveryAddress.objects.get(id=delivery_address_id) if delivery_address_id else None
+                session_data = request.session.get('order_data', {})
+                cart = request.session.get('cart', {})
                 total_price = session_data.get('total_price')
                 tax = session_data.get('tax')
-                customer_name = session_data.get('customer_name')
-                customer_email = session_data.get('customer_email')
-                customer_phone = session_data.get('customer_phone')
 
-                # Создание заказа
-                Order.objects.create(
+                # Создание нового заказа
+                order = Order.objects.create(
                     transaction_id=transaction_id,
                     status='Paid',
+                    client=client,
+                    address_line1=delivery_address.address_line1,
+                    address_line2=delivery_address.address_line2,
+                    city=delivery_address.city,
+                    state=delivery_address.state,
+                    country=delivery_address.country,
+                    postal_code=delivery_address.postal_code,
+                    tax_exemption_document=delivery_address.tax_exemption_document,
+                    additional_info=delivery_address.additional_info,
+                    company_name=delivery_address.company_name,
+                    delivery_address=delivery_address,
                     total_price=total_price,
                     tax=tax,
-                    client=client,
-                    delivery_address=delivery_address,
-                    customer_name=customer_name,
-                    customer_email=customer_email,
-                    customer_phone=customer_phone
-                    # Другие поля заказа
+                    customer_name=request.session.get('customer_name'),
+                    customer_email=request.session.get('customer_email'),
+                    customer_phone=request.session.get('customer_phone'),
                 )
 
-    return HttpResponse('IPN received successfully')
+                # Создание элементов заказа
+                for item_data in cart.values():
+                    try:
+                        product = Product.objects.get(id=item_data['product_id'])
+                        product_size = ProductSize.objects.get(product=product, size_sku=item_data['sku'])
+                        OrderItem.objects.create(
+                            order=order,
+                            product=product,
+                            product_size=product_size,
+                            quantity=item_data['quantity'],
+                            price_at_time_of_purchase=Decimal(item_data['price']),
+                        )
+                    except (Product.DoesNotExist, ProductSize.DoesNotExist):
+                        # Обработка ошибок
+                        pass
+
+                # Очистка данных корзины из сессии
+                request.session.pop('cart', None)
+
+            return HttpResponse('IPN received successfully')
 
 
 
-from decimal import Decimal
-from django.shortcuts import render, redirect
-from django.contrib import messages
 
 def offline_order_confirm(request):
     if request.method == 'POST':
@@ -374,9 +392,6 @@ def offline_order_confirm(request):
         return redirect('orders:customer_order_detail', order_id=order.id)
 
     return redirect('orders:confirm_order')
-
-
-
 
 
 def get_order_data_from_session(request):

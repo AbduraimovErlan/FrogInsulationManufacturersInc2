@@ -539,8 +539,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 									</ul>
 								</div>
-                            {% endif %}
-                                             {% if client %}
+
 								<div class="pricing-mathord">
 									<div class="title-and-btn">
 										<div class="title">
@@ -550,15 +549,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 									<ul class="priceing-list">
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Name:&nbsp;<span>{{ client.customer_name }}</span></p>
+											<p>Name:&nbsp;<span>{{ customer_name }}</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Email: <span>{{ client.customer_email }}</span></p>
+											<p>Email: <span>{{ customer_email }}</span></p>
 										</li>
 										<li>
 											<div class="icon"><img alt="" src="{% static 'assets/images/icon/check-icon.svg' %}"></div>
-											<p>Phone: <span>{{ client.customer_phone }}</span></p>
+											<p>Phone: <span>{{ customer_phone }}</span></p>
 										</li>
 									</ul>
 								</div>
