@@ -5,6 +5,8 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.generic import ListView, View
+from paypal.utils import logger
+
 from MainOffice.models import OperationalManager, President, AccountsReceivableManager, AccountsReceivable, \
     AccountsPayable
 from Warehouse1.models import Driver, WarehouseSupervisor
@@ -205,10 +207,12 @@ def confirm_order(request):
         'delivery_address': delivery_address.id if delivery_address else None,
         'total_price': str(total_price),
         'tax': str(tax),
+        'cart': request.session.get('cart', {}),
         'customer_name': request.session.get('customer_name'),
         'customer_email': request.session.get('customer_email'),
         'customer_phone': request.session.get('customer_phone')
     }
+    print(request.session.get('order_data'))
 
     # Создаем форму PayPal
     form = PayPalPaymentsForm(initial=paypal_dict)
@@ -234,19 +238,96 @@ def confirm_order(request):
 
     return render(request, 'templates_for_orders/confirm_order.html', context)
 
-
 def payment_success(request, transaction_id):
-    # Здесь логика обновления статуса заказа
     try:
-        # Предположим, у вас есть модель Order с полем transaction_id
-        order = Order.objects.get(transaction_id=transaction_id)
-        order.status = 'Paid'  # Обновляем статус заказа на 'Paid'
-        order.save()
-        messages.success(request, "Your payment was successful! Transaction ID: {}".format(transaction_id))
-    except Order.DoesNotExist:
-        messages.error(request, "Order not found. Transaction ID: {}".format(transaction_id))
+        # Инициализация переменных
+        total_price = None
+        tax = None
 
-    return render(request, 'templates_for_payment/payment-success.html', {'transaction_id': transaction_id})
+        # Проверка, существует ли уже заказ с таким transaction_id
+        existing_order = Order.objects.filter(transaction_id=transaction_id).first()
+        if existing_order:
+            order = existing_order
+            order_items = order.items.all()  # Используйте related_name здесь
+            total_price = order.total_price  # Установка total_price
+            tax = order.tax  # Установка tax
+        else:
+            # Если заказа не существует, создаем новый
+            order_data = request.session.get('order_data')
+            if not order_data:
+                raise ValueError("No order data in session")
+
+
+            # Получение клиента и адреса доставки
+            client_id = order_data.get('client_id')
+            delivery_address_id = order_data.get('delivery_address')
+            if not client_id or not delivery_address_id:
+                raise ValueError("Client or delivery address information is missing")
+
+            client = Client.objects.get(id=client_id)
+            delivery_address = DeliveryAddress.objects.get(id=delivery_address_id)
+
+            # Устанавливаем total_price и tax для нового заказа
+            total_price = Decimal(order_data.get('total_price'))
+            tax = Decimal(order_data.get('tax'))
+
+            order = Order.objects.create(
+                transaction_id=transaction_id,
+                payment_method='online',
+                client=client,
+                is_paid=True,
+                address_line1=delivery_address.address_line1,
+                address_line2=delivery_address.address_line2,
+                city=delivery_address.city,
+                state=delivery_address.state,
+                country=delivery_address.country,
+                postal_code=delivery_address.postal_code,
+                tax_exemption_document=delivery_address.tax_exemption_document,
+                additional_info=delivery_address.additional_info,
+                company_name=delivery_address.company_name,
+                delivery_address=delivery_address,
+                total_price=total_price,
+                tax=tax,
+                customer_name=request.session.get('customer_name'),
+                customer_email=request.session.get('customer_email'),
+                customer_phone=request.session.get('customer_phone'),
+            )
+
+
+            order_items = []  # Пустой список, если заказ только что создан
+
+            # Добавление товаров в заказ
+            cart = order_data.get('cart', {})
+            for sku, item_data in cart.items():
+                product = Product.objects.get(id=item_data['product_id'])
+                product_size = ProductSize.objects.get(product=product, size_sku=sku)
+                order_item = OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    product_size=product_size,
+                    quantity=item_data['quantity'],
+                    order_sku=product_size.size_sku,
+                    price_at_time_of_purchase=Decimal(item_data['price'])
+                )
+                order_items.append(order_item)
+
+
+            # Очистка данных заказа из сессии после создания заказа
+            request.session.pop('order_data', None)
+
+        messages.success(request, "Your payment was successful! Transaction ID: {}".format(transaction_id))
+    except Exception as e:
+        messages.error(request, "There was an error processing your order. Transaction ID: {}".format(transaction_id))
+        logger.error(str(e))
+
+    return render(request, 'templates_for_payment/payment-success.html', {
+        'transaction_id': transaction_id,
+        'order': order,
+        'order_items': order_items,
+        'total_price': total_price,
+        'tax': tax
+    })
+
 
 
 # Представление для неудачного платежа
@@ -256,82 +337,37 @@ def payment_failed(request, transaction_id):
     messages.error(request, "Your payment failed. Please try again. Transaction ID: {}".format(transaction_id))
     return render(request, 'templates_for_payment/payment-failed.html', {'transaction_id': transaction_id})
 
-
-
-
-
-
 @csrf_exempt
 def paypal_ipn(request):
     ipn_data = request.POST
+    print("IPN Data Received: ", ipn_data)  # Отладка: Печать полученных данных
 
     if ipn_data.get('payment_status') == 'Completed':
         transaction_id = ipn_data.get('txn_id')
         receiver_email = ipn_data.get('receiver_email')
-        payment_amount = ipn_data.get('mc_gross')
         payment_currency = ipn_data.get('mc_currency')
+
+        print(f"Transaction ID: {transaction_id}, Receiver Email: {receiver_email}, Currency: {payment_currency}")  # Отладка: Печать деталей транзакции
 
         # Проверка получателя платежа и валюты
         if receiver_email == settings.PAYPAL_RECEIVER_EMAIL and payment_currency == 'USD':
             try:
-                # Попытка найти существующий заказ
+                # Попытка обновить существующий заказ
                 order = Order.objects.get(transaction_id=transaction_id)
-                order.status = 'Paid'
-                order.save()
+                if order.status != 'Paid':
+                    order.status = 'Paid'
+                    order.is_paid = True
+                    order.save()
+                    print("Order status updated to Paid")  # Отладка: Печать об успешном обновлении заказа
             except Order.DoesNotExist:
-                # Если заказ не найден, создаем новый
-                session_data = request.session.get('order_data', {})
-                client_id = session_data.get('client_id')
-                client = Client.objects.get(id=client_id) if client_id else None
-                delivery_address_id = session_data.get('delivery_address')
-                delivery_address = DeliveryAddress.objects.get(id=delivery_address_id) if delivery_address_id else None
-                session_data = request.session.get('order_data', {})
-                cart = request.session.get('cart', {})
-                total_price = session_data.get('total_price')
-                tax = session_data.get('tax')
+                print("Order with transaction ID not found")  # Отладка: Печать, если заказ не найден
+        else:
+            print("Payment receiver or currency mismatch")  # Отладка: Печать, если данные получателя или валюта не совпадают
+    else:
+        print("Payment status not completed")  # Отладка: Печать, если статус платежа не 'Completed'
 
-                # Создание нового заказа
-                order = Order.objects.create(
-                    transaction_id=transaction_id,
-                    status='Paid',
-                    client=client,
-                    address_line1=delivery_address.address_line1,
-                    address_line2=delivery_address.address_line2,
-                    city=delivery_address.city,
-                    state=delivery_address.state,
-                    country=delivery_address.country,
-                    postal_code=delivery_address.postal_code,
-                    tax_exemption_document=delivery_address.tax_exemption_document,
-                    additional_info=delivery_address.additional_info,
-                    company_name=delivery_address.company_name,
-                    delivery_address=delivery_address,
-                    total_price=total_price,
-                    tax=tax,
-                    customer_name=request.session.get('customer_name'),
-                    customer_email=request.session.get('customer_email'),
-                    customer_phone=request.session.get('customer_phone'),
-                )
+    return HttpResponse('IPN received successfully')
 
-                # Создание элементов заказа
-                for item_data in cart.values():
-                    try:
-                        product = Product.objects.get(id=item_data['product_id'])
-                        product_size = ProductSize.objects.get(product=product, size_sku=item_data['sku'])
-                        OrderItem.objects.create(
-                            order=order,
-                            product=product,
-                            product_size=product_size,
-                            quantity=item_data['quantity'],
-                            price_at_time_of_purchase=Decimal(item_data['price']),
-                        )
-                    except (Product.DoesNotExist, ProductSize.DoesNotExist):
-                        # Обработка ошибок
-                        pass
-
-                # Очистка данных корзины из сессии
-                request.session.pop('cart', None)
-
-            return HttpResponse('IPN received successfully')
 
 
 
