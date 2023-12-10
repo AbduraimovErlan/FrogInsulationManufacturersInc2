@@ -244,6 +244,7 @@ def payment_success(request, transaction_id):
         total_price = None
         tax = None
 
+
         # Проверка, существует ли уже заказ с таким transaction_id
         existing_order = Order.objects.filter(transaction_id=transaction_id).first()
         if existing_order:
@@ -310,10 +311,14 @@ def payment_success(request, transaction_id):
                     price_at_time_of_purchase=Decimal(item_data['price'])
                 )
                 order_items.append(order_item)
-
-
-            # Очистка данных заказа из сессии после создания заказа
-            request.session.pop('order_data', None)
+            #
+            #     # Очистка данных заказа из сессии после создания заказа
+            # request.session.pop('order_data', None)
+            # Очистка данных заказа из сессии после создания заказа или успешной оплаты
+            keys_to_remove = ['order_data', 'is_tax_exempt', 'customer_name', 'customer_email', 'customer_phone',
+                              'order_address_id', 'cart']
+            for key in keys_to_remove:
+                request.session.pop(key, None)
 
         messages.success(request, "Your payment was successful! Transaction ID: {}".format(transaction_id))
     except Exception as e:
@@ -359,6 +364,8 @@ def paypal_ipn(request):
                     order.is_paid = True
                     order.save()
                     print("Order status updated to Paid")  # Отладка: Печать об успешном обновлении заказа
+
+
             except Order.DoesNotExist:
                 print("Order with transaction ID not found")  # Отладка: Печать, если заказ не найден
         else:
