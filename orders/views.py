@@ -1,6 +1,6 @@
 from _decimal import InvalidOperation
 
-
+from django.core.files.storage import default_storage
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -40,12 +40,19 @@ def save_order_details(request):
     client = request.user.client
 
     if request.method == 'POST':
-        form = OrderForm(request.POST, user=request.user)
+        form = OrderForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
 
             tax_exemption_document = form.cleaned_data.get('tax_exemption_document', None)
             is_tax_exempt = bool(tax_exemption_document)
             request.session['is_tax_exempt'] = is_tax_exempt
+            if tax_exemption_document:
+                # Сохраняем файл во временном хранилище и получаем его URL
+                temp_file_path = default_storage.save('temp_tax_docs/' + tax_exemption_document.name,
+                                                      tax_exemption_document)
+                temp_file_url = default_storage.url(temp_file_path)
+
+                request.session['temp_tax_exemption_document_url'] = temp_file_url
 
 
             # Получаем данные адреса из формы
@@ -180,12 +187,12 @@ def confirm_order(request):
             # Обработка ошибок
             pass
 
+    # Создаем уникальный ID для транзакции
+    transaction_id = str(uuid.uuid4())
+
     # Расчет налога
     tax = calculate_tax(total_price, is_tax_exempt)
     final_price = total_price + tax
-
-    # Создаем уникальный ID для транзакции
-    transaction_id = str(uuid.uuid4())
 
     # Расчет комиссии PayPal
     paypal_fee = total_price * Decimal('0.029') + Decimal('0.30')
@@ -244,6 +251,9 @@ def payment_success(request, transaction_id):
         total_price = None
         tax = None
 
+        if 'temp_tax_exemption_document_url' in request.session:
+            tax_document_url = request.session['temp_tax_exemption_document_url']
+            is_tax_exempt = request.session['is_tax_exempt']
 
         # Проверка, существует ли уже заказ с таким transaction_id
         existing_order = Order.objects.filter(transaction_id=transaction_id).first()
@@ -252,6 +262,7 @@ def payment_success(request, transaction_id):
             order_items = order.items.all()  # Используйте related_name здесь
             total_price = order.total_price  # Установка total_price
             tax = order.tax  # Установка tax
+
         else:
             # Если заказа не существует, создаем новый
             order_data = request.session.get('order_data')
@@ -265,6 +276,7 @@ def payment_success(request, transaction_id):
             if not client_id or not delivery_address_id:
                 raise ValueError("Client or delivery address information is missing")
 
+
             client = Client.objects.get(id=client_id)
             delivery_address = DeliveryAddress.objects.get(id=delivery_address_id)
 
@@ -272,18 +284,20 @@ def payment_success(request, transaction_id):
             total_price = Decimal(order_data.get('total_price'))
             tax = Decimal(order_data.get('tax'))
 
+
+
             order = Order.objects.create(
                 transaction_id=transaction_id,
                 payment_method='online',
                 client=client,
                 is_paid=True,
+                tax_exemption_document=tax_document_url if is_tax_exempt else None,
                 address_line1=delivery_address.address_line1,
                 address_line2=delivery_address.address_line2,
                 city=delivery_address.city,
                 state=delivery_address.state,
                 country=delivery_address.country,
                 postal_code=delivery_address.postal_code,
-                tax_exemption_document=delivery_address.tax_exemption_document,
                 additional_info=delivery_address.additional_info,
                 company_name=delivery_address.company_name,
                 delivery_address=delivery_address,
@@ -311,14 +325,12 @@ def payment_success(request, transaction_id):
                     price_at_time_of_purchase=Decimal(item_data['price'])
                 )
                 order_items.append(order_item)
-            #
-            #     # Очистка данных заказа из сессии после создания заказа
-            # request.session.pop('order_data', None)
-            # Очистка данных заказа из сессии после создания заказа или успешной оплаты
-            keys_to_remove = ['order_data', 'is_tax_exempt', 'customer_name', 'customer_email', 'customer_phone',
-                              'order_address_id', 'cart']
-            for key in keys_to_remove:
-                request.session.pop(key, None)
+
+                # Очистка данных заказа из сессии после создания заказа или успешной оплаты
+                keys_to_remove = ['order_data', 'is_tax_exempt', 'customer_name', 'customer_email', 'customer_phone',
+                                  'order_address_id', 'cart', 'temp_tax_exemption_document_url']
+                for key in keys_to_remove:
+                    request.session.pop(key, None)
 
         messages.success(request, "Your payment was successful! Transaction ID: {}".format(transaction_id))
     except Exception as e:

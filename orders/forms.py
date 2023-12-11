@@ -6,7 +6,9 @@ from MainWepSite.models import Product, ProductSize, Size
 
 
 class OrderForm(forms.ModelForm):
+
     delivery_address = forms.ModelChoiceField(queryset=DeliveryAddress.objects.none(), required=False)
+    tax_exemption_document = forms.FileField(required=False)
 
     class Meta:
         model = Order
