@@ -34,7 +34,7 @@ class DeliveryAddress(models.Model):
     state = models.CharField(max_length=100, verbose_name='State')
     country = models.CharField(max_length=100, verbose_name='Country')
     postal_code = models.CharField(max_length=20, verbose_name='Postal Code')
-    tax_exemption_document = models.FileField(upload_to='tax_documents/', blank=True, null=True, verbose_name='Tax Exemption Document')
+    tax_exemption_document = models.FileField(upload_to='tax_exemption_documents/', blank=True, null=True, verbose_name='Tax Exemption Document')
     additional_info = models.TextField(verbose_name='Additional Information', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,9 +1,10 @@
 from _decimal import InvalidOperation
-
+import os
 from django.core.files.storage import default_storage
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, View
 from paypal.utils import logger
 
@@ -28,7 +29,7 @@ from MainWepSite.models import Product
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
-from django.views.decorators.csrf import csrf_exempt
+# from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.ipn.signals import valid_ipn_received
 
 
@@ -48,7 +49,7 @@ def save_order_details(request):
             request.session['is_tax_exempt'] = is_tax_exempt
             if tax_exemption_document:
                 # Сохраняем файл во временном хранилище и получаем его URL
-                temp_file_path = default_storage.save('temp_tax_docs/' + tax_exemption_document.name,
+                temp_file_path = default_storage.save(os.path.join('tax_exemption_documents', tax_exemption_document.name),
                                                       tax_exemption_document)
                 temp_file_url = default_storage.url(temp_file_path)
 
@@ -394,7 +395,7 @@ def paypal_ipn(request):
 def offline_order_confirm(request):
     if request.method == 'POST':
         # Сбор информации из сессии
-        client, delivery_address, cart, total_price, is_tax_exempt = get_order_data_from_session(request)
+        client, delivery_address, cart, total_price, is_tax_exempt, tax_document_url = get_order_data_from_session(request)
 
         if not cart:
             messages.error(request, "Ваша корзина пуста.")
@@ -403,6 +404,9 @@ def offline_order_confirm(request):
         if not delivery_address:
             messages.error(request, "Адрес доставки не указан.")
             return redirect('orders:save_order_details')
+
+
+
 
         # Создание заказа с дополнительными полями
         order = Order.objects.create(
@@ -413,7 +417,7 @@ def offline_order_confirm(request):
             state=delivery_address.state,
             country=delivery_address.country,
             postal_code=delivery_address.postal_code,
-            tax_exemption_document=delivery_address.tax_exemption_document,
+            tax_exemption_document=tax_document_url if is_tax_exempt else None,
             additional_info=delivery_address.additional_info,
             company_name=delivery_address.company_name,
             delivery_address=delivery_address,
@@ -452,7 +456,9 @@ def offline_order_confirm(request):
 def get_order_data_from_session(request):
     cart = request.session.get('cart', {})
     order_address_id = request.session.get('order_address_id')
-    is_tax_exempt = request.session.get('is_tax_exempt', False)
+    if 'temp_tax_exemption_document_url' in request.session:
+        tax_document_url = request.session['temp_tax_exemption_document_url']
+        is_tax_exempt = request.session['is_tax_exempt']
     total_price = sum(Decimal(item['price']) * item['quantity'] for item in cart.values())
 
     delivery_address = None
@@ -464,12 +470,13 @@ def get_order_data_from_session(request):
 
     client = request.user.client if request.user.is_authenticated and hasattr(request.user, 'client') else None
 
-    return client, delivery_address, cart, total_price, is_tax_exempt
+    return client, delivery_address, cart, total_price, is_tax_exempt, tax_document_url
 
 def clear_order_data_from_session(request):
     request.session.pop('cart', None)
     request.session.pop('order_address_id', None)
     request.session.pop('is_tax_exempt', None)
+    request.session.pop('temp_tax_exemption_document_url', None)
 
 
 
@@ -541,16 +548,16 @@ class CustomerOrderDetailView(BaseOrderDetailView):
 
         print("Delivery Address:", self.order.delivery_address)
         print("Tax Exemption Document:",
-              self.order.delivery_address.tax_exemption_document if self.order.delivery_address else "No Address")
+              self.order.tax_exemption_document if self.order.delivery_address else "No Address")
         print("File Exists:",
-              self.order.delivery_address.tax_exemption_document.file if self.order.delivery_address and self.order.delivery_address.tax_exemption_document else "No File")
+              self.order.tax_exemption_document.url if self.order.delivery_address and self.order.tax_exemption_document else "No File")
 
 
         return context
 
     def check_tax_exemption(self):
         # Проверка освобождения от налогов
-        return self.order.tax_exemption_document.file if self.order.tax_exemption_document else False
+        return self.order.tax_exemption_document.url if self.order.tax_exemption_document else False
 
 
 
