@@ -31,6 +31,8 @@ from django.conf import settings
 import uuid
 # from django.views.decorators.csrf import csrf_exempt
 from paypal.standard.ipn.signals import valid_ipn_received
+from django.utils.timezone import now
+from .models import Notification  # Убедитесь, что импортируете модель Notification
 
 
 def save_order_details(request):
@@ -285,6 +287,13 @@ def payment_success(request, transaction_id):
             total_price = Decimal(order_data.get('total_price'))
             tax = Decimal(order_data.get('tax'))
 
+            if request.user.is_authenticated:
+                recent_views = get_recent_views_with_details(request.user, limit=10)
+                recommended_products = recommend_products_based_on_views(request.user)
+            else:
+                recent_views = []
+                recommended_products = []
+
 
 
             order = Order.objects.create(
@@ -343,7 +352,9 @@ def payment_success(request, transaction_id):
         'order': order,
         'order_items': order_items,
         'total_price': total_price,
-        'tax': tax
+        'tax': tax,
+        'recent_views': recent_views,
+        'recommended_products': recommended_products
     })
 
 
@@ -390,16 +401,43 @@ def paypal_ipn(request):
 
 
 
+def send_order_confirmation_notification(user):
+    message = """
+    N.B: (516) 303 8777</span> Your order has been accepted, wait for a confirmation call and payment method from technical support or call yourself.
+    """
+    Notification.objects.create(
+        user=user,
+        message=message,
+        is_read=False,
+        timestamp=now()
+    )
+
+
+
+def mark_notification_as_read(request, notification_id):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+        notification.is_read = True
+        notification.save()
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False})
+
+
+
+
+
 
 
 def offline_order_confirm(request):
     if request.method == 'POST':
         # Сбор информации из сессии
-        client, delivery_address, cart, total_price, is_tax_exempt, tax_document_url = get_order_data_from_session(request)
+        client, delivery_address, cart, total_price, is_tax_exempt, tax, tax_document_url = get_order_data_from_session(request)
 
         if not cart:
             messages.error(request, "Ваша корзина пуста.")
-            return redirect('cart')
+            return redirect('MainWepSite:view_cart')
+
 
         if not delivery_address:
             messages.error(request, "Адрес доставки не указан.")
@@ -422,7 +460,7 @@ def offline_order_confirm(request):
             company_name=delivery_address.company_name,
             delivery_address=delivery_address,
             total_price=total_price,
-            tax=calculate_tax(total_price, is_tax_exempt),
+            tax=tax,
             customer_name=request.session.get('customer_name'),
             customer_email=request.session.get('customer_email'),
             customer_phone=request.session.get('customer_phone'),
@@ -447,7 +485,9 @@ def offline_order_confirm(request):
                 return redirect('cart')
 
         clear_order_data_from_session(request)
-
+        # После успешного создания заказа
+        send_order_confirmation_notification(request.user)
+        messages.success(request, "Your order has been successfully created.")
         return redirect('orders:customer_order_detail', order_id=order.id)
 
     return redirect('orders:confirm_order')
@@ -455,11 +495,18 @@ def offline_order_confirm(request):
 
 def get_order_data_from_session(request):
     cart = request.session.get('cart', {})
+
     order_address_id = request.session.get('order_address_id')
     if 'temp_tax_exemption_document_url' in request.session:
         tax_document_url = request.session['temp_tax_exemption_document_url']
         is_tax_exempt = request.session['is_tax_exempt']
+    else:
+        tax_document_url = None
+        is_tax_exempt = False
+
     total_price = sum(Decimal(item['price']) * item['quantity'] for item in cart.values())
+    order_data = request.session.get('order_data', {})
+    tax = Decimal(order_data.get('tax', '0.00'))  # Устанавливаем '0.00', если 'tax' отсутствует
 
     delivery_address = None
     if order_address_id:
@@ -470,7 +517,7 @@ def get_order_data_from_session(request):
 
     client = request.user.client if request.user.is_authenticated and hasattr(request.user, 'client') else None
 
-    return client, delivery_address, cart, total_price, is_tax_exempt, tax_document_url
+    return client, delivery_address, cart, total_price, is_tax_exempt, tax, tax_document_url
 
 def clear_order_data_from_session(request):
     request.session.pop('cart', None)
@@ -532,6 +579,7 @@ class CustomerOrderDetailView(BaseOrderDetailView):
         context['total_amount'] = self.order.get_total_amount()
 
         if self.request.user.is_authenticated:
+            notifications = Notification.objects.filter(user=self.request.user, is_read=False).order_by('-timestamp')
             recent_views = get_recent_views_with_details(self.request.user, limit=10)
             # Получение рекомендаций на основе просмотров
             recommended_products = recommend_products_based_on_views(self.request.user)
@@ -539,6 +587,7 @@ class CustomerOrderDetailView(BaseOrderDetailView):
             recent_views = []
             recommended_products = []
 
+        context['notifications'] = notifications
         context['recent_views'] = recent_views
         context['recommended_products'] = recommended_products
 

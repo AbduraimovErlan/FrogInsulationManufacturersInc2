@@ -4,12 +4,14 @@ from MainWepSite.views import BlogPostListView, blog_post_detail, BlogPostCreate
     BlogPostDeleteView, CommentListView, CommentDeleteView
 
 app_name = 'MainWepSite'  # только если вы используете пространство имен
+# handler404 = 'FrogInsulationManufacturersInc2.views.error_404_view'
 
 urlpatterns = [
     path('', views.index, name='index'),  # Эта строка указывает, что корневой URL будет обрабатываться функцией index
     path('product/<slug:slug>/', views.product_detail, name='product_detail'),
 
     # path('api/get_product_by_sku/<str:sku>/', views.get_product_by_sku, name='get_product_by_sku'),
+    path('error/', views.error_404_view, name='error_page'),
 
 
 
@@ -19,7 +21,7 @@ path('update_based_on_sku/<int:product_id>/<str:size_sku>/', views.update_based_
 path('update_based_on_size_and_package/<int:product_id>/<size_desc>/<str:package_type>/', views.update_based_on_size_and_package, name='update_based_on_size_and_package'),
 
 
-    path('category.html/<slug:slug>/', views.category_detail, name='category_detail'),
+    path('category/<slug:slug>/', views.category_detail, name='category_detail'),
     path('brand/<slug:slug>/', views.brand_detail, name='brand_detail'),
 
 

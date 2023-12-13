@@ -5,7 +5,7 @@
 
 
 
-	<title>JOBES- Job Portal NextJs Template</title>
+	<title>Frog Portal NextJs Template</title>
 	<meta charset="UTF-8">
 	<meta content="IE=edge" http-equiv="X-UA-Compatible">
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -21,8 +21,6 @@
 	<script defer src="{% static '/_next/static/chunks/framework-3671d8951bf44e4e.js' %}">
 	</script>
 	<script defer src="{% static '/_next/static/chunks/main-0905829f35fb5e86.js' %}">
-	</script>
-	<script defer src="{% static '/_next/static/chunks/pages/_app-d3668dc44135d983.js' %}">
 	</script>
 	<script defer src="{% static '/_next/static/chunks/3424-510b4663ba497049.js' %}">
 	</script>
@@ -43,65 +41,7 @@
 	<link href="{% static '/_next/static/chunks/512-807b1b9847f0c759.js' %}" rel="prefetch">
 	<link href="{% static '/_next/static/chunks/4532-630634613f9fb88b.js' %}" rel="prefetch">
 	<link href="{% static '/_next/static/chunks/8931-3faabf1b275e128b.js' %}" rel="prefetch">
-	<style type="text/css">
-	.marquee-container {
-	 overflow-x: hidden !important;
-	 display: flex !important;
-	 flex-direction: row !important;
-	 position: relative;
-	 width: 100%;
-	}
-	.marquee-container:hover div {
-	 animation-play-state: var(--pause-on-hover);
-	}
-	.marquee-container:active div {
-	 animation-play-state: var(--pause-on-click);
-	}
 
-	.overlay {
-	 position: absolute;
-	 width: 100%;
-	 height: 100%;
-	}
-	.overlay::before, .overlay::after {
-	 background: linear-gradient(to right, var(--gradient-color));
-	 content: "";
-	 height: 100%;
-	 position: absolute;
-	 width: var(--gradient-width);
-	 z-index: 2;
-	}
-	.overlay::after {
-	 right: 0;
-	 top: 0;
-	 transform: rotateZ(180deg);
-	}
-	.overlay::before {
-	 left: 0;
-	 top: 0;
-	}
-
-	.marquee {
-	 flex: 0 0 auto;
-	 min-width: 100%;
-	 z-index: 1;
-	 display: flex;
-	 flex-direction: row;
-	 align-items: center;
-	 animation: scroll var(--duration) linear var(--delay) var(--iteration-count);
-	 animation-play-state: var(--play);
-	 animation-delay: var(--delay);
-	 animation-direction: var(--direction);
-	}
-	@keyframes scroll {
-	 0% {
-	   transform: translateX(0%);
-	 }
-	 100% {
-	   transform: translateX(-100%);
-	 }
-	}
-	</style>
 
 
 
@@ -118,12 +58,7 @@
                         <h3>Register Account</h3><span></span>
                     </div>
                     <div class="register-tab">
-                        <nav>
-                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                <button aria-controls="nav-home" aria-selected="true" class="nav-link active" data-bs-target="#nav-home" data-bs-toggle="tab" id="nav-home-tab" role="tab" type="button" ><a href="{% url 'MainOffice:register_employee' %}">Office</a></button>
-                                <button aria-controls="nav-profile" aria-selected="false" class="nav-link" data-bs-target="#nav-profile" data-bs-toggle="tab" id="nav-profile-tab" role="tab" type="button"><a href="{% url 'Warehouse1:warehouse_register' %}">Warehouse</a></button>
-                            </div>
-                        </nav>
+
                         <div class="tab-content" id="nav-tabContent">
                             <div aria-labelledby="nav-home-tab" class="tab-pane fade show active" id="nav-home" role="tabpanel">
                                 <form method="post">
@@ -132,7 +67,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-inner mb-25">
-                                                <label for="{{ form.username.id_for_label }}" >Имя пользователя</label>
+                                                <label for="{{ form.username.id_for_label }}" >Username</label>
                                                 <div class="input-area">
                                                     <img alt="" src="{% static 'assets/images/icon/user-2.svg' %}" >
                                                     {{ form.username }}
@@ -140,6 +75,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
 
 
                                         <div class="col-md-6">
@@ -157,13 +93,35 @@
 
                                         <div class="col-md-6">
                                             <div class="form-inner mb-25">
-                                                <label for="{{ form.phone_number.id_for_label }}">Номер телефона</label>
+                                                <label for="{{ form.customer_phone.id_for_label }}">Phone Number</label>
                                                 <div class="input-area">
                                                     <img alt="" src="{% static 'assets/images/icon/phone-2.svg' %}">
-                                                    {{ form.phone_number }}
+                                                    {{ form.customer_phone }}
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-inner mb-25">
+                                                <label for="{{ form.customer_name.id_for_label }}">Name</label>
+                                                <div class="input-area">
+                                                    <img alt="" src="{% static 'assets/images/icon/user-2.svg' %}">
+                                                    {{ form.customer_name }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-inner mb-25">
+                                                <label for="{{ form.avatar.id_for_label }}">Avatar</label>
+                                                <div class="input-area">
+                                                    <img alt="" src="{% static 'assets/images/icon/user-2.svg' %}">
+                                                    {{ form.avatar }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+
 
 
                                         <div class="col-md-6">
@@ -186,25 +144,11 @@
                                             </div>
                                         </div>
 
-                                         <div class="col-md-6">
-                                            <div class="form-inner mb-25">
-                                                <label for="role">Выберите роль:</label>
-                                                <div class="input-area">
-                                                    <img alt="" src="{% static 'assets/images/icon/user-2.svg' %}">
-                                                    <select name="role">
-                                                        <option value="president">Президент</option>
-                                                        <option value="operational_manager">Операционный менеджер</option>
-                                                        <option value="accounts_receivable_manager">Менеджер по сбору средств</option>
-                                                        <option value="accounts_receivable">Сотрудник по сбору средств</option>
-                                                        <option value="accounts_payable">Сотрудник по оплате счетов</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
+
 
                                         <div class="col-md-6">
                                             <div class="form-inner mb-25">
-                                                <label for="{{ form.password1.id_for_label }}">Пароль</label>
+                                                <label for="{{ form.password1.id_for_label }}">Password</label>
                                                     {{ form.password1 }}
                                                     <i class="bi bi-eye-slash" id="togglePassword"></i>
                                             </div>
@@ -212,7 +156,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-inner">
-                                                <label for="{{ form.password2.id_for_label }}">Подтверждение пароля</label>
+                                                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
                                                     {{ form.password2 }}
                                                     <i class="bi bi-eye-slash" ></i>
                                             </div>
@@ -264,10 +208,6 @@
 
 
 	</div>
-	<script id="__NEXT_DATA__" type="application/json">
-	{"props":{"pageProps":{}},"page":"/login","query":{},"buildId":"Eiwaci7in8GR_e4MnKVBk","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}
-	</script>
-	<p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap; overflow-wrap: normal;">JOBES- Job Portal NextJs Template</p>
 	<script src="{% static '/_next/static/chunks/717-a88701aea31ab923.js' %}">
 	</script>
 	<script src="{% static '/_next/static/chunks/689-4f6724f50310080b.js' %}">
@@ -286,23 +226,6 @@
 	</script>
 	<script src="{% static '/_next/static/chunks/8931-3faabf1b275e128b.js' %}">
 	</script>
-
-
-
-
-
-
-
-
-    <div class="registration-form">
-        <h2>Регистрация</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Зарегистрироваться</button>
-        </form>
-        <a href="{% url 'MainOffice:login_employee' %}">Уже зарегистрированы? Войти</a>
-    </div>
 
 
 {% endblock %}

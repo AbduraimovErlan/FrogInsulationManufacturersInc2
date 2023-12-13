@@ -2,7 +2,7 @@ from django.urls import path, register_converter
 
 from . import views
 from .views import CustomerOrderDetailView, OperatorOrderDetailView, BaseOrderListView, OperatorOrderListView, \
-    CanceledOrderListView, DriverOrderDetailView, driver_order_list
+    CanceledOrderListView, DriverOrderDetailView, driver_order_list, mark_notification_as_read
 from . import converters
 from .views import ProductListView, ProductDetailViewBoxed, ProductDetailViewSingle
 
@@ -18,7 +18,7 @@ app_name = 'orders'  # только если вы используете про�
 
 urlpatterns = [
 
-
+    path('notifications/read/<int:notification_id>/', views.mark_notification_as_read, name='mark_notification_as_read'),
     path('save-order-details/', views.save_order_details, name='save_order_details'),
 
     # Путь к странице подтверждения заказа

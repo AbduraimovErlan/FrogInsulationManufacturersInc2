@@ -23,6 +23,14 @@ from django.views.generic import ListView
 from .models import BlogPost
 
 
+from django.shortcuts import render
+from django.http import HttpResponseNotFound
+
+def error_404_view(request, exception):
+    """A custom view function for handling 404 errors."""
+    return render(request, 'ForMainWepSite/error_page.html', {}, status=404)
+
+
 def get_top_products(limit=12, name_length=20):
     # Сортируем продукты так, чтобы те, у которых display_order равен 0, шли в конце
     top_products = Product.objects.annotate(
