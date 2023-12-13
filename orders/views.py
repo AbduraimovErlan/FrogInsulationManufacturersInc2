@@ -257,6 +257,9 @@ def payment_success(request, transaction_id):
         if 'temp_tax_exemption_document_url' in request.session:
             tax_document_url = request.session['temp_tax_exemption_document_url']
             is_tax_exempt = request.session['is_tax_exempt']
+        else:
+            tax_document_url = None
+            is_tax_exempt = False
 
         # Проверка, существует ли уже заказ с таким transaction_id
         existing_order = Order.objects.filter(transaction_id=transaction_id).first()

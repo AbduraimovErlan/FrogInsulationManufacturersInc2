@@ -64,7 +64,7 @@ urlpatterns = [
     path('login/accounts_payable/', AccountsPayableLoginView.as_view(), name='login_accounts_payable'),
 
     # Other views
-    path('all_employees/', AllEmployeesListView.as_view(), name='all_employees_list'),
+    path('contact/', AllEmployeesListView.as_view(), name='all_employees_list'),
     path('register/', EmployeeRegistrationView.as_view(), name='register_employee'),
     path('login/', BaseLoginView.as_view(), name='login_employee'),
 
