@@ -85,7 +85,7 @@
                         <li>
 							<form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
-    <button type="submit">Выйти</button>
+    <button type="submit">Logout</button>
 </form>
 
 						</li>
@@ -122,42 +122,13 @@
 							<div class="menu-container">
 								<ul>
 									<li>
-										<a href="contact">Contact Us <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="/contact">Contact Us <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 									<li>
-										<a href="#">Blog <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="/#aboutfrog">About Company <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 									<li>
-										<a href="#">employers <i class="bx bx-up-arrow-alt"></i></a>
-									</li>
-									<li>
-										<a href="#">location <i class="bx bx-up-arrow-alt"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-4 col-sm-6 mb--50 d-flex justify-content-md-center justify-content-sm-end justify-content-center">
-						<div class="footer-widget">
-							<div class="widget-title">
-								<h5>For Customer</h5>
-							</div>
-							<div class="menu-container">
-								<ul>
-									<li>
-										<a href="candidates-dashboard/edit-profile">Make order <i class="bx bx-up-arrow-alt"></i></a>
-									</li>
-									<li>
-										<a href="category"><!-- -->Review <i class="bx bx-up-arrow-alt"></i></a>
-									</li>
-									<li>
-										<a href="candidates-dashboard/bookmark"><!-- -->s <i class="bx bx-up-arrow-alt"></i></a>
-									</li>
-									<li>
-										<a href="../CopyWep/job-listing1.html"><!-- -->Browse Jobs <i class="bx bx-up-arrow-alt"></i></a>
-									</li>
-									<li>
-										<a href="candidates-dashboard/dashboard"><!-- -->Candidate Dashboard <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="https://www.google.com/maps/place/Zenith+Building+LIC/@40.7421877,-73.9596267,17.02z/data=!4m15!1m8!3m7!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!2z0J3RjNGOLdCZ0L7RgNC6!3b1!8m2!3d40.7127753!4d-74.0059728!16zL20vMDJfMjg2!3m5!1s0x89c25922d6f60133:0x2e6cc1cf72d432e8!8m2!3d40.7420675!4d-73.9566063!16s%2Fg%2F11ddzr6q5g?entry=ttu">location <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 								</ul>
 							</div>
@@ -166,24 +137,44 @@
 					<div class="col-lg-3 col-md-4 col-sm-6 mb--50 d-flex justify-content-lg-center justify-content-md-end justify-content-sm-start justify-content-center">
 						<div class="footer-widget">
 							<div class="widget-title">
-								<h5>For Employer’s</h5>
+								<h5>Product List</h5>
 							</div>
 							<div class="menu-container">
 								<ul>
 									<li>
-										<a href="../templates_for_orders/save_order_details.html">Post A Job <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="/#Gallery">Product Gallery <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 									<li>
-										<a href="login#">Browse Candidates <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="/#PopularProducts">Popular Products <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 									<li>
-										<a href="pricing-plan">Job Packages <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="/#Top6">Top 6 selling <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 									<li>
-										<a href="../CopyWep/job-listing1.html">Jobs Featured <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="/#OurRecentArticle">Our Recent Article <i class="bx bx-up-arrow-alt"></i></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb--50 d-flex justify-content-md-center justify-content-sm-end justify-content-center">
+						<div class="footer-widget">
+							<div class="widget-title">
+								<h5>Page</h5>
+							</div>
+							<div class="menu-container">
+								<ul>
+									<li>
+										<a href="/#Gallery">Make order <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 									<li>
-										<a href="company/company-dashboard"><!-- -->Employer Dashboard <i class="bx bx-up-arrow-alt"></i></a>
+										<a href="/login"><!-- -->Login <i class="bx bx-up-arrow-alt"></i></a>
+									</li>
+									<li>
+										<a href="/register_clients"><!-- -->Register <i class="bx bx-up-arrow-alt"></i></a>
+									</li>
+									<li>
+										<a href="/blog"><!-- -->Blog <i class="bx bx-up-arrow-alt"></i></a>
 									</li>
 								</ul>
 							</div>
@@ -248,13 +239,13 @@
 							<div class="footer-btm-menu">
 								<ul>
 									<li>
-										<a href="#">Privacy Policy</a>
+										<a href="/">Privacy Policy</a>
 									</li>
 									<li>
-										<a href="#">Terms of Services</a>
+										<a href="/">Terms of Services</a>
 									</li>
 									<li>
-										<a href="https://www.google.com/maps/place/Egens+Lab/@23.8340712,90.3634979,17z/data=!3m1!4b1!4m5!3m4!1s0x3755c14c8682a473:0xa6c74743d52adb88!8m2!3d23.8340663!4d90.3656866">Our Sitemap</a>
+										<a href="https://www.google.com/maps/place/Zenith+Building+LIC/@40.7421877,-73.9596267,17.02z/data=!4m15!1m8!3m7!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!2z0J3RjNGOLdCZ0L7RgNC6!3b1!8m2!3d40.7127753!4d-74.0059728!16zL20vMDJfMjg2!3m5!1s0x89c25922d6f60133:0x2e6cc1cf72d432e8!8m2!3d40.7420675!4d-73.9566063!16s%2Fg%2F11ddzr6q5g?entry=ttu">Our Sitemap</a>
 									</li>
 								</ul>
 							</div>
@@ -263,7 +254,6 @@
 					<div class="row border-top align-items-center">
 						<div class="col-lg-6 d-flex justify-content-lg-start justify-content-center">
 							<div class="copyright-area">
-								<p>@Copyright 2023 <a href="#">JOBES</a> | Design By<a href="https://www.Egenstheme.com/">&nbsp;Egenstheme</a></p>
 							</div>
 						</div>
 						<div class="col-lg-6 d-flex justify-content-lg-end justify-content-center">
