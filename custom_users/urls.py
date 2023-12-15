@@ -14,6 +14,9 @@ urlpatterns = [
     path('register_clients/', views.register, name='register_clients'),
 
 
+
+
+
     path('dashboard_customer/', views.dashboard_customer, name='dashboard_customer'),
     path('profile/update/', views.update_profile, name='update_profile'),
     path('address/add/', views.add_address, name='add_address'),

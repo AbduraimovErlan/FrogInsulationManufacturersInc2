@@ -119,6 +119,9 @@ def index(request):
 
     categories = Category.objects.all()
     brands = Brand.objects.all()
+    # Подсчет количества товаров в корзине
+    cart = request.session.get('cart', {})
+    total_items_in_cart = sum(item['quantity'] for item in cart.values())
 
     top_selling_products = get_top_selling_products()
     top_products = get_top_products()
@@ -131,6 +134,7 @@ def index(request):
         'top_selling_products': top_selling_products,
         'top_products': top_products,
         'recent_posts': recent_posts,  # Добавьте это
+        'total_items_in_cart': total_items_in_cart,  # Добавьте это
     })
 
 
@@ -142,6 +146,7 @@ def view_cart(request, size=None):
     cart_items = []
     total_price = 0
     skus_to_remove = []  # list to hold skus that should be removed
+    total_items_in_cart = sum(item['quantity'] for item in cart_items)
 
     for sku, item_data in list(cart.items()):
         try:
@@ -180,7 +185,8 @@ def view_cart(request, size=None):
 
     return render(request, 'ForMainWepSite/view_cart.html', {
         'cart_items': cart_items,
-        'total_price': total_price
+        'total_price': total_price,
+        'total_items_in_cart': total_items_in_cart  # добавьте это
     })
 
 
@@ -236,6 +242,8 @@ def _add_product_to_session_cart(request, product_id, quantity, selected_package
 # Add product to cart
 def add_to_cart(request, product_id):
     if request.method == "POST":
+        action = request.POST.get('action')
+
         try:
             product = get_object_or_404(Product, id=product_id)
             quantity = int(request.POST.get('quantity', 1))
@@ -259,23 +267,29 @@ def add_to_cart(request, product_id):
 
             _add_product_to_session_cart(request, product.id, quantity, selected_package_type, selected_zeston,
                                          selected_sku, selected_size_desc)
-            return redirect('MainWepSite:view_cart')
+
+            if action == 'add_to_cart':
+                # Перенаправление на главную страницу после добавления в корзину
+                return redirect('MainWepSite:index')
+            elif action == 'buy_now':
+                # Перенаправление на страницу оформления заказа
+                return redirect('orders:save_order_details')
 
         except ProductSize.MultipleObjectsReturned:
             messages.error(request, "Multiple matching product sizes found. Please contact support.")
-            return redirect('MainWepSite:view_cart')
+            return redirect('MainWepSite:index')
         except ProductSize.DoesNotExist:
             messages.error(request, "Selected product size or SKU combination does not exist.")
-            return redirect('MainWepSite:view_cart')
+            return redirect('MainWepSite:product_detail', product.slug)
         except ValueError as e:
             messages.error(request, str(e))
-            return redirect('MainWepSite:view_cart')
+            return redirect('MainWepSite:index')
         except Product.DoesNotExist:
             messages.error(request, "Product not found.")
             return redirect('MainWepSite:index')
     else:
         messages.warning(request, "Invalid request type.")
-        return redirect('MainWepSite:view_cart')
+        return redirect('MainWepSite:index')
 
 def remove_from_cart(request, sku):
     cart = request.session.get('cart', {})
@@ -354,6 +368,9 @@ def product_detail(request, slug):
     additional_images = product.images.all()
     product_sizes = ProductSize.objects.filter(product=product)
     unique_package_types = ProductSize.objects.filter(product=product).values_list('package_type', flat=True).distinct()
+    # Подсчет количества товаров в корзине
+    cart = request.session.get('cart', {})
+    total_items_in_cart = sum(item['quantity'] for item in cart.values())
 
     # Запись просмотра продукта
     if request.user.is_authenticated:
@@ -373,7 +390,8 @@ def product_detail(request, slug):
         'additional_images': additional_images,
         'product_sizes': product_sizes,
         'unique_package_types': unique_package_types,
-        'recent_views': recent_views
+        'recent_views': recent_views,
+        'total_items_in_cart': total_items_in_cart,  # Добавьте это
     }
 
     return render(request, 'ForMainWepSite/product_detail.html', context)

@@ -37,7 +37,7 @@ from .models import Notification  # Убедитесь, что импортир�
 
 def save_order_details(request):
     if not request.user.is_authenticated or not hasattr(request.user, 'client'):
-        messages.error(request, "Вы должны быть авторизованы для оформления заказа.")
+        messages.error(request, "You must be logged in to place an order..")
         return redirect('MainOffice:login_employee')  # Перенаправление на страницу входа
 
     client = request.user.client

@@ -127,7 +127,7 @@
 										<a class="" href="/login">Login</a>
 									</li>
 									<li>
-										<a class="" href="/register">Register</a>
+										<a class="" href="/register_clients">Register</a>
 									</li>
 								</ul>
 							</li>
@@ -359,7 +359,16 @@
 </div>
 
 
-
+<link rel="stylesheet" type="text/css" href="{% static 'detail/css/message.css' %}">
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 
 

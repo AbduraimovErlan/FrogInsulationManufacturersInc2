@@ -42,7 +42,16 @@
 	<link href="{% static '/_next/static/chunks/4532-630634613f9fb88b.js' %}" rel="prefetch">
 	<link href="{% static '/_next/static/chunks/8931-3faabf1b275e128b.js' %}" rel="prefetch">
 
-
+<link rel="stylesheet" type="text/css" href="{% static 'detail/css/message.css' %}">
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 
 
@@ -84,10 +93,10 @@
                                 <div class="form-agreement form-inner d-flex justify-content-between flex-wrap">
                                     <div class="form-group">
                                         <input id="html" type="checkbox"><label for="html">Remember Me</label>
-                                    </div><a class="forgot-pass" href="#">Forget Password?</a>
+                                    </div><a class="forgot-pass" href="{% url 'password_reset' %}">Forget Password?</a>
                                 </div>
                             </div>
-                            <h6>Don’t have an account?<a href="{% url 'MainOffice:register_employee' %}">Sign Up</a></h6>
+                            <h6>Don’t have an account?<a href="{% url 'custom_users:register_clients' %}">Sign Up</a></h6>
                         </div>
                     </form>
                 </div>

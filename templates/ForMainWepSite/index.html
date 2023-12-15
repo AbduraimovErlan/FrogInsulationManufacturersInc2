@@ -126,21 +126,15 @@
 							</ul>
 						</li>
 						<li class="menu-item-has-children">
-							<a href="#">Blog</a><i class="bi bi-plus dropdown-icon"></i>
+							<a href="/blog">Blog</a><i class="bi bi-plus dropdown-icon"></i>
 							<ul class="sub-menu">
 								<li>
-									<a href="/blog-grid">Blog Grid</a>
-								</li>
-								<li>
-									<a href="/blog-right-sidebar">Blog Right Sidebar</a>
-								</li>
-								<li>
-									<a href="/blog-details">Blog Details</a>
+									<a href="/blog">Blog List</a>
 								</li>
 							</ul>
 						</li>
 						<li>
-							<a href="/all_employees">Contact</a>
+							<a href="{% url 'MainOffice:all_employees_list' %}">Contact</a>
 						</li>
 					</ul>
 					<div class="for-mobile-menu d-lg-none d-block">
@@ -261,68 +255,70 @@
 
 
 
-		<div class="home1-trusted-company two mt-2 mb-120">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="section-title">
+
+
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{% static 'detail/css/index_trusted_company.css' %}">
+
+
+
+		<div class="home1-trusted-company two mt-2 mb-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-title">
 							<h5>Our Trusted Company</h5>
-		</div>
-        <div class="swiper-container">
-          <div class="swiper-wrapper">
-								<div class="swiper-slide" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-01.svg' %}"></div>
+                        </div>
+                        <div class="custom-swiper-container">
+                            <div class="custom-swiper-wrapper">
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/AGM-logo-blue-100-31.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-03.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Buckaroos-Logo-9-100-35.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="2" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-02.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Gerard-Image70-45.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-04.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/GLT-Products-Logo-100-46.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-05.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/HB-Fuller-Logo-4-100-36.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-06.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Ideal_Products_Logo_RGB-79-80.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-01.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Insulation-Materials-Corp-Logo-90.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-03.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/k-flex-80.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="2" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-02.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Knauf-Logo-100-67.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-04.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Manson-Logo-From-Email-30x16.jpg' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-05.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/MFM-Building-Products-Logo40.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-06.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Owens-Corning-Logo-2-80x64.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="0" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-01.svg' %}"></div>
+                                <div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Speedline-Logo-4-80x50.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="1" style="width: 156.5px; margin-right: 24px;">
-									<div class="company"><img alt="" src="{% static 'assets/images/icon/trusted-company-03.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/STI-Corporate-logo-RGB-80-80.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="2" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-02.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/Unifrax-Logo-160-80-1.png' %}"></div>
 								</div>
-								<div class="swiper-slide" data-swiper-slide-index="3" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-04.svg' %}"></div>
-								</div>
-								<div class="swiper-slide" data-swiper-slide-index="4" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-05.svg' %}"></div>
-								</div>
-								<div class="swiper-slide" data-swiper-slide-index="5" style="width: 156.5px; margin-right: 24px;">
-									<div class="company-logo"><img alt="" src="{% static 'assets/images/icon/trusted-company-06.svg' %}"></div>
+								<div class="custom-swiper-slide">
+									<div class="custom-company-logo"><img alt="" src="{% static 'detail/media/index_brands/3m-e1403892501740-100x56.png' %}"></div>
 								</div>
 							</div>
 						</div>
@@ -332,19 +328,18 @@
 		</div>
 
 
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script src="{% static 'detail/js/js_for_trusted_company.js' %}"></script>
+
+<script src="{% static 'detail/js/js_for_trusted_company.js' %}" ></script>
 
 
 
 
-		<div class="home3-categor-area mb-120 top-products-section" id="PopularProducts">
+		<div class="home3-categor-area top-products-section two mt-2 mb-2" id="PopularProducts">
     <div class="container">
 				<div class="row mb-60">
 					<div class="col-12 d-flex flex-wrap align-items-end justify-content-md-between justify-content-start gap-3">
 						<div class="section-title1">
 							<h2>Popular <span>Product</span> List</h2>
-							<p>To choose your trending Product dream &amp; to make future bright.</p>
 						</div>
 					</div>
 				</div>
@@ -483,11 +478,13 @@
 
                                                     <div class="job-thumb">
                                                         <img alt="" class="img-fluid">
+                                                            <a href="{% url 'MainWepSite:product_detail' product.slug %}">
                                                             {% if product.main_image and product.main_image.url %}
                                                                  <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}" style="width: 384px; height: 183.5px !important;">
                                                             {% else %}
                                                                  <img src="{% static 'assets/images/placeholder-image.png' %}" class="card-img-top" alt="Placeholder" style="width: 384px; height: 183.5px !important;">
                                                             {% endif %}
+                                                            </a>
 {#                                                             <div class="urgent-batch">#}
 {#                                                            <span>Urgent</span>#}
 {#                                                        </div>#}
@@ -497,41 +494,36 @@
                                                     </div>
                                                     <div class="job-content">
                                                         <div class="company-area">
-                                                            <div class="logo">
-                                                                {% if product.brand and product.brand.image %}
-                                                                    <img src="{{ product.brand.image.url }}" alt="{{ product.brand.name }}" class="brand-image">
-                                                                {% else %}
-                                                                    <img src="{% static 'assets/images/placeholder-image.png' %}" class="card-img-top" alt="Placeholder" style="max-width: 100%; max-height: 200px;">
-                                                                {% endif %}
-                                                            </div>
                                                             <div class="company-details">
                                                                 <div class="name-location">
-                                                                    <h5>{{ product.name|truncatechars:25 }}
+                                                                    <h5>{{ product.name|truncatechars:34 }}
                                                                     </h5>
-                                                                    <ul>
-                                                                        <li>
-                                                                            <p>{{ product.brand.name|truncatechars:25 }}</p>
-                                                                        </li>
-                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="job-discription">
                                                             <ul>
-                                                                <li>
-                                                                    <p><span class="title">Packege type / </span>Size Description / <span
-                                                                            class="time">Price</span></p>
-                                                                </li>
+{#                                                                <li>#}
+{#                                                                    <p><span class="title">Packege type / </span>Size Description / <span#}
+{#                                                                            class="time">Price</span></p>#}
+{#                                                                </li>#}
 
                                                                 <li>
                                                                 <!-- В секции <head> -->
                                                                     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
                                                                     <select class="size-select" data-product-id="{{ product.id }}" name="size_desc" id="size_desc-{{ product.id }}">
+                                                                        <option></option>
                                                                         {% for size in product.sizes_info %}
-                                                                            <option value="{{ size.size.value }}">{{ size.package_type }} / {{ size.size.value }} (Price: {{ size.size_price }} $)</option>
+                                                                            <option value="{{ size.size.value }}"
+                                                                                    data-package-type="{{ size.package_type }}"
+                                                                                    data-size-value="{{ size.size.value }}"
+                                                                                    data-price="{{ size.size_price }}">
+                                                                                {{ size.package_type }}  {{ size.size.value }}  {{ size.size_price }} $)
+                                                                            </option>
                                                                         {% endfor %}
                                                                     </select>
+
 
                                                                     <script src="{% static 'detail/js/index_show_size.js' %}"></script>
 
@@ -544,8 +536,7 @@
                                                             <div class="apply-btn">
 
                                                                 <a href="{% url 'MainWepSite:product_detail' product.slug %}"><span><img alt=""
-                                                                                                  src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Apply
-                                                                    Now</a>
+                                                                                                  src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>Product Detail</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -553,11 +544,12 @@
 
                                             </div>
                                         {% endfor %}
-                                         <div class="apply-btn">
-                                        <a href="{% url 'MainWepSite:view_cart' %}"><span><img alt=""
-                                                                                                  src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>See your cart
-                                                                    </a>
-                                        </div>
+                                        <a href="{% url 'MainWepSite:view_cart' %}" id="floating-cart-button">
+    <img alt="Cart" src="{% static 'detail/media/3d_cart_3.png' %}">
+    <span id="cart-count-wrapper">
+        <h3 id="cart-count">{{ total_items_in_cart }}</h3>
+    </span>
+</a>
 
 
                                         </div>
@@ -566,6 +558,13 @@
                             </div>
 
                             </div>
+
+                <link rel="stylesheet" type="text/css" href="{% static 'detail/css/cart_count.css' %}">
+
+
+
+
+
 
 
 
@@ -975,6 +974,8 @@
 }
         </style>
 
+
+
 		<div class="home3-recent-article-area mb-120" id="OurRecentArticle">
 			<div class="container">
 				<div class="row mb-60">
@@ -986,75 +987,52 @@
 					</div>
 				</div>
 				<div class="row g-4 gy-5 justify-content-center">
+                {% for post in recent_posts %}
 					<div class="col-lg-4 col-md-6">
 						<div class="recent-article-card3">
-							<div class="article-img"><img alt="" class="img-fluid" src="{% static 'assets/images/blog/blog-img-31.png' %}"></div>
+							<div class="article-img">
+                                {% if post.main_image %}
+                                    <img alt="" class="img-fluid" src="{{ post.main_image.url }}">
+                                {% else %}
+                                    <img class="img-fluid" src="{% static 'assets/images/placeholder-image.png' %}" alt="Placeholder Image">
+                                {% endif %}
+                            </div>
 							<div class="article-content">
 								<div class="article-category">
-									<a class="primry-btn-2" href="/blog-grid">Marketing</a>
+                                    {% if post.slug %}
+									    <a class="primry-btn-2" href="{% url 'MainWepSite:blog_detail' post.slug %}">{{ post.title }}</a>
+                                    {% else %}
+                                      {{ post.title }}
+                                    {% endif %}
 								</div>
-								<h4><a href="/blog-details">How To Apply Your Dream Jobs In Digital Marketing, Easy Solution.</a></h4>
+                                {% if post.slug %}
+								<h4><a href="{% url 'MainWepSite:blog_detail' post.slug %}">{{ post.content|truncatewords:30 }}.</a></h4>
+                                {% else %}
+                                      {{ post.content|truncatewords:30 }}
+                                {% endif %}
 								<div class="author-and-btn">
 									<div class="author-area">
-										<div class="author-img"><img alt="" src="{% static 'assets/images/blog/blog-author-31.png' %}"></div>
 										<div class="author-details">
-											<h6><a href="/blog-grid">Roland Khelcy</a></h6><span>Admin</span>
+											<h6><a href="/blog"></a></h6><span>{{ post.created_at|date:"d" }} {{ post.created_at|date:"F" }}</span>
 										</div>
-									</div>
-									<div class="apply-btn">
-										<a href="/blog-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>View Details</a>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-6">
-						<div class="recent-article-card3">
-							<div class="article-img"><img alt="" class="img-fluid" src="{% static 'assets/images/blog/blog-img-32.png' %}"></div>
-							<div class="article-content">
-								<div class="article-category">
-									<a class="primry-btn-2" href="/blog-grid">Design</a>
-								</div>
-								<h4><a href="/blog-details">To Be Continue Redesign &amp; Build Up Your Career Opportunity.</a></h4>
-								<div class="author-and-btn">
-									<div class="author-area">
-										<div class="author-img"><img alt="" src="{% static 'assets/images/blog/blog-author-32.png' %}"></div>
-										<div class="author-details">
-											<h6><a href="/blog-grid">Mrs. Rudhela Saley</a></h6><span>Admin</span>
-										</div>
-									</div>
-									<div class="apply-btn">
-										<a href="/blog-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>View Details</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-4 col-md-6">
-						<div class="recent-article-card3">
-							<div class="article-img"><img alt="" class="img-fluid" src="{% static 'assets/images/blog/blog-img-33.png' %}"></div>
-							<div class="article-content">
-								<div class="article-category">
-									<a class="primry-btn-2" href="/blog-grid">Technology</a>
-								</div>
-								<h4><a href="/blog-details">If You Are A talented People, Make Sure Your Technology Part.</a></h4>
-								<div class="author-and-btn">
-									<div class="author-area">
-										<div class="author-img"><img alt="" src="{% static 'assets/images/blog/blog-author-33.png' %}"></div>
-										<div class="author-details">
-											<h6><a href="/blog-grid">Martoniey Sekh</a></h6><span>Admin</span>
-										</div>
-									</div>
-									<div class="apply-btn">
-										<a href="/blog-details"><span><img alt="" src="{% static 'assets/images/icon/apply-ellipse.svg' %}"></span>View Details</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					{% endfor %}
 				</div>
 			</div>
 		</div>
+                    <style>
+            .recent-article-card3 .article-img .img-fluid{
+    width: 303.144px !important; /* Фиксированная ширина */
+    height: 181.747px !important; /* Фиксированная высота */
+    object-fit: cover; /* Обрезает изображение, сохраняя пропорции */
+    object-position: center; /* Центрирование изображения */
+}
+
+        </style>
 
 	</div>
 
