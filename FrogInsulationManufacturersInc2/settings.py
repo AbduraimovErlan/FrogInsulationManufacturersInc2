@@ -21,12 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-80q3*kv3+-=vaue=!p252%5k1itvch^8p_)vs1#n71)#-c%4-1'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'default')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.environ.get('DEBUG') == 'on':
+    DEBUG = True
+else:
+    DEBUG = False
 
-ALLOWED_HOSTS = []
+
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -92,8 +97,12 @@ WSGI_APPLICATION = 'FrogInsulationManufacturersInc2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -149,8 +158,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'abduraimoverlan7478@gmail.com'
-EMAIL_HOST_PASSWORD = 'python1824'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 
 
@@ -169,6 +178,6 @@ PAYPAL_TEST = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-PAYPAL_RECEIVER_EMAIL = 'sb-1ra47n28404210@business.example.com' # where cash is paid into
+PAYPAL_RECEIVER_EMAIL = os.environ.get('PAYPAL_RECEIVER_EMAIL') # where cash is paid into
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PAYPAL_BUY_BUTTON_IMAGE = 'https://ltdfoto.ru/images/2023/12/11/CITYPNG.COMDownload-PayPal-Yellow-Payment-Button-PNG-117.png'
